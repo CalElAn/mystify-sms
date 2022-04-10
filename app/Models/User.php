@@ -21,6 +21,11 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'sex',
+        'phone_number',
+        'default_user_type',
+        'user_type',
+        'profile_picture_path',
     ];
 
     /**
@@ -41,4 +46,23 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function school()
+    {
+        return $this->belongsTo(School::class, 'school_id', 'school_id');
+    }
+
+    public function schoolFeesPaid()
+    {
+        return $this->hasMany(SchoolFeesPaid::class, 'id', 'student_id'); //TODO test
+    }
+
+    public function parents()
+    {
+        if ($this->default_user_type === 'student') {
+            return $this->belongsToMany(User::class, 'parent_student_pivot', 'student_id', 'parent_id', 'id', 'id');
+        }
+
+        return null;
+    }
 }

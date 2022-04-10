@@ -17,9 +17,27 @@ class UserFactory extends Factory
      */
     public function definition()
     {
+        $gender = $this->faker->randomElement(['male', 'female']);
+        $name = $this->faker->name($gender);
+        $profilePicturePath = 'https://ui-avatars.com/api/?size=50&rounded=true&name='.str_replace(' ', '', $name);
+        $userTypes = [
+            'student', 
+            'parent', 
+            'teacher', 
+            // 'school administrator', 
+            // 'headteacher', 
+            // 'administrator',
+        ];
+        $defaultUserType = $this->faker->randomElement($userTypes);
+
         return [
-            'name' => $this->faker->name(),
+            'name' => $name,
+            'sex' => $gender,
             'email' => $this->faker->unique()->safeEmail(),
+            'phone_number' => $this->faker->phoneNumber(),
+            'default_user_type' => $defaultUserType,
+            'user_type' => $defaultUserType,
+            'profile_picture_path' => $profilePicturePath,
             'email_verified_at' => now(),
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
             'remember_token' => Str::random(10),

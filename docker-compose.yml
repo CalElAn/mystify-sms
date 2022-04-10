@@ -12,6 +12,7 @@ services:
             - 'host.docker.internal:host-gateway'
         ports:
             - '${APP_PORT:-80}:80'
+            - '8587:8082' #points to ports defined in webpack.mix.js for HMR
         environment:
             WWWUSER: '${WWWUSER}'
             LARAVEL_SAIL: 1

@@ -11,6 +11,8 @@
         "laravel/framework": "^9.2",
         "laravel/sanctum": "^2.8",
         "laravel/tinker": "^2.7",
+        "mbezhanov/faker-provider-collection": "^2.0",
+        "spatie/laravel-activitylog": "^4.4",
         "tightenco/ziggy": "^1.0"
     },
     "require-dev": {

@@ -25,3 +25,18 @@ mix.js('resources/js/app.js', 'public/js')
 if (mix.inProduction()) {
     mix.version();
 }
+
+//used in docker-compose.yml for HMR to work
+mix.options({
+    hmrOptions: {
+        host: 'localhost',
+        port: '8587'
+    },
+});
+
+mix.webpackConfig({
+    devServer: {
+        host: '0.0.0.0',
+        port: '8082'
+    },
+});

@@ -36,13 +36,21 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
+            'sex' => 'required|string',
+            'phone_number' => 'required',
+            'default_user_type' => 'required|string',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
         $user = User::create([
             'name' => $request->name,
+            'sex' => $request->sex,
+            'phone_number' => $request->phone_number,
             'email' => $request->email,
+            'default_user_type' => $request->default_user_type,
+            'user_type' => $request->default_user_type,
+            'profile_picture_path' => 'https://ui-avatars.com/api/?size=50&rounded=true&name='.str_replace(' ', '', $request->name),
             'password' => Hash::make($request->password),
         ]);
 
