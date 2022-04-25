@@ -13,11 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('school_fees', function (Blueprint $table) {
-            $table->id('school_fees_id');
+        Schema::create('school_fees_paid', function (Blueprint $table) {
+            $table->id('school_fees_paid_id');
             $table->unsignedBigInteger('student_id');
             $table->unsignedBigInteger('school_id');
-            $table->unsignedBigInteger('term_id');
+            $table->unsignedBigInteger('academic_year_id');
             $table->decimal('amount', 8, 4);
             $table->timestamps();
 
@@ -33,13 +33,11 @@ return new class extends Migration
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
 
-            $table->foreign('term_id')
-                ->references('term_id')
-                ->on('terms')
+            $table->foreign('academic_year_id')
+                ->references('academic_year_id')
+                ->on('academic_years')
                 ->onUpdate('cascade')
-                ->onDelete('no action');
-
-            $table->unique(['student_id', 'school_id', 'term_id']);
+                ->onDelete('cascade');
         });
     }
 
@@ -50,6 +48,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('school_fees');
+        Schema::dropIfExists('school_fees_paid');
     }
 };

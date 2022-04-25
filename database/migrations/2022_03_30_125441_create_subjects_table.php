@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('subjects', function (Blueprint $table) {
-            $table->string('name', 50)->primary();
+            $table->string('subject_name', 50)->primary();
             $table->string('description')->nullable();
             $table->timestamps();
         });

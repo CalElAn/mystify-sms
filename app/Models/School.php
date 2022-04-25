@@ -16,24 +16,30 @@ class School extends Model
         return $this->hasMany(User::class, 'school_id', 'school_id');
     }
 
-    public function schoolFeesPaid() //TODO test
+    public function schoolFeesPaid()
     {
         return $this->hasMany(SchoolFeesPaid::class, 'school_id', 'school_id');
     }
 
-    public function schoolFees() //TODO test
+    public function schoolFees()
     {
         return $this->hasMany(SchoolFees::class, 'school_id', 'school_id');
     }
 
-    public function noticeBoard() //TODO test
+    public function noticeBoard()
     {
         return $this->hasMany(NoticeBoard::class, 'school_id', 'school_id');
     }
 
-    /**
-     * @return Illuminate\Support\Collection
-     */
+    public function gradingScale()
+    {
+        return $this->hasOne(
+            GradingScale::class,
+            'grading_scale_id',
+            'grading_scale_id',
+        );
+    }
+
     public function getStudents()
     {
         return $this->users()
@@ -41,14 +47,26 @@ class School extends Model
             ->get();
     }
 
-    public function getSchoolFeesDataForLineChart($termId) //TODO write test
+    public function getGradeForMark(int|float $mark): string
+    {
+        //TODO test
+        $mark = round($mark);
+
+        return $this->gradingScale->scale->search(function ($item, $key) use (
+            $mark,
+        ) {
+            return $item[0] <= $mark && $mark <= $item[1]; //checks if item is between start and end rage of each scale
+        });
+    }
+
+    public function getSchoolFeesDataForLineChart($academicYearId)
     {
         $chartData = collect();
         $weekNumber = 1;
 
         foreach (
             $this->schoolFeesPaid()
-                ->where('term_id', $termId)
+                ->where('academic_year_id', $academicYearId)
                 ->oldest()
                 ->get()
             as $schoolFeesPaidValue
@@ -70,17 +88,18 @@ class School extends Model
                     collect([
                         'weekName' => 'Week ' . $weekNumber,
                         'startOfWeek' => $startOfWeek,
-                        'startOfWeekFormat' => $schoolFeesPaidValue->created_at->format('jS F'),
+                        'startOfWeekFormat' => $schoolFeesPaidValue->created_at->format(
+                            'jS F',
+                        ),
                         'sumOfAmount' => $schoolFeesPaidValue->amount,
                     ]),
                 );
 
                 $weekNumber++;
             } else {
-                $chartData->firstWhere(
-                    'startOfWeek',
-                    $startOfWeek,
-                )['sumOfAmount'] += $schoolFeesPaidValue->amount;
+                $chartData->firstWhere('startOfWeek', $startOfWeek)[
+                    'sumOfAmount'
+                ] += $schoolFeesPaidValue->amount;
             }
         }
 

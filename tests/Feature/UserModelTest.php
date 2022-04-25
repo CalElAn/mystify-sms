@@ -7,6 +7,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\School;
+use App\Models\SchoolFeesPaid;
 use Illuminate\Support\Facades\DB;
 
 class UserModelTest extends TestCase
@@ -41,5 +42,20 @@ class UserModelTest extends TestCase
         $this->assertTrue($student->parents->contains($parent1));
         $this->assertTrue($student->parents->contains($parent2));
         $this->assertInstanceOf('App\Models\User', $student->parents[0]);
+    }
+
+    /** @test */
+    public function a_student_knows_how_much_school_fees_he_has_paid()
+    {
+        $student = User::factory()->create(['default_user_type' => 'student']);
+        $notStudent = User::factory()->create(['default_user_type' => 'parent']);
+        $feesPaid = SchoolFeesPaid::factory(3)->create(['student_id' => $student->id,]);
+
+        $this->expectException('LogicException');
+        $notStudent->schoolFeesPaid;
+
+        $this->assertTrue($student->schoolFeesPaid->contains($feesPaid[0]));
+        $this->assertInstanceOf('App\Models\SchoolFeesPaid', $student->schoolFeesPaid[0]);
+        $this->assertEquals(3, $student->schoolFeesPaid->count());
     }
 }

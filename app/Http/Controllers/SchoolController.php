@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\School;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
@@ -60,42 +61,74 @@ class SchoolController extends Controller
     public function showDashboard()
     {
         /** @var \App\Models\User */
-        $authUser = Auth::user();
+        // $authUser = Auth::user();
+        $authUser = User::where('user_type', 'student')->first();
 
-        $userType = $authUser->user_type;
+        /** @var \App\Models\School */
         $school = $authUser->school;
-        $termId = 1;
 
-        switch ($userType) {
+        $academicYearId = 6; //TODO change to request->term
+        $termId = 1; //TODO change to request->term
+        // $className = 'Class 6'; //TODO change to request->term
+        // $classSuffix = 'A'; //TODO change to request->term
+
+        $defaultProps = [
+            'school' => $school,
+            'noticeBoardMessages' 
+                => $school
+                    ->noticeBoard()
+                    ->where('term_id', $termId)
+                    ->latest()
+                    ->get()
+                    ->groupBy(function ($item) {
+                        return "{$item->created_at->format('l\, jS F Y')} ...({$item->created_at->diffForHumans()})";
+                    }),
+        ];
+
+        switch ($authUser->user_type) {
             case 'headteacher':
                 $component = 'Headteacher';
                 $props = [
-                    'school' => $school,
                     'numberOfStudents' => $school->getStudents()->count(),
                     'numberOfParents' => $school->getParents()->count(),
                     'numberOfTeachers' => $school->getTeachers()->count(),
                     'numberOfAdministrators' => $school->getAdministrators()->count(),
-                    'schoolFeesDataForLineChart' => $school->getSchoolFeesDataForLineChart($termId),
-                    'totalSchoolFees' => round($school->schoolFees()->where('term_id', $termId)->sum('amount'), 2),
-                    'totalSchoolFeesCollected' => round($school->schoolFeesPaid()->where('term_id', $termId)->sum('amount'), 2),
-                    'noticeBoardMessages' 
-                        => $school
-                            ->noticeBoard()
-                            ->where('term_id', $termId)
-                            ->latest()
-                            ->get()
-                            ->groupBy(function ($item) {
-                                return "{$item->created_at->format('l\, jS F Y')} ...({$item->created_at->diffForHumans()})";
-                            }),
+                    'schoolFeesDataForLineChart' => $school->getSchoolFeesDataForLineChart($academicYearId),
+                    'totalSchoolFees' => round($school->schoolFees()->where('academic_year_id', $academicYearId)->sum('amount'), 2),
+                    'totalSchoolFeesCollected' => round($school->schoolFeesPaid()->where('academic_year_id', $academicYearId)->sum('amount'), 2),
                 ];
                 break;
+            
+            case 'student':
+                $component = 'Student';
+                $class = $authUser->classes()
+                    ->where('academic_year_id', $academicYearId)
+                    ->first();
+                $authUser->class = $class;
+                $authUser->termId = $termId;
+                $averageMark = $authUser->getAverageMarkOfStudentInClass();
+                $props = [
+                    'class' => $class,
+                    'gradesDataForLineChart' => $authUser->getOverallGradesDataForLineChart(),
+                    'gradesDataPerSubjectForLineChart' => $authUser->getOverallGradesDataPerSubjectForLineChart(),
+                    'totalSchoolFees' => round($authUser->schoolFees()->where('academic_year_id', $academicYearId)->sum('amount'), 2),
+                    'totalSchoolFeesPaid' => round($authUser->schoolFeesPaid()->where('academic_year_id', $academicYearId)->sum('amount'), 2),
+                    'positionInClass' => $authUser->getPositionInClass(),
+                    'positionStatisticsOfAllStudentsInClass' => $authUser->getPositionStatisticsOfAllStudentsInClass(),
+                    'numberOfStudentsInClass' => $authUser->getTotalNumberOfStudentsInClass(),
+                    'averageMark' => $averageMark,
+                    'gradeForAverageMark' => $school->getGradeForMark($averageMark),
+                    'subjectsAndGrades' => $authUser->getSubjectsAndGrades(),
+                ];
             
             default:
                 # code...
                 break;
         }
-
-        return Inertia::render("School/Dashboard/{$component}", $props);
+        // dd($school->gradingScale->scale);
+        // $authUser->arbitraryProperty = 'k;ll;k;l';
+        // dd($authUser->arbitraryProperty);
+        return Inertia::render("School/Dashboard/{$component}", array_merge($props, $defaultProps));
     }
 
     /**

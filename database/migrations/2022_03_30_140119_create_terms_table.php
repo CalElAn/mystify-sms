@@ -15,18 +15,19 @@ return new class extends Migration
     {
         Schema::create('terms', function (Blueprint $table) {
             $table->id('term_id');
-            $table->unsignedBigInteger('school_id');
+            $table->unsignedBigInteger('academic_year_id');
             $table->string('name', 25);
-            $table->year('year');
             $table->date('start_date');
             $table->date('end_date');
             $table->timestamps();
 
-            $table->foreign('school_id')
-                ->references('school_id')
-                ->on('schools')
+            $table->foreign('academic_year_id')
+                ->references('academic_year_id')
+                ->on('academic_years')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
+
+            $table->unique(['academic_year_id', 'name']);
         });
     }
 

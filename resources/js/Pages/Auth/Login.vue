@@ -25,6 +25,12 @@ const submit = () => {
 };
 </script>
 
+<!-- <script>
+export default {
+  layout: BreezeGuestLayout
+}
+</script> -->
+
 <template>
     <BreezeGuestLayout>
         <Head title="Log in" />

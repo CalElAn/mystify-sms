@@ -3,14 +3,13 @@
 namespace Database\Factories;
 
 use App\Models\AcademicYear;
-use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\School;
-use App\Models\Term;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\SchoolFees>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Term>
  */
-class SchoolFeesFactory extends Factory
+class TermFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -20,10 +19,10 @@ class SchoolFeesFactory extends Factory
     public function definition()
     {
         return [
-            'student_id' => 1,
-            'school_id' => School::factory(),
             'academic_year_id' => AcademicYear::factory(),
-            'amount' => rand(0, 100),
+            'name' => 'first term',
+            'start_date' => '2022-2-3',
+            'end_date' => '2022-2-3'
         ];
     }
 }

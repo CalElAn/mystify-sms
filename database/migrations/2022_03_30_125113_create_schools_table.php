@@ -20,6 +20,8 @@ return new class extends Migration
             $table->string('town');
             $table->string('street_address');
             $table->unsignedBigInteger('grading_scale_id')->nullable(); //TODO remove nullable after working on grading scale
+            $table->decimal('class_mark_percentage')->default(0.30);
+            $table->decimal('exam_mark_percentage')->default(0.70);
             $table->timestamps();
 
             $table->foreign('grading_scale_id')

@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('notice_board', function (Blueprint $table) {
-            $table->id();
+            $table->id('notice_board_id');
             $table->unsignedBigInteger('school_id');
             $table->unsignedBigInteger('term_id');
             $table->unsignedBigInteger('user_id');
@@ -24,9 +24,21 @@ return new class extends Migration
             $table->string('filter_applied', 50)->nullable();
             $table->timestamps();
 
-            $table->foreign(['school_id', 'term_id'])
-                ->references(['school_id', 'term_id'])
+            $table->foreign('school_id')
+                ->references('school_id')
+                ->on('schools')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+
+            $table->foreign('term_id')
+                ->references('term_id')
                 ->on('terms')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+
+            $table->foreign('user_id')
+                ->references('id')
+                ->on('users')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
         });

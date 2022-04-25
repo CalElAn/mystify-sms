@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('student_teacher_pivot', function (Blueprint $table) {
             $table->unsignedBigInteger('student_id');
             $table->unsignedBigInteger('teacher_id');
-            $table->string('class_name', 25);
+            $table->unsignedBigInteger('class_id');
             $table->timestamps();
 
             $table->foreign('student_id')
@@ -31,13 +31,13 @@ return new class extends Migration
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
             
-            $table->foreign('class_name')
-                ->references('class_name')
+            $table->foreign('class_id')
+                ->references('class_id')
                 ->on('classes')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
 
-            $table->unique(['student_id', 'teacher_id', 'class_name']);
+            $table->unique(['student_id', 'teacher_id', 'class_id']);
         });
 
         // if (config('app.env') !== 'testing') {

@@ -14,13 +14,16 @@ return new class extends Migration
     public function up()
     {
         Schema::create('grades', function (Blueprint $table) {
-            $table->id();
+            $table->id('grade_id');
             $table->unsignedBigInteger('school_id');
             $table->unsignedBigInteger('student_id');
             $table->unsignedBigInteger('teacher_id');
             $table->unsignedBigInteger('term_id');
+            $table->string('class_name', 25);
+            $table->string('class_suffix', 25)->nullable();
             $table->string('subject_name', 50);
-            $table->decimal('mark', 3);
+            $table->decimal('class_mark', 4);
+            $table->decimal('exam_mark', 4);
             $table->timestamps();
 
             $table->foreign('school_id')
@@ -46,8 +49,26 @@ return new class extends Migration
                 ->on('terms')
                 ->onUpdate('cascade')
                 ->onDelete('no action');
+            
+            $table->foreign(['school_id', 'class_name', 'class_suffix'])
+                ->references(['school_id', 'name', 'suffix'])
+                ->on('classes')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+            
+            $table->foreign('class_suffix')
+                ->references('suffix')
+                ->on('classes')
+                ->onUpdate('cascade')
+                ->onDelete('no action');
+            
+            $table->foreign('subject_name')
+                ->references('subject_name')
+                ->on('subjects')
+                ->onUpdate('cascade')
+                ->onDelete('no action');
 
-            $table->unique(['school_id', 'student_id', 'teacher_id', 'term_id', 'subject_name'], 'grades_unique');
+            $table->unique(['student_id', 'term_id', 'class_name', 'subject_name'], 'grades_unique');
         });   
     }
 

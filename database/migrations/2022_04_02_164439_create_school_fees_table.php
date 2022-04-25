@@ -13,12 +13,19 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('class_suffixes', function (Blueprint $table) {
-            $table->id();
+        Schema::create('school_fees', function (Blueprint $table) {
+            $table->id('school_fees_id');
+            $table->unsignedBigInteger('student_id');
             $table->unsignedBigInteger('school_id');
-            $table->string('class_name', 25);
-            $table->string('suffix');
+            $table->unsignedBigInteger('academic_year_id');
+            $table->decimal('amount', 8, 4);
             $table->timestamps();
+
+            $table->foreign('student_id')
+                ->references('id')
+                ->on('users')
+                ->onUpdate('cascade')
+                ->onDelete('no action');
 
             $table->foreign('school_id')
                 ->references('school_id')
@@ -26,11 +33,13 @@ return new class extends Migration
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
 
-            $table->foreign('class_name')
-                ->references('class_name')
-                ->on('classes')
+            $table->foreign('academic_year_id')
+                ->references('academic_year_id')
+                ->on('academic_years')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
+
+            $table->unique(['student_id', 'school_id', 'academic_year_id']);
         });
     }
 
@@ -41,6 +50,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('class_suffixes');
+        Schema::dropIfExists('school_fees');
     }
 };
