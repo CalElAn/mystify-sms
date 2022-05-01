@@ -17,7 +17,7 @@ class GradingScaleFactory extends Factory
     public function definition()
     {
         return [
-            'scale' => json_encode([
+            'scale' => [
                 'A+' => [90, 100],
                 'A' => [85, 89],
                 'B+' => [80, 84],
@@ -26,7 +26,7 @@ class GradingScaleFactory extends Factory
                 'D' => [60, 69],
                 'E' => [50, 59],
                 'F' => [0, 49],
-            ])
+            ]
         ];
     }
 }

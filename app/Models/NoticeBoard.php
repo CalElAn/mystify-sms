@@ -20,13 +20,13 @@ class NoticeBoard extends Model
     protected $appends = ['time_string'];
 
     protected function timeString(): Attribute
-    {//TODO test
+    {
         return Attribute::make(
             get: fn() => Carbon::create($this->created_at)->format('h:i A'),
         );
     }
 
-    public function user() //TODO test
+    public function user()
     {
         return $this->hasOne(User::class, 'id', 'user_id');
     }

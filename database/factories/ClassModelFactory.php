@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\School;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,7 +18,9 @@ class ClassModelFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'school_id' => School::factory(),
+            'name' => 'Class 6',
+            'suffix' => $this->faker->randomElement(['A', 'B']),
         ];
     }
 }

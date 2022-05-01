@@ -56,14 +56,8 @@ return new class extends Migration
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
             
-            $table->foreign('class_suffix')
-                ->references('suffix')
-                ->on('classes')
-                ->onUpdate('cascade')
-                ->onDelete('no action');
-            
             $table->foreign('subject_name')
-                ->references('subject_name')
+                ->references('name')
                 ->on('subjects')
                 ->onUpdate('cascade')
                 ->onDelete('no action');

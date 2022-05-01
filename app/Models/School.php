@@ -49,7 +49,6 @@ class School extends Model
 
     public function getGradeForMark(int|float $mark): string
     {
-        //TODO test
         $mark = round($mark);
 
         return $this->gradingScale->scale->search(function ($item, $key) use (

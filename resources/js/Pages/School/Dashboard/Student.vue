@@ -152,7 +152,7 @@
     :show="shouldOpenPositionsOfAllStudentsModal"
     @closeModal="shouldOpenPositionsOfAllStudentsModal = false"
   >
-    <div class="mt-2 min-w-max overflow-auto">
+    <div class="mt-2 min-w-max overflow-y-auto">
       <table class="table-auto text-center text-sm">
         <thead class="bg-purple-100 text-gray-500">
           <tr>

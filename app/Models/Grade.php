@@ -14,21 +14,21 @@ class Grade extends Model
 
     protected $appends = ['overall_mark', 'class_name_and_suffix'];
 
-    protected function overallMark(): Attribute //TODO test
+    protected function overallMark(): Attribute
     {
         return Attribute::make(
             get: fn() => $this->class_mark + $this->exam_mark
         );
     }
 
-    protected function classNameAndSuffix(): Attribute //TODO test
+    protected function classNameAndSuffix(): Attribute
     {
         return Attribute::make(
             get: fn() => "{$this->class_name} {$this->class_suffix}"
         );
     }
 
-    public function school() //TODO test
+    public function school()
     {
         return $this->hasOne(School::class, 'school_id', 'school_id');
     }

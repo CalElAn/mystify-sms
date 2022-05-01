@@ -52,15 +52,7 @@ class User extends Authenticatable
 
     public function getOverallGradesDataForLineChart(Collection $grades = null): array
     {
-        //TODO write test
-        //TODO mysql where clause not null
-        // $grades = $this->grades()->get();
-
-        // if ($subject) $grades = $grades->where('subject_name', $subject);
-
         if(!$grades) $grades = $this->grades()->get();
-
-        // $grades = $subject ? $this->grades()->where('subject_name', $subject)->get() : $this->grades()->get();
 
         $chartData = [];
 
@@ -112,7 +104,6 @@ class User extends Authenticatable
         foreach($subjectNames as $subjectName) {
             $chartData[$subjectName] = $this->getOverallGradesDataForLineChart($grades->where('subject_name', $subjectName));
         }
-        //dd($chartData);
 
         return $chartData;
     }
@@ -189,6 +180,7 @@ class User extends Authenticatable
 
         $allGradesBySubjectSorted = collect();
 
+        //form an array of each subject mapped onto its grades sorted by overall_mark
         $allGradesBySubject->each(function ($eachItem, $eachKey) use (
             &$allGradesBySubjectSorted,
         ) {
@@ -205,6 +197,7 @@ class User extends Authenticatable
         $school = $this->school;
         $nf = new \NumberFormatter('en_US', \NumberFormatter::ORDINAL);
 
+        //return a collection of all this student's grades, with his position and overall grade for each grade record 
         return $allGrades
             ->where('student_id', $this->id)
             ->each(function ($item, $key) use ($allGradesBySubjectSorted, $school, $nf) {
@@ -220,7 +213,6 @@ class User extends Authenticatable
 
     public function classes()
     {
-        //TODO test
         return $this->belongsToMany(
             ClassModel::class,
             'class_student_pivot',
@@ -235,7 +227,6 @@ class User extends Authenticatable
 
     public function grades()
     {
-        //TODO test
         return $this->hasMany(Grade::class, 'student_id', 'id');
     }
 
@@ -255,7 +246,6 @@ class User extends Authenticatable
 
     public function schoolFees()
     {
-        //TODO test
         if ($this->default_user_type === 'student') {
             return $this->hasMany(SchoolFees::class, 'student_id', 'id');
         }

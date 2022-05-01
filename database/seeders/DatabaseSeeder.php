@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\AcademicYear;
+use App\Models\GradingScale;
 use App\Models\NoticeBoard;
 use App\Models\School;
 use App\Models\Term;
@@ -23,21 +24,10 @@ class DatabaseSeeder extends Seeder
         $faker = \Faker\Factory::create();
 
         //*create default grading scale
-        $gradingScaleId = DB::table('grading_scales')->insertGetId([ //TODO change to factory method
-            'scale' => json_encode([
-                'A+' => [90, 100],
-                'A' => [85, 89],
-                'B+' => [80, 84],
-                'B' => [75, 79],
-                'C' => [70, 74],
-                'D' => [60, 69],
-                'E' => [50, 59],
-                'F' => [0, 49],
-            ])
-        ]);
+        $gradingScaleId = GradingScale::factory()->create()->grading_scale_id;
 
         //*create school
-        $school = School::factory()->create(['grading_scale_id', $gradingScaleId]);
+        $school = School::factory()->create(['grading_scale_id' => $gradingScaleId]);
         
         //*create users
         User::factory()->create([
@@ -154,7 +144,7 @@ class DatabaseSeeder extends Seeder
 
         foreach ($subjectsArray as $item) {
             DB::table('subjects')->insert([
-                'subject_name' => $item,
+                'name' => $item,
             ]);
         }
 
