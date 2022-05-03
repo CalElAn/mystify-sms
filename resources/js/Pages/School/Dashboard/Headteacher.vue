@@ -66,13 +66,13 @@
           Total fees collected
         </div>
         <div>
-          <p class="text-center text-3xl font-bold text-[#FF6384]">
+          <button class="text-center block w-full text-3xl font-bold underline text-[#FF6384]">
             {{
               (
                 props.totalSchoolFees - props.totalSchoolFeesCollected
               ).toLocaleString()
             }}
-          </p>
+          </button>
           Total fees remaining
         </div>
       </div>

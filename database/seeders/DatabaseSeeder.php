@@ -76,6 +76,18 @@ class DatabaseSeeder extends Seeder
                 'end_date' => "{$academicYearName}-11-3"
             ]);
 
+            //*create first and second terms for each academic year
+            foreach(AcademicYear::all() as $value) {
+                Term::factory()->create([
+                    'academic_year_id' => $value->academic_year_id,
+                    'name' => 'first term',
+                ]);
+                Term::factory()->create([
+                    'academic_year_id' => $value->academic_year_id,
+                    'name' => 'second term',
+                ]);
+            }
+
             //**for each academic year and class, insert a "class_student_pivot" record for each student
             //**for example: in 2001 put all students in either Class 1A or B, in 2002 put all students in either Class 1A or B, and so on
             foreach ($allStudents as $student) {
@@ -148,22 +160,24 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        //*to create grades for each student for each class (1 to 6)
+        //*to create grades for each student for each class (1 to 6) for term 1 and 2
         foreach ($allStudents as $student) {
-            for ($i=1; $i<=6; $i++) { 
-                foreach ($subjectsArray as $item) {
-                    DB::table('grades')->insert([
-                        'school_id' => $student->school_id,
-                        'student_id' => $student->id,
-                        'teacher_id' => $teacher->id, 
-                        'term_id' => $term->term_id,
-                        'class_name' => 'Class '.$i,
-                        'class_suffix' => $studentsAndClassSuffixesArray[$student->id],
-                        'subject_name' => $item,
-                        'class_mark' => random_int(0, 30),
-                        'exam_mark' => random_int(0, 70),
-                    ]); 
-                }                  
+            for ($i=1; $i<=6; $i++) {
+                foreach (AcademicYear::find($i)->terms as $termItem) {
+                    foreach ($subjectsArray as $item) {
+                        DB::table('grades')->insert([
+                            'school_id' => $student->school_id,
+                            'student_id' => $student->id,
+                            'teacher_id' => $teacher->id, 
+                            'term_id' => $termItem->term_id,
+                            'class_name' => 'Class '.$i,
+                            'class_suffix' => $studentsAndClassSuffixesArray[$student->id],
+                            'subject_name' => $item,
+                            'class_mark' => random_int(0, 30),
+                            'exam_mark' => random_int(0, 70),
+                        ]); 
+                    }                  
+                }                 
             }
         }
     }

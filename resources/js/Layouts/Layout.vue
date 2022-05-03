@@ -30,7 +30,7 @@
                 <MenuButton
                   class="inline-flex w-full justify-center rounded-md bg-purple-600 bg-opacity-70 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75"
                 >
-                  {{ user.user_type }} 
+                  {{ user.user_type }}
                   <ChevronDownIcon
                     class="ml-1 -mr-1 h-5 w-5 text-white hover:text-violet-100"
                     aria-hidden="true"
@@ -110,71 +110,70 @@
       </div>
     </div>
     <div
-      class="relative flex justify-between overflow-y-auto w-5/6 flex-col gap-6 px-6 pt-20"
+      class="relative flex w-5/6 flex-col justify-between gap-6 overflow-y-auto px-6 pt-20"
     >
       <!-- Nav bar -->
       <div
         class="absolute top-0 left-0 flex h-14 w-full items-center justify-evenly border-b border-gray-100 shadow-sm"
       >
-        <div>
-          <Menu as="div" class="relative shadow-sm inline-block">
-            <div>
-              <MenuButton
-                class="inline-flex w-full items-center justify-center rounded-md border border-purple-600 bg-opacity-70 px-4 py-1.5 font-semibold text-purple-600 hover:text-purple-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75"
-              >
-                {{ '2020, First Term (8 January to 12 May)' }}
-                <ChevronDownIcon
-                  class="ml-1 -mr-1 h-5 w-5 text-purple-600 hover:text-purple-400"
-                  aria-hidden="true"
-                />
-              </MenuButton>
-            </div>
-            <transition
-              enter-active-class="transition duration-100 ease-out"
-              enter-from-class="transform scale-95 opacity-0"
-              enter-to-class="transform scale-100 opacity-100"
-              leave-active-class="transition duration-75 ease-in"
-              leave-from-class="transform scale-100 opacity-100"
-              leave-to-class="transform scale-95 opacity-0"
+        <!-- Academic years and terms menu -->
+        <Menu as="div" class="relative inline-block shadow-sm">
+          <MenuButton
+            class="inline-flex w-full items-center justify-center rounded-md border border-purple-600 bg-opacity-70 px-4 py-1.5 font-semibold text-purple-600 hover:text-purple-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75"
+          >
+            {{ props.term.formatted_name }}
+            <ChevronDownIcon
+              class="ml-1 -mr-1 h-5 w-5 text-purple-600 hover:text-purple-400"
+              aria-hidden="true"
+            />
+          </MenuButton>
+          <transition
+            enter-active-class="transition duration-100 ease-out"
+            enter-from-class="transform scale-95 opacity-0"
+            enter-to-class="transform scale-100 opacity-100"
+            leave-active-class="transition duration-75 ease-in"
+            leave-from-class="transform scale-100 opacity-100"
+            leave-to-class="transform scale-95 opacity-0"
+          >
+            <MenuItems
+              class="absolute left-0 z-10 mt-2 w-full origin-top-left divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
             >
-              <MenuItems
-                class="absolute left-0 mt-2 w-full origin-top-left divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
-              >
-                <div class="px-1 py-1">
-                  <MenuItem v-slot="{ active }">
-                    <button
-                      :class="[
-                        active ? 'bg-violet-500 text-white' : 'text-gray-900',
-                        'group flex w-full items-center rounded-md px-2 py-2 text-sm',
-                      ]"
-                    >
-                      2019, First Term (1 February to 12 April)
-                    </button>
-                  </MenuItem>
-                  <MenuItem v-slot="{ active }">
-                    <button
-                      :class="[
-                        active ? 'bg-violet-500 text-white' : 'text-gray-900',
-                        'group flex w-full items-center rounded-md px-2 py-2 text-sm',
-                      ]"
-                    >
-                      2019, Second Term (8 July to 12 October)
-                    </button>
-                  </MenuItem>
-                </div>
-              </MenuItems>
-            </transition>
-          </Menu>
-        </div>
-        <div class="text-2xl font-semibold tracking-wide text-gray-700">
-          {{ school.name }}
+              <div class="px-1 py-1">
+                <MenuItem
+                  v-for="(item, index) in listOfTermsWithoutSelectedTerm"
+                  :key="index"
+                  v-slot="{ active }"
+                >
+                  <button
+                    :class="[
+                      active ? 'bg-violet-500 text-white' : 'text-gray-900',
+                      'group flex w-full items-center rounded-md px-2 py-2 text-sm',
+                    ]"
+                    @click="changeTerm(item.term_id)"
+                  >
+                    {{ item.formatted_name }}
+                  </button>
+                </MenuItem>
+              </div>
+            </MenuItems>
+          </transition>
+        </Menu>
+        <div class="flex items-center gap-2">
+          <div
+            class="h-10 w-10 place-self-center rounded-full bg-[url('/images/school-crests/default.png')] bg-contain bg-center bg-no-repeat"
+            alt="school crest"
+          ></div>
+          <div
+            class="inline text-2xl font-semibold tracking-wide text-gray-700"
+          >
+            {{ school.name }}
+          </div>
         </div>
       </div>
-      <!-- slot -->
+      <!-- main content slot -->
       <slot />
-      <footer
-        class="flex w-full flex-col p-5 text-base sm:text-xl"
-      >
+      <!-- footer -->
+      <footer class="flex w-full flex-col p-5 text-base sm:text-xl">
         <hr class="my-3" />
         <div class="flex items-center justify-center gap-5 sm:gap-12">
           <span class="flex flex-shrink-0">&copy; mystify-sms</span>
@@ -273,26 +272,21 @@ import {
   ArchiveIcon,
   ChatIcon,
 } from '@heroicons/vue/outline';
-import {
-  Menu,
-  MenuButton,
-  MenuItems,
-  MenuItem,
-} from '@headlessui/vue';
+import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue';
 import { ChevronDownIcon } from '@heroicons/vue/solid';
+import { getProfilePictureUrl, changeTerm } from '@/helpers';
 
 const props = defineProps({
   school: Object,
+  term: Object,
+  listOfTerms: Array,
 });
 
-const user = computed(() => usePage().props.value.auth.user);
+const listOfTermsWithoutSelectedTerm = computed(() =>
+  props.listOfTerms.filter(
+    (termItem) => termItem.term_id !== props.term.term_id
+  )
+);
 
-function getProfilePictureUrl(user) {
-  // if (user) {
-    if (user.profile_picture_path.includes('https://'))
-      return user.profile_picture_path;
-  
-    return '/storage/' + user.profile_picture_path;
-  // }
-}
+const user = computed(() => usePage().props.value.auth.user);
 </script>

@@ -50,9 +50,12 @@ class User extends Authenticatable
     public int $termId;
     public ?Collection $allStudentsAndTheirGradesInClass = null;
 
-    public function getOverallGradesDataForLineChart(Collection $grades = null): array
-    {
-        if(!$grades) $grades = $this->grades()->get();
+    public function getOverallGradesDataForLineChart(
+        Collection $grades = null,
+    ): array {
+        if (!$grades) {
+            $grades = $this->grades()->get();
+        }
 
         $chartData = [];
 
@@ -95,23 +98,30 @@ class User extends Authenticatable
         return $chartData;
     }
 
-    public function getOverallGradesDataPerSubjectForLineChart(): Array
+    public function getOverallGradesDataPerSubjectForLineChart(): array
     {
         $grades = $this->grades()->get();
-        $subjectNames = $grades->pluck('subject_name')->unique()->values();
+        $subjectNames = $grades
+            ->pluck('subject_name')
+            ->unique()
+            ->values();
         $chartData = [];
 
-        foreach($subjectNames as $subjectName) {
-            $chartData[$subjectName] = $this->getOverallGradesDataForLineChart($grades->where('subject_name', $subjectName));
+        foreach ($subjectNames as $subjectName) {
+            $chartData[$subjectName] = $this->getOverallGradesDataForLineChart(
+                $grades->where('subject_name', $subjectName),
+            );
         }
 
         return $chartData;
     }
 
-    public function getAllStudentsAndTheirGradesInClass(): Collection 
+    public function getAllStudentsAndTheirGradesInClass(): Collection
     {
         //returns each student in the class with their grades
-        if($this->allStudentsAndTheirGradesInClass) return $this->allStudentsAndTheirGradesInClass;
+        if ($this->allStudentsAndTheirGradesInClass) {
+            return $this->allStudentsAndTheirGradesInClass;
+        }
 
         $this->allStudentsAndTheirGradesInClass = $this->class->load([
             'students.grades' => function ($query) {
@@ -140,7 +150,7 @@ class User extends Authenticatable
             ->values()
             ->each(function ($item, $key) use ($school, $nf) {
                 $averageMark = round($item->grades->average('overall_mark'), 2);
-                $item->position = $nf->format($key+1);
+                $item->position = $nf->format($key + 1);
                 $item->averageMark = $averageMark;
                 $item->averageGrade = $school->getGradeForMark($averageMark);
             });
@@ -148,23 +158,36 @@ class User extends Authenticatable
 
     public function getPositionInClass(): string
     {
+        if (
+            $this->getPositionStatisticsOfAllStudentsInClass()
+                ->find($this->id)
+                ->grades->isEmpty()
+        ) {
+            return 'N/A';
+        }
+
         $nf = new \NumberFormatter('en_US', \NumberFormatter::ORDINAL);
 
-        return $nf->format($this->getPositionStatisticsOfAllStudentsInClass()
-            ->search(function ($item, $key) {
-                return $item->id === $this->id;
-            }) + 1); //add 1 since position is zero indexed
+        return $nf->format(
+            $this->getPositionStatisticsOfAllStudentsInClass()->search(
+                function ($item, $key) {
+                    return $item->id === $this->id;
+                },
+            ) + 1,
+        ); //add 1 since position is zero indexed
     }
 
-    public function getTotalNumberOfStudentsInClass(): int 
+    public function getTotalNumberOfStudentsInClass(): int
     {
         return $this->getAllStudentsAndTheirGradesInClass()->count();
     }
 
-    public function getAverageMarkOfStudentInClass(): float 
+    public function getAverageMarkOfStudentInClass(): float
     {
-        return $this->getPositionStatisticsOfAllStudentsInClass()
-            ->firstWhere('id', $this->id)->averageMark;
+        return $this->getPositionStatisticsOfAllStudentsInClass()->firstWhere(
+            'id',
+            $this->id,
+        )->averageMark;
     }
 
     public function getSubjectsAndGrades(): Collection
@@ -197,32 +220,53 @@ class User extends Authenticatable
         $school = $this->school;
         $nf = new \NumberFormatter('en_US', \NumberFormatter::ORDINAL);
 
-        //return a collection of all this student's grades, with his position and overall grade for each grade record 
+        //return a collection of all this student's grades, with his position and overall grade for each grade record
         return $allGrades
             ->where('student_id', $this->id)
-            ->each(function ($item, $key) use ($allGradesBySubjectSorted, $school, $nf) {
+            ->each(function ($item, $key) use (
+                $allGradesBySubjectSorted,
+                $school,
+                $nf,
+            ) {
                 $item->position = $nf->format(
                     $allGradesBySubjectSorted[$item->subject_name]->search(
                         function ($item, $key) {
                             return $item->student_id === $this->id;
                         },
-                    ) + 1);
-                $item->overall_grade = $school->getGradeForMark($item->overall_mark);
+                    ) + 1,
+                );
+                $item->overall_grade = $school->getGradeForMark(
+                    $item->overall_mark,
+                );
             });
     }
 
-    public function classes()
+    public function classes() //TODO test
     {
+        if ($this->default_user_type === 'student') {
+            return $this->belongsToMany(
+                ClassModel::class,
+                'class_student_pivot',
+                'student_id',
+                'class_id',
+                'id',
+                'class_id',
+            )
+            ->withPivot('academic_year_id')
+            ->withTimestamps()
+            ;
+        }
+
         return $this->belongsToMany(
             ClassModel::class,
-            'class_student_pivot',
-            'student_id',
+            'class_teacher_pivot',
+            'teacher_id',
             'class_id',
             'id',
             'class_id',
         )
-            ->withPivot('academic_year_id')
-            ->withTimestamps();
+        ->withPivot('academic_year_id')
+        ->withTimestamps();
     }
 
     public function grades()

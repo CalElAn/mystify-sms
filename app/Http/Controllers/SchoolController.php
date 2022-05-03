@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AcademicYear;
+use App\Models\ClassModel;
+use App\Models\ClassStudentPivot;
 use App\Models\School;
+use App\Models\Term;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -58,22 +62,39 @@ class SchoolController extends Controller
      * @param  \App\Models\School  $school
      * @return \Illuminate\Http\Response
      */
-    public function showDashboard()
+    public function showDashboard(Request $request)
     {
         /** @var \App\Models\User */
         // $authUser = Auth::user();
         $authUser = User::where('user_type', 'student')->first();
 
         /** @var \App\Models\School */
-        $school = $authUser->school;
+        $school = $authUser->school()->with('academicYears.terms')->first();
 
-        $academicYearId = 6; //TODO change to request->term
-        $termId = 1; //TODO change to request->term
-        // $className = 'Class 6'; //TODO change to request->term
-        // $classSuffix = 'A'; //TODO change to request->term
+        $listOfTerms = $school->academicYears
+            ->each(function ($academicYearItem, $academicYearKey) {
+                $academicYearItem->terms->each(function (
+                    $termItem,
+                    $termKey,
+                ) use ($academicYearItem) {
+                    $termItem->formatted_name 
+                        = $termItem->getFormattedName($academicYearItem);
+                });
+            })
+            ->sortBy('end_date')
+            ->pluck('terms')
+            ->flatten();
+        // dd($listOfTerms);
+
+        $term = $request->termId ? Term::find($request->termId) : $listOfTerms->last();
+        $termId = $term->term_id;
+        $academicYearId = $term->academic_year_id; 
+        if (!$term->formatted_name) $term->formatted_name = $term->getFormattedName(AcademicYear::find($academicYearId));
 
         $defaultProps = [
             'school' => $school,
+            'term' => $term,
+            'listOfTerms' => $listOfTerms,
             'noticeBoardMessages' 
                 => $school
                     ->noticeBoard()
@@ -101,14 +122,18 @@ class SchoolController extends Controller
             
             case 'student':
                 $component = 'Student';
-                $class = $authUser->classes()
+                $listOfClasses = ClassStudentPivot::where('student_id', $authUser->id)->with(['terms', 'classModel'])->get();;
+                $class = $listOfClasses
                     ->where('academic_year_id', $academicYearId)
-                    ->first();
+                    ->first()
+                    ->classModel;
                 $authUser->class = $class;
                 $authUser->termId = $termId;
                 $averageMark = $authUser->getAverageMarkOfStudentInClass();
                 $props = [
-                    'class' => $class,
+                    'listOfClasses' => $listOfClasses,
+                    'classObject' => $class, //seems "class" is a reserved keyword
+                    'classTeacher' => $class->teachers->first(),
                     'gradesDataForLineChart' => $authUser->getOverallGradesDataForLineChart(),
                     'gradesDataPerSubjectForLineChart' => $authUser->getOverallGradesDataPerSubjectForLineChart(),
                     'totalSchoolFees' => round($authUser->schoolFees()->where('academic_year_id', $academicYearId)->sum('amount'), 2),
