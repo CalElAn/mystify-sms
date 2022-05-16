@@ -42,6 +42,18 @@ class SchoolModelTest extends TestCase
     }
 
     /** @test */
+    public function a_school_has_many_academic_years()
+    {
+        $academicYears = AcademicYear::factory(1)->create([
+            'school_id' => $this->school->school_id,
+        ]);
+
+        $this->assertTrue($this->school->academicYears->contains($academicYears->first()));
+        $this->assertInstanceOf('App\Models\AcademicYear', $this->school->academicYears->first());
+        $this->assertEquals(1, $this->school->academicYears->count());
+    }
+
+    /** @test */
     public function a_school_has_many_school_fees_paid()
     {
         $student = User::factory(3)->create([

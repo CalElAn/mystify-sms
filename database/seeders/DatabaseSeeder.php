@@ -45,10 +45,21 @@ class DatabaseSeeder extends Seeder
         $allUsers = User::all();
         $allStudents = $allUsers->where('default_user_type', 'student');
 
-        //*create an array that maps each student to a class suffix
+        //*create an array that maps each student id to a class suffix
         $studentsAndClassSuffixesArray = [];
         foreach ($allStudents as $student) {
             $studentsAndClassSuffixesArray[$student->id] = $faker->randomElement(['A', 'B']);           
+        }
+
+        //* to create subjects
+        $subjectsArray = [
+            'English', 'Mathematics', 'Science', 'French', 'Religious and Moral Education', 'Social Studies',
+            'Basic Design in Technology', 'Ghanaian Language', 'ICT',
+        ];
+        foreach ($subjectsArray as $item) {
+            DB::table('subjects')->insert([
+                'name' => $item,
+            ]);
         }
 
         for ($i=1; $i<=6; $i++) { 
@@ -68,7 +79,7 @@ class DatabaseSeeder extends Seeder
 
             //*create academic year 2001 to 2006
             $academicYearName = 2000 + $i;
-            AcademicYear::factory()->create([
+            $academicYear = AcademicYear::factory()->create([
                 'academic_year_id' => $i,
                 'school_id' => $school->school_id,
                 'name' => $academicYearName,
@@ -77,94 +88,60 @@ class DatabaseSeeder extends Seeder
             ]);
 
             //*create first and second terms for each academic year
-            foreach(AcademicYear::all() as $value) {
-                Term::factory()->create([
-                    'academic_year_id' => $value->academic_year_id,
-                    'name' => 'first term',
-                ]);
-                Term::factory()->create([
-                    'academic_year_id' => $value->academic_year_id,
-                    'name' => 'second term',
-                ]);
-            }
+            $firstTerm = Term::factory()->create([
+                'academic_year_id' => $academicYear->academic_year_id,
+                'name' => 'first term',
+            ]);
+            $secondTerm = Term::factory()->create([
+                'academic_year_id' => $academicYear->academic_year_id,
+                'name' => 'second term',
+            ]);
 
-            //**for each academic year and class, insert a "class_student_pivot" record for each student
-            //**for example: in 2001 put all students in either Class 1A or B, in 2002 put all students in either Class 1A or B, and so on
             foreach ($allStudents as $student) {
+                //*to create school fees
+                DB::table('school_fees')->insert([
+                    'student_id' => $student->id,
+                    'school_id' => $student->school_id,
+                    'academic_year_id' => $academicYear->academic_year_id,
+                    'amount' => rand(500, 600),
+                ]);
+
+                //*to create school fees paid
+                DB::table('school_fees_paid')->insert([
+                    [
+                        'student_id' => $student->id,
+                        'school_id' => $student->school_id,
+                        'academic_year_id' => $academicYear->academic_year_id,
+                        'amount' => rand(0, 100),
+                        'created_at' => $faker->dateTimeBetween('-3 months', 'now'),
+                    ],
+                    [
+                        'student_id' => $student->id,
+                        'school_id' => $student->school_id,
+                        'academic_year_id' => $academicYear->academic_year_id,
+                        'amount' => rand(0, 200),
+                        'created_at' => $faker->dateTimeBetween('-3 months', 'now'),
+                    ],
+                    [
+                        'student_id' => $student->id,
+                        'school_id' => $student->school_id,
+                        'academic_year_id' => $academicYear->academic_year_id,
+                        'amount' => rand(0, 600),
+                        'created_at' => $faker->dateTimeBetween('-3 months', 'now'),
+                    ],
+                ]);
+
+                //*for each academic year and class, insert a "class_student_pivot" record for each student
+                //*for example: in 2001 put all students in either Class 1A or B, in 2002 put all students in either Class 2A or B, and so on
                 DB::table('class_student_pivot')->insert([
                     'class_id' => $classIds[$studentsAndClassSuffixesArray[$student->id]],
                     'student_id' => $student->id,
-                    'academic_year_id' => $i,
+                    'academic_year_id' => $academicYear->academic_year_id,
                 ]);
-            }
-        }
 
-        //*create term and Academic Year
-        $academicYear = AcademicYear::find(6); //let current academic year be 2006
-        $term = Term::factory()->create(['academic_year_id' => $academicYear->academic_year_id]);
-
-        //*create notice board items
-        NoticeBoard::factory(25)->create([
-            'school_id' => $school->school_id,
-            'term_id' => $term->term_id,
-            'user_id' => 1, //the headteacher
-            'created_at' => $faker->dateTimeBetween('-3 months', 'now'),
-        ]);
-        
-        //*to create school fees
-        foreach ($allStudents as $student) {
-            DB::table('school_fees')->insert([
-                'student_id' => $student->id,
-                'school_id' => $student->school_id,
-                'academic_year_id' => $academicYear->academic_year_id,
-                'amount' => rand(500, 600),
-            ]);
-        }
-
-        //*to create school fees paid
-        foreach ($allStudents as $student) {
-            DB::table('school_fees_paid')->insert([
-                [
-                    'student_id' => $student->id,
-                    'school_id' => $student->school_id,
-                    'academic_year_id' => $academicYear->academic_year_id,
-                    'amount' => rand(0, 100),
-                    'created_at' => $faker->dateTimeBetween('-3 months', 'now'),
-                ],
-                [
-                    'student_id' => $student->id,
-                    'school_id' => $student->school_id,
-                    'academic_year_id' => $academicYear->academic_year_id,
-                    'amount' => rand(0, 200),
-                    'created_at' => $faker->dateTimeBetween('-3 months', 'now'),
-                ],
-                [
-                    'student_id' => $student->id,
-                    'school_id' => $student->school_id,
-                    'academic_year_id' => $academicYear->academic_year_id,
-                    'amount' => rand(0, 600),
-                    'created_at' => $faker->dateTimeBetween('-3 months', 'now'),
-                ],
-            ]);
-        }
-
-        //* to create subjects
-        $subjectsArray = [
-            'English', 'Mathematics', 'Science', 'French', 'Religious and Moral Education', 'Social Studies',
-            'Basic Design in Technology', 'Ghanaian Language', 'ICT',
-        ];
-
-        foreach ($subjectsArray as $item) {
-            DB::table('subjects')->insert([
-                'name' => $item,
-            ]);
-        }
-
-        //*to create grades for each student for each class (1 to 6) for term 1 and 2
-        foreach ($allStudents as $student) {
-            for ($i=1; $i<=6; $i++) {
-                foreach (AcademicYear::find($i)->terms as $termItem) {
-                    foreach ($subjectsArray as $item) {
+                //*to create grades for each student for each class (1 to 6) for term 1 and 2
+                foreach ([$firstTerm, $secondTerm] as $termItem) {
+                    foreach ($subjectsArray as $subject) {
                         DB::table('grades')->insert([
                             'school_id' => $student->school_id,
                             'student_id' => $student->id,
@@ -172,12 +149,23 @@ class DatabaseSeeder extends Seeder
                             'term_id' => $termItem->term_id,
                             'class_name' => 'Class '.$i,
                             'class_suffix' => $studentsAndClassSuffixesArray[$student->id],
-                            'subject_name' => $item,
+                            'subject_name' => $subject,
                             'class_mark' => random_int(0, 30),
                             'exam_mark' => random_int(0, 70),
                         ]); 
                     }                  
-                }                 
+
+                }
+            }
+
+            //*create notice board items for each term 1 and 2
+            foreach([$firstTerm, $secondTerm] as $termItem) {
+                NoticeBoard::factory(25)->create([
+                    'school_id' => $school->school_id,
+                    'term_id' => $termItem->term_id,
+                    'user_id' => 1, //the headteacher
+                    'created_at' => $faker->dateTimeBetween('-3 months', 'now'),
+                ]);
             }
         }
     }

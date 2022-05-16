@@ -122,7 +122,7 @@ class SchoolController extends Controller
             
             case 'student':
                 $component = 'Student';
-                $listOfClasses = ClassStudentPivot::where('student_id', $authUser->id)->with(['terms', 'classModel'])->get();;
+                $listOfClasses = ClassStudentPivot::where('student_id', $authUser->id)->with(['terms', 'classModel'])->get();
                 $class = $listOfClasses
                     ->where('academic_year_id', $academicYearId)
                     ->first()

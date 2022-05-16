@@ -28,4 +28,19 @@ class ClassModelTest extends TestCase
 
         $this->assertInstanceOf('App\Models\User', $class->students[0]);
     }
+
+    /** @test */
+    public function a_class_belongs_to_many_teachers()
+    {
+        $class = ClassModel::factory()->create();
+        $teacher = User::factory()->create(); 
+
+        DB::table('class_teacher_pivot')->insert([
+            'class_id' => $class->class_id,
+            'teacher_id' => $teacher->id,
+            'academic_year_id' => AcademicYear::factory()->create()->academic_year_id,
+        ]);
+
+        $this->assertInstanceOf('App\Models\User', $class->teachers[0]);
+    }
 }

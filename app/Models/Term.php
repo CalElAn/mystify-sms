@@ -16,7 +16,7 @@ class Term extends Model
         'end_date' => 'date',
     ];
 
-    public function getFormattedName(AcademicYear $academicYear) //TODO test
+    public function getFormattedName(AcademicYear $academicYear)
     {
         $name = ucfirst($this->name);
         return "{$academicYear->name}, {$name} ({$this->start_date->format('jS M')} - {$this->end_date->format('jS M')})";

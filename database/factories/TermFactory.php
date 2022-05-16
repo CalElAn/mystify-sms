@@ -22,7 +22,7 @@ class TermFactory extends Factory
             'academic_year_id' => AcademicYear::factory(),
             'name' => 'first term',
             'start_date' => '2022-2-3',
-            'end_date' => '2022-2-3'
+            'end_date' => '2022-6-3'
         ];
     }
 }

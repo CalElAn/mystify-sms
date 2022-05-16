@@ -17,7 +17,7 @@ class ClassModel extends Model
         return $this->belongsToMany(User::class, 'class_student_pivot', 'class_id', 'student_id', 'class_id', 'id')->withPivot('academic_year_id')->withTimestamps();
     }
 
-    public function teachers() //TODO test
+    public function teachers()
     {
         return $this->belongsToMany(User::class, 'class_teacher_pivot', 'class_id', 'teacher_id', 'class_id', 'id')->withPivot('academic_year_id')->withTimestamps();
     }

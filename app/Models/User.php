@@ -241,7 +241,7 @@ class User extends Authenticatable
             });
     }
 
-    public function classes() //TODO test
+    public function classes()
     {
         if ($this->default_user_type === 'student') {
             return $this->belongsToMany(

@@ -10,6 +10,8 @@ use App\Models\User;
 use App\Models\School;
 use App\Models\SchoolFeesPaid;
 use App\Models\SchoolFees;
+use App\Models\ClassModel;
+use App\Models\AcademicYear;
 use Illuminate\Support\Facades\DB;
 
 class UserModelTest extends TestCase
@@ -149,9 +151,9 @@ class UserModelTest extends TestCase
         }
     }
 
-    public $student;
-    public $class;
-    public $termId;
+    public User $student;
+    public ClassModel $class;
+    public int $termId;
 
     public function seedAndSetUpStudent()
     {
@@ -164,7 +166,7 @@ class UserModelTest extends TestCase
             ->classes()
             ->where('academic_year_id', $academicYearId)
             ->first();
-        $this->termId = 1;
+        $this->termId = AcademicYear::find($academicYearId)->terms->first()->term_id;
         $this->student->class = $this->class;
         $this->student->termId = $this->termId;
     }
@@ -311,6 +313,21 @@ class UserModelTest extends TestCase
         $this->seedAndSetUpStudent();
 
         $this->assertInstanceOf('App\Models\ClassModel', $this->student->classes[0]);
+    }
+
+    /** @test */
+    public function a_teacher_belongs_to_many_classes()
+    {
+        $class = ClassModel::factory()->create();
+        $teacher = User::factory()->create(['default_user_type' => 'teacher']); 
+
+        DB::table('class_teacher_pivot')->insert([
+            'class_id' => $class->class_id,
+            'teacher_id' => $teacher->id,
+            'academic_year_id' => AcademicYear::factory()->create()->academic_year_id
+        ]);
+
+        $this->assertInstanceOf('App\Models\ClassModel', $teacher->classes->first());
     }
 
     /** @test */

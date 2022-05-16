@@ -16,7 +16,7 @@ class School extends Model
         return $this->hasMany(User::class, 'school_id', 'school_id');
     }
 
-    public function academicYears() //TODO test
+    public function academicYears()
     {
         return $this->hasMany(AcademicYear::class, 'school_id', 'school_id');
     }
