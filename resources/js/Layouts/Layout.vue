@@ -1,81 +1,29 @@
 <template>
   <div class="flex h-screen bg-gray-100 text-gray-700">
+    <!-- side-bar div -->
     <div
       class="relative flex h-screen w-1/6 flex-col items-center gap-8 bg-white px-4 pt-20 shadow"
     >
-      <!-- App logo -->
+      <!-- App name and logo -->
       <div
-        class="absolute top-0 flex h-14 w-full items-center justify-center bg-fuchsia-600 text-lg font-medium tracking-wide text-white"
+        class="absolute top-0 flex h-14 w-full items-center justify-center gap-0.5 bg-fuchsia-600 text-lg font-medium tracking-wide text-white"
       >
+        <LightningBoltIcon class="h-6 w-6" />
         mystify-sms
       </div>
-      <!-- Side bar -->
+      <!-- school name and logo -->
       <div class="flex flex-col gap-2">
         <div
-          class="h-28 w-28 place-self-center rounded-full bg-contain bg-center bg-no-repeat"
-          :style="{
-            'background-image': 'url(' + getProfilePictureUrl(user) + ')',
-          }"
-          alt="profile picture"
+          class="h-28 w-28 place-self-center rounded-full bg-[url('/images/school-crests/default.png')] bg-contain bg-center bg-no-repeat"
+          alt="school crest"
         ></div>
-        <p class="text-center font-semibold">
-          {{ user.name }}
-        </p>
-        <div class="flex flex-row items-center gap-2">
-          <span class="text-sm">Logged in as:</span>
-          <div class="w-auto">
-            <Menu as="div" class="relative inline-block">
-              <div>
-                <!-- TODO Change icon to term style -->
-                <MenuButton
-                  class="inline-flex w-full justify-center rounded-md bg-purple-600 bg-opacity-70 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75"
-                >
-                  {{ user.user_type }}
-                  <ChevronDownIcon
-                    class="ml-1 -mr-1 h-5 w-5 text-white hover:text-violet-100"
-                    aria-hidden="true"
-                  />
-                </MenuButton>
-              </div>
-              <transition
-                enter-active-class="transition duration-100 ease-out"
-                enter-from-class="transform scale-95 opacity-0"
-                enter-to-class="transform scale-100 opacity-100"
-                leave-active-class="transition duration-75 ease-in"
-                leave-from-class="transform scale-100 opacity-100"
-                leave-to-class="transform scale-95 opacity-0"
-              >
-                <MenuItems
-                  class="absolute left-0 mt-2 w-36 origin-top-left divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
-                >
-                  <div class="px-1 py-1">
-                    <MenuItem v-slot="{ active }">
-                      <button
-                        :class="[
-                          active ? 'bg-violet-500 text-white' : 'text-gray-900',
-                          'group flex w-full items-center rounded-md px-2 py-2 text-sm',
-                        ]"
-                      >
-                        parent
-                      </button>
-                    </MenuItem>
-                    <MenuItem v-slot="{ active }">
-                      <button
-                        :class="[
-                          active ? 'bg-violet-500 text-white' : 'text-gray-900',
-                          'group flex w-full items-center rounded-md px-2 py-2 text-sm',
-                        ]"
-                      >
-                        teacher
-                      </button>
-                    </MenuItem>
-                  </div>
-                </MenuItems>
-              </transition>
-            </Menu>
-          </div>
+        <div
+          class="text-center text-lg font-semibold tracking-wide text-gray-700"
+        >
+          {{ school.name }}
         </div>
       </div>
+      <!-- side bar buttons -->
       <div class="flex w-full flex-col gap-2">
         <button
           class="flex w-full items-center justify-start gap-2 rounded-full bg-purple-600 py-2 pl-5 text-lg font-medium tracking-wide text-white"
@@ -109,64 +57,64 @@
         </button>
       </div>
     </div>
+    <!-- main content div -->
     <div
       class="relative flex w-5/6 flex-col justify-between gap-6 overflow-y-auto px-6 pt-20"
     >
       <!-- Nav bar -->
       <div
-        class="absolute top-0 left-0 flex h-14 w-full items-center justify-evenly border-b border-gray-100 shadow-sm"
+        class="absolute top-0 left-0 flex h-14 w-full items-center justify-evenly border-b border-gray-200 shadow-sm"
       >
-        <!-- Academic years and terms menu -->
-        <Menu as="div" class="relative inline-block shadow-sm">
-          <MenuButton
-            class="inline-flex w-full items-center justify-center rounded-md border border-purple-600 bg-opacity-70 px-4 py-1.5 font-semibold text-purple-600 hover:text-purple-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75"
+        <!-- Current term -->
+        <button
+          @click="shouldOpenModalContainingListOfAcademicYearsWithTerms = true"
+          class="group flex items-center justify-center gap-2 rounded-md border border-gray-600 py-2 px-3 shadow-sm"
+        >
+          <span
+            class="font-semibold text-purple-600 group-hover:text-purple-400"
+            >{{ term.formatted_name }}</span
           >
-            {{ props.term.formatted_name }}
-            <ChevronDownIcon
-              class="ml-1 -mr-1 h-5 w-5 text-purple-600 hover:text-purple-400"
-              aria-hidden="true"
-            />
-          </MenuButton>
-          <transition
-            enter-active-class="transition duration-100 ease-out"
-            enter-from-class="transform scale-95 opacity-0"
-            enter-to-class="transform scale-100 opacity-100"
-            leave-active-class="transition duration-75 ease-in"
-            leave-from-class="transform scale-100 opacity-100"
-            leave-to-class="transform scale-95 opacity-0"
-          >
-            <MenuItems
-              class="absolute left-0 z-10 mt-2 w-full origin-top-left divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
-            >
-              <div class="px-1 py-1">
-                <MenuItem
-                  v-for="(item, index) in listOfTermsWithoutSelectedTerm"
-                  :key="index"
-                  v-slot="{ active }"
-                >
-                  <button
-                    :class="[
-                      active ? 'bg-violet-500 text-white' : 'text-gray-900',
-                      'group flex w-full items-center rounded-md px-2 py-2 text-sm',
-                    ]"
-                    @click="changeTerm(item.term_id)"
-                  >
-                    {{ item.formatted_name }}
-                  </button>
-                </MenuItem>
+          <MenuIcon class="h-5 w-5 group-hover:text-purple-400" />
+        </button>
+        <!-- User's name, profile picture and menu -->
+        <div class="flex gap-3">
+          <ProfilePicture
+            :profilePicturePath="authUser.profile_picture_path"
+            widthClass="w-10"
+            heightClass="h-10"
+          />
+          <div class="flex gap-1.5">
+            <div class="flex flex-col">
+              <div class="text-lg font-semibold text-fuchsia-600">
+                <Link :href="route('users.show', { userId: authUser.id })">
+                  {{ authUser.name }}
+                </Link>
               </div>
-            </MenuItems>
-          </transition>
-        </Menu>
-        <div class="flex items-center gap-2">
-          <div
-            class="h-10 w-10 place-self-center rounded-full bg-[url('/images/school-crests/default.png')] bg-contain bg-center bg-no-repeat"
-            alt="school crest"
-          ></div>
-          <div
-            class="inline text-2xl font-semibold tracking-wide text-gray-700"
-          >
-            {{ school.name }}
+              <div class="text-sm">{{ authUser.default_user_type }}</div>
+            </div>
+            <Menu v-slot="{ open }" as="div" class="relative">
+              <MenuButton
+                class="flex h-full w-full items-center justify-center hover:text-purple-600"
+              >
+                <ChevronDownIcon
+                  class="h-5 w-5 transition-transform"
+                  :class="{ 'rotate-180': open }"
+                />
+              </MenuButton>
+              <MenuItemsTransition>
+                <MenuItems
+                  class="menu-items right-0 z-10 mt-2 w-max origin-top-right"
+                >
+                  <div class="px-1 py-1">
+                    <MenuItem as="div" v-slot="{ active }">
+                      <MenuItemButton :active="active">
+                        Profile
+                      </MenuItemButton>
+                    </MenuItem>
+                  </div>
+                </MenuItems>
+              </MenuItemsTransition>
+            </Menu>
           </div>
         </div>
       </div>
@@ -258,11 +206,71 @@
         </div>
       </footer>
     </div>
+    <!-- MODALS -->
+    <!-- Modal containing list of academic years with terms -->
+    <Modal
+      :show="shouldOpenModalContainingListOfAcademicYearsWithTerms"
+      :maxWidthClass="'max-w-xs'"
+      @closeModal="
+        shouldOpenModalContainingListOfAcademicYearsWithTerms = false
+      "
+    >
+      <div class="flex flex-col gap-3 text-purple-600">
+        <Menu
+          v-for="(
+            academicYearItem, academicYearIndex
+          ) in academicYearsWithTerms"
+          :key="academicYearIndex"
+          as="div"
+          class="relative inline-block rounded-full odd:border-gray-300 odd:bg-white even:bg-gray-100"
+        >
+          <MenuButton
+            class="align-center inline-flex w-full items-center justify-center rounded-full border p-2 text-purple-600 hover:text-purple-400 hover:underline"
+          >
+            {{ academicYearItem.name }}
+            <ChevronDownIcon
+              class="ml-1 -mr-1 h-5 w-5 text-purple-600 hover:text-purple-400"
+              aria-hidden="true"
+            />
+          </MenuButton>
+          <transition
+            enter-active-class="transition duration-100 ease-out"
+            enter-from-class="transform scale-95 opacity-0"
+            enter-to-class="transform scale-100 opacity-100"
+            leave-active-class="transition duration-75 ease-in"
+            leave-from-class="transform scale-100 opacity-100"
+            leave-to-class="transform scale-95 opacity-0"
+          >
+            <MenuItems
+              class="absolute left-0 z-10 mt-2 w-full origin-top-left divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+            >
+              <div class="px-1 py-1">
+                <MenuItem
+                  v-for="(termItem, termIndex) in academicYearItem.terms"
+                  :key="termIndex"
+                  v-slot="{ active }"
+                >
+                  <button
+                    :class="[
+                      active ? 'bg-violet-500 text-white' : 'text-gray-900',
+                      'group flex w-full items-center justify-center rounded-md px-2 py-2 text-sm',
+                    ]"
+                    @click="changeTerm(termItem.term_id)"
+                  >
+                    {{ termItem.name }}
+                  </button>
+                </MenuItem>
+              </div>
+            </MenuItems>
+          </transition>
+        </Menu>
+      </div>
+    </Modal>
   </div>
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { usePage } from '@inertiajs/inertia-vue3';
 import {
   DesktopComputerIcon,
@@ -272,21 +280,13 @@ import {
   ArchiveIcon,
   ChatIcon,
 } from '@heroicons/vue/outline';
-import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue';
 import { ChevronDownIcon } from '@heroicons/vue/solid';
-import { getProfilePictureUrl, changeTerm } from '@/helpers';
+import { LightningBoltIcon } from '@heroicons/vue/outline';
+import { changeTerm, defaultProps } from '@/helpers';
 
-const props = defineProps({
-  school: Object,
-  term: Object,
-  listOfTerms: Array,
-});
+defineProps({ ...defaultProps });
 
-const listOfTermsWithoutSelectedTerm = computed(() =>
-  props.listOfTerms.filter(
-    (termItem) => termItem.term_id !== props.term.term_id
-  )
-);
+const shouldOpenModalContainingListOfAcademicYearsWithTerms = ref(false);
 
-const user = computed(() => usePage().props.value.auth.user);
+const authUser = computed(() => usePage().props.value.auth.user);
 </script>

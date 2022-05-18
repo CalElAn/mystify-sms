@@ -27,5 +27,6 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', [SchoolController::class, 'showDashboard'])->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/profile', function() {return;})->middleware(['auth', 'verified'])->name('users.show');
 
 require __DIR__.'/auth.php';

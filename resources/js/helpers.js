@@ -1,16 +1,27 @@
 import { Inertia } from '@inertiajs/inertia';
 
-export function getProfilePictureUrl(user) {
-  if (user) {
-    if (user.profile_picture_path.includes('https://'))
-      return user.profile_picture_path;
+export function getProfilePictureUrl(profilePicturePath) {
+  if (profilePicturePath) {
+    if (profilePicturePath.includes('https://'))
+      return profilePicturePath;
 
-    return '/storage/' + user.profile_picture_path;
+    return '/storage/' + profilePicturePath;
   }
 
   return '';
 }
 
-export function changeTerm(term_id) {
-  Inertia.get(route('dashboard', { termId: term_id }));
+export function changeTerm(termId) {
+  Inertia.get(route('dashboard', { termId: termId }));
+}
+
+export function changeAcademicYear(academicYearId) {
+  Inertia.get(route('dashboard', { academicYearId: academicYearId }));
+}
+
+export const defaultProps = {
+  school: Object,
+  term: Object,
+  academicYearsWithTerms: Array,
+  noticeBoardMessages: Object,
 }

@@ -5,7 +5,7 @@
       <div
         class="flex items-center justify-center gap-1.5 text-xl font-semibold tracking-tight text-purple-600"
       >
-        {{ props.classObject.name }} {{ props.classObject.suffix }}
+        {{ classModel.name }} {{ classModel.suffix }}
         <button
           @click="shouldOpenModalContainingListOfClasses = true"
           class="text-gray-700 hover:text-purple-600"
@@ -19,20 +19,17 @@
       <div class="flex items-center gap-2">
         <div class="inline-block">Class teacher:</div>
         <div class="flex items-center justify-center gap-2">
-          <div
-            class="h-14 w-14 place-self-center rounded-full bg-contain bg-center bg-no-repeat"
-            :style="{
-              'background-image':
-                'url(' + getProfilePictureUrl(props.classTeacher) + ')',
-            }"
-            alt="profile picture"
-          ></div>
+          <ProfilePicture
+            :profilePicturePath="classTeacher?.profile_picture_path"
+            widthClass="w-14"
+            heightClass="h-14"
+          />
           <!-- //TODO href should lead to profile -->
           <a
             href="#"
-            class="inline-block text-xl font-semibold text-purple-600 underline underline-offset-1"
+            class="inline-block text-lg font-semibold text-purple-600 underline underline-offset-1"
           >
-            {{ props.classTeacher?.name }}
+            {{ classTeacher?.name }}
           </a>
         </div>
       </div>
@@ -48,7 +45,7 @@
         <div
           class="flex w-1/4 items-center justify-start gap-1 text-xl font-semibold text-purple-600"
         >
-          {{ props.positionInClass }}
+          {{ positionInClass }}
           <button
             @click="shouldOpenPositionsOfAllStudentsModal = true"
             class="text-gray-700 hover:text-purple-600"
@@ -62,7 +59,7 @@
           Total number of students:
         </div>
         <div class="w-1/4 p-1 text-left text-xl font-semibold text-purple-600">
-          {{ props.numberOfStudentsInClass }}
+          {{ numberOfStudentsInClass }}
         </div>
       </div>
     </div>
@@ -72,7 +69,7 @@
       <div
         class="flex items-center justify-start p-2 text-xl font-semibold text-purple-600"
       >
-        {{ props.averageMark }}%
+        {{ averageMark }}%
       </div>
     </div>
     <!-- Average grade -->
@@ -81,7 +78,7 @@
       <div
         class="flex items-center justify-start p-2 text-xl font-semibold text-purple-600"
       >
-        {{ props.gradeForAverageMark }}
+        {{ gradeForAverageMark }}
       </div>
     </div>
   </section>
@@ -98,7 +95,7 @@
       <p class="p-2 text-center text-lg font-medium">
         Total school fees:
         <span class="text-2xl font-bold text-purple-600">
-          {{ props.totalSchoolFees.toLocaleString() }}
+          {{ totalSchoolFees.toLocaleString() }}
         </span>
       </p>
       <DoughnutChart
@@ -109,24 +106,20 @@
       <div class="flex items-center justify-between text-lg font-medium">
         <div>
           <p class="text-center text-3xl font-bold text-[#36A2EB]">
-            {{ props.totalSchoolFeesPaid.toLocaleString() }}
+            {{ totalSchoolFeesPaid.toLocaleString() }}
           </p>
           Total fees paid
         </div>
         <div>
           <p class="text-center text-3xl font-bold text-[#FF6384]">
-            {{
-              (
-                props.totalSchoolFees - props.totalSchoolFeesPaid
-              ).toLocaleString()
-            }}
+            {{ (totalSchoolFees - totalSchoolFeesPaid).toLocaleString() }}
           </p>
           Total fees remaining
         </div>
       </div>
     </div>
   </section>
-  <section class="flex gap-6">
+  <section class="flex">
     <!-- Subjects and grades -->
     <div class="base-card w-full p-2">
       <table class="w-full table-auto text-center">
@@ -134,10 +127,10 @@
           <tr>
             <th class="p-2 pl-6 text-left">Subject</th>
             <th class="p-2">
-              Class marks ({{ props.school.class_mark_percentage * 100 }}%)
+              Class marks ({{ school.class_mark_percentage * 100 }}%)
             </th>
             <th class="p-2">
-              Exam marks ({{ props.school.exam_mark_percentage * 100 }}%)
+              Exam marks ({{ school.exam_mark_percentage * 100 }}%)
             </th>
             <th class="p-2">Overall (100%)</th>
             <th class="p-2">Grade</th>
@@ -177,22 +170,23 @@
     <!-- Notice board -->
     <TimelineCard
       :title="'Notice board'"
-      :messages="props.noticeBoardMessages"
+      :messages="noticeBoardMessages"
       class="w-2/5"
     />
     <!-- Notifications -->
     <TimelineCard
       :title="'Notifications'"
-      :messages="props.noticeBoardMessages"
+      :messages="noticeBoardMessages"
       class="w-2/5"
     />
     <!-- Recent activities -->
     <TimelineCard
       :title="'Recent activities'"
-      :messages="props.noticeBoardMessages"
+      :messages="noticeBoardMessages"
       class="w-1/5"
     />
   </section>
+  <!-- MODALS -->
   <!-- Modal containing list of classes -->
   <Modal
     :show="shouldOpenModalContainingListOfClasses"
@@ -200,46 +194,40 @@
     @closeModal="shouldOpenModalContainingListOfClasses = false"
   >
     <div class="flex flex-col gap-3 text-purple-600">
-      <Menu v-for="(classItem, classIndex) in props.listOfClasses" :key="classIndex" as="div" class="relative inline-block rounded-full odd:border-gray-300 odd:bg-white even:bg-gray-100">
+      <Menu
+        v-for="(classItem, classIndex) in classesWithTerms"
+        :key="classIndex"
+        as="div"
+        class="relative inline-block rounded-full odd:border-gray-300 odd:bg-white even:bg-gray-100"
+      >
         <MenuButton
-          class="inline-flex w-full items-center justify-center rounded-full align-center p-2 hover:underline border text-purple-600 hover:text-purple-400"
+          class="align-center inline-flex w-full items-center justify-center rounded-full border p-2 text-purple-600 hover:text-purple-400 hover:underline"
         >
-          {{ classItem.class_model.name }}
+          {{ classItem.class_model.name }} {{ classItem.class_model.suffix }}
           <ChevronDownIcon
             class="ml-1 -mr-1 h-5 w-5 text-purple-600 hover:text-purple-400"
             aria-hidden="true"
           />
         </MenuButton>
-        <transition
-          enter-active-class="transition duration-100 ease-out"
-          enter-from-class="transform scale-95 opacity-0"
-          enter-to-class="transform scale-100 opacity-100"
-          leave-active-class="transition duration-75 ease-in"
-          leave-from-class="transform scale-100 opacity-100"
-          leave-to-class="transform scale-95 opacity-0"
-        >
-          <MenuItems
-            class="absolute left-0 z-10 mt-2 w-full origin-top-left divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
-          >
+        <MenuItemsTransition>
+          <MenuItems class="menu-items left-0 z-10 mt-2 w-full origin-top-left">
             <div class="px-1 py-1">
               <MenuItem
+                as="div"
                 v-for="(termItem, termIndex) in classItem.terms"
                 :key="termIndex"
                 v-slot="{ active }"
               >
-                <button
-                  :class="[
-                    active ? 'bg-violet-500 text-white' : 'text-gray-900',
-                    'group flex w-full items-center justify-center rounded-md px-2 py-2 text-sm',
-                  ]"
+                <MenuItemButton
                   @click="changeTerm(termItem.term_id)"
+                  :active="active"
                 >
                   {{ termItem.name }}
-                </button>
+                </MenuItemButton>
               </MenuItem>
             </div>
           </MenuItems>
-        </transition>
+        </MenuItemsTransition>
       </Menu>
     </div>
   </Modal>
@@ -290,20 +278,18 @@
 import { ref } from 'vue';
 import { DoughnutChart, LineChart } from 'vue-chart-3';
 import { Chart, registerables } from 'chart.js';
-import { MenuIcon, TrendingUpIcon, ChevronDownIcon } from '@heroicons/vue/solid';
-import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue';
+import { TrendingUpIcon, ChevronDownIcon } from '@heroicons/vue/solid';
 
 import TimelineCard from '@/Components/TimelineCard.vue';
-import Modal from '@/Components/Modal.vue';
 
-import { getProfilePictureUrl, changeTerm } from '@/helpers';
+import { changeTerm, defaultProps } from '@/helpers';
 
 Chart.register(...registerables);
 
 const props = defineProps({
-  school: Object,
-  classObject: Object,
-  listOfClasses: Array,
+  ...defaultProps,
+  classesWithTerms: Array,
+  classModel: Object,
   classTeacher: Object,
   gradesDataForLineChart: Object,
   gradesDataPerSubjectForLineChart: Object,
@@ -315,7 +301,6 @@ const props = defineProps({
   averageMark: Number,
   gradeForAverageMark: String,
   subjectsAndGrades: Array,
-  noticeBoardMessages: Object,
 });
 
 const shouldOpenModalContainingListOfClasses = ref(false);
@@ -335,7 +320,7 @@ const lineChartDataForGrades = {
       pointHoverRadius: 13,
     },
     {
-      label: "Class' performance over time ",
+      label: "Average class' performance over time ",
       data: props.gradesDataForLineChart.gradesDataForOtherStudents,
       borderColor: 'rgb(54, 162, 235)',
       backgroundColor: 'rgb(54, 162, 235, 0.5)',
@@ -365,7 +350,7 @@ const lineChartDataForGradesPerSubject = {
       pointHoverRadius: 13,
     },
     {
-      label: "Class' performance over time ",
+      label: "Average class' performance over time ",
       data: props.gradesDataPerSubjectForLineChart[
         Object.keys(props.gradesDataPerSubjectForLineChart)[0]
       ].gradesDataForOtherStudents,
@@ -399,7 +384,7 @@ const lineChartOptionsForGradesPerSuject = {
   plugins: {
     title: {
       display: true,
-      font: {weight: 'bold', size: 14},
+      font: { weight: 'bold', size: 14 },
       text: '',
     },
   },

@@ -30,7 +30,8 @@
     },
     "prettier": {
         "phpVersion": "8.1",
-        "singleQuote": true
+        "singleQuote": true,
+        "printWidth": 80
     },
     "dependencies": {
         "@headlessui/vue": "^1.5.0",

@@ -100,11 +100,12 @@ import {
   ArchiveIcon,
 } from '@heroicons/vue/outline';
 import TimelineCard from '@/Components/TimelineCard.vue';
+import { defaultProps } from '@/helpers';
 
 Chart.register(...registerables);
 
 const props = defineProps({
-  school: Object,
+  ...defaultProps,
   numberOfStudents: Number,
   numberOfParents: Number,
   numberOfTeachers: Number,
@@ -112,7 +113,6 @@ const props = defineProps({
   schoolFeesDataForLineChart: Array,
   totalSchoolFees: Number,
   totalSchoolFeesCollected: Number,
-  noticeBoardMessages: Object,
 });
 
 const user = computed(() => usePage().props.value.auth.user);

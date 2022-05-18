@@ -88,6 +88,7 @@ class DatabaseSeeder extends Seeder
             ]);
 
             //*create first and second terms for each academic year
+            //TODO term start and end dates should be actual dates
             $firstTerm = Term::factory()->create([
                 'academic_year_id' => $academicYear->academic_year_id,
                 'name' => 'first term',
@@ -96,6 +97,8 @@ class DatabaseSeeder extends Seeder
                 'academic_year_id' => $academicYear->academic_year_id,
                 'name' => 'second term',
             ]);
+
+            //TODO seed class_teacher_pivot and subject_teacher_pivot
 
             foreach ($allStudents as $student) {
                 //*to create school fees
@@ -164,7 +167,7 @@ class DatabaseSeeder extends Seeder
                     'school_id' => $school->school_id,
                     'term_id' => $termItem->term_id,
                     'user_id' => 1, //the headteacher
-                    'created_at' => $faker->dateTimeBetween('-3 months', 'now'),
+                    'created_at' => $faker->dateTimeBetween('-6 months', 'now'),
                 ]);
             }
         }

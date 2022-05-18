@@ -252,21 +252,34 @@ class User extends Authenticatable
                 'id',
                 'class_id',
             )
-            ->withPivot('academic_year_id')
-            ->withTimestamps()
-            ;
+                ->withPivot('academic_year_id')
+                ->withTimestamps();
+        } elseif ($this->default_user_type === 'teacher') {
+            return $this->belongsToMany(
+                ClassModel::class,
+                'class_teacher_pivot',
+                'teacher_id',
+                'class_id',
+                'id',
+                'class_id',
+            )
+                ->withPivot('academic_year_id', 'teacher_id')
+                ->withTimestamps();
         }
+        return null;
+    }
 
-        return $this->belongsToMany(
-            ClassModel::class,
-            'class_teacher_pivot',
-            'teacher_id',
-            'class_id',
-            'id',
-            'class_id',
-        )
-        ->withPivot('academic_year_id')
-        ->withTimestamps();
+    public function subjects()
+    {
+        //TODO test
+        if ($this->default_user_type === 'teacher') {
+            return $this->hasMany(
+                SubjectTeacherPivot::class,
+                'teacher_id',
+                'id',
+            );
+        }
+        return null;
     }
 
     public function grades()
@@ -307,7 +320,7 @@ class User extends Authenticatable
                 'parent_id',
                 'id',
                 'id',
-            );
+            )->withTimestamps();
         }
 
         return null;

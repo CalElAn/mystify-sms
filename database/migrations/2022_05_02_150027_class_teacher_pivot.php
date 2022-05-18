@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('class_teacher_pivot', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('class_id');
-            $table->unsignedBigInteger('teacher_id');
+            $table->unsignedBigInteger('teacher_id')->index();
             $table->unsignedBigInteger('academic_year_id');
             $table->timestamps();
 
@@ -38,7 +38,8 @@ return new class extends Migration
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
 
-            $table->unique(['class_id', 'teacher_id']);
+            //one class should have only one class teacher for each academic year
+            $table->unique(['class_id', 'academic_year_id']);
         });
     }
 

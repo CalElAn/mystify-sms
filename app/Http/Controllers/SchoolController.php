@@ -6,6 +6,7 @@ use App\Models\AcademicYear;
 use App\Models\ClassModel;
 use App\Models\ClassStudentPivot;
 use App\Models\School;
+use App\Models\SubjectTeacherPivot;
 use App\Models\Term;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -67,34 +68,35 @@ class SchoolController extends Controller
         /** @var \App\Models\User */
         // $authUser = Auth::user();
         $authUser = User::where('user_type', 'student')->first();
+        $authUser = User::where('user_type', 'teacher')->first();
 
         /** @var \App\Models\School */
         $school = $authUser->school()->with('academicYears.terms')->first();
 
-        $listOfTerms = $school->academicYears
-            ->each(function ($academicYearItem, $academicYearKey) {
-                $academicYearItem->terms->each(function (
-                    $termItem,
-                    $termKey,
-                ) use ($academicYearItem) {
-                    $termItem->formatted_name 
-                        = $termItem->getFormattedName($academicYearItem);
-                });
-            })
-            ->sortBy('end_date')
-            ->pluck('terms')
-            ->flatten();
-        // dd($listOfTerms);
+        $academicYearsWithTerms = $school->academicYears()->with('terms')->latest('end_date')->get();
 
-        $term = $request->termId ? Term::find($request->termId) : $listOfTerms->last();
+        switch (true) {
+            case $request->termId:
+                $term = Term::find($request->termId);
+                break;
+
+            case $request->academicYearId:
+                $term = AcademicYear::find($request->academicYearId)->terms()->latest('end_date')->first();
+                break;
+            
+            default:
+                $term = $academicYearsWithTerms->first()->terms->sortByDesc('end_date')->values()->first();
+                break;
+        }
+
         $termId = $term->term_id;
         $academicYearId = $term->academic_year_id; 
-        if (!$term->formatted_name) $term->formatted_name = $term->getFormattedName(AcademicYear::find($academicYearId));
+        $term->append('formatted_name');
 
         $defaultProps = [
             'school' => $school,
             'term' => $term,
-            'listOfTerms' => $listOfTerms,
+            'academicYearsWithTerms' => $academicYearsWithTerms,
             'noticeBoardMessages' 
                 => $school
                     ->noticeBoard()
@@ -122,8 +124,8 @@ class SchoolController extends Controller
             
             case 'student':
                 $component = 'Student';
-                $listOfClasses = ClassStudentPivot::where('student_id', $authUser->id)->with(['terms', 'classModel'])->get();
-                $class = $listOfClasses
+                $classesWithTerms = ClassStudentPivot::where('student_id', $authUser->id)->with(['terms', 'classModel'])->get();
+                $class = $classesWithTerms
                     ->where('academic_year_id', $academicYearId)
                     ->first()
                     ->classModel;
@@ -131,8 +133,8 @@ class SchoolController extends Controller
                 $authUser->termId = $termId;
                 $averageMark = $authUser->getAverageMarkOfStudentInClass();
                 $props = [
-                    'listOfClasses' => $listOfClasses,
-                    'classObject' => $class, //seems "class" is a reserved keyword
+                    'classesWithTerms' => $classesWithTerms,
+                    'classModel' => $class, //seems "class" is a reserved keyword
                     'classTeacher' => $class->teachers->first(),
                     'gradesDataForLineChart' => $authUser->getOverallGradesDataForLineChart(),
                     'gradesDataPerSubjectForLineChart' => $authUser->getOverallGradesDataPerSubjectForLineChart(),
@@ -145,14 +147,30 @@ class SchoolController extends Controller
                     'gradeForAverageMark' => $school->getGradeForMark($averageMark),
                     'subjectsAndGrades' => $authUser->getSubjectsAndGrades(),
                 ];
+                break;
+            
+            case 'teacher':
+                $component = 'Teacher';
+                $classes = $authUser->classes;
+                $class = $classes->where('pivot.academic_year_id', $academicYearId)->first();
+                $subjects = $authUser->subjects;
+                $subjects->each(fn ($subjectItem) => $subjectItem->term->append('formatted_short_name'));
+                $currentSubject = $subjects->where('class_id', $class->class_id)->where('term_id', $termId)->sortByDesc('created_at')->values()->first();
+                // $currentSubject->term->append('formatted_short_name');
+                $props = [
+                    'classes' => $classes,
+                    'classModel' => $class,
+                    'classTeacher' => User::find($class->pivot->teacher_id),
+                    'studentsInClass' => $class->students->where('pivot.academic_year_id', $academicYearId)->sortBy('name')->values(),
+                    'subjects' => $subjects,
+                    'currentSubject' => $currentSubject,
+                ];
+                break;
             
             default:
                 # code...
                 break;
         }
-        // dd($school->gradingScale->scale);
-        // $authUser->arbitraryProperty = 'k;ll;k;l';
-        // dd($authUser->arbitraryProperty);
         return Inertia::render("School/Dashboard/{$component}", array_merge($props, $defaultProps));
     }
 
