@@ -48,6 +48,7 @@ class User extends Authenticatable
 
     public ClassModel $class;
     public int $termId;
+    //so as to cache the results in a variable and not re-compute them every time its called
     public ?Collection $allStudentsAndTheirGradesInClass = null;
 
     public function getOverallGradesDataForLineChart(
@@ -81,7 +82,7 @@ class User extends Authenticatable
             ->unique()
             ->values();
 
-        $gradesDataForOtherStudents = Grade::whereIn('term_id', $termIds)
+        $gradesDataForOtherStudents = $this->school->grades()->whereIn('term_id', $termIds)
             ->get()
             ->whereIn('class_name', $classNames)
             ->whereIn('class_suffix', $classSuffixes);
@@ -192,7 +193,7 @@ class User extends Authenticatable
 
     public function getSubjectsAndGrades(): Collection
     {
-        $allGrades = Grade::where([
+        $allGrades = $this->school->grades()->where([
             ['school_id', $this->school_id],
             ['term_id', $this->termId],
             ['class_name', $this->class->name],

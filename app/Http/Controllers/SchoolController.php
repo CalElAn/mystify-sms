@@ -156,7 +156,13 @@ class SchoolController extends Controller
                 $subjects = $authUser->subjects;
                 $subjects->each(fn ($subjectItem) => $subjectItem->term->append('formatted_short_name'));
                 $currentSubject = $subjects->where('class_id', $class->class_id)->where('term_id', $termId)->sortByDesc('created_at')->values()->first();
-                // $currentSubject->term->append('formatted_short_name');
+                $gradesForCurrentSubjectWithStudent 
+                    = $school->grades()->where([
+                        ['term_id', $termId],
+                        ['class_name', $class->name],
+                        ['class_suffix', $class->suffix],
+                        ['subject_name', $currentSubject->subject_name],
+                    ])->with('student')->get();
                 $props = [
                     'classes' => $classes,
                     'classModel' => $class,
@@ -164,6 +170,7 @@ class SchoolController extends Controller
                     'studentsInClass' => $class->students->where('pivot.academic_year_id', $academicYearId)->sortBy('name')->values(),
                     'subjects' => $subjects,
                     'currentSubject' => $currentSubject,
+                    'gradesForCurrentSubjectWithStudent' => $gradesForCurrentSubjectWithStudent,
                 ];
                 break;
             

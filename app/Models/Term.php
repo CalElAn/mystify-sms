@@ -18,7 +18,7 @@ class Term extends Model
     ];
 
     public function formattedName(): Attribute
-    {//TODO test
+    {
         $name = ucfirst($this->name);
 
         return Attribute::make(
@@ -29,7 +29,7 @@ class Term extends Model
     }
 
     public function formattedShortName(): Attribute
-    {//TODO test
+    {
         $name = ucfirst($this->name);
 
         return Attribute::make(

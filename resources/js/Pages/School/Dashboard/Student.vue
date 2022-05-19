@@ -10,7 +10,7 @@
           @click="shouldOpenModalContainingListOfClasses = true"
           class="text-gray-700 hover:text-purple-600"
         >
-          <MenuIcon class="h-5 w-5" />
+          <ViewListIcon class="h-5 w-5" />
         </button>
       </div>
       <div
@@ -24,13 +24,12 @@
             widthClass="w-14"
             heightClass="h-14"
           />
-          <!-- //TODO href should lead to profile -->
-          <a
-            href="#"
+          <Link
+            :href="route('users.show', { userId: classTeacher?.id })"
             class="inline-block text-lg font-semibold text-purple-600 underline underline-offset-1"
           >
             {{ classTeacher?.name }}
-          </a>
+          </Link>
         </div>
       </div>
     </div>
@@ -50,7 +49,7 @@
             @click="shouldOpenPositionsOfAllStudentsModal = true"
             class="text-gray-700 hover:text-purple-600"
           >
-            <MenuIcon class="h-5 w-5" />
+            <ViewListIcon class="h-5 w-5" />
           </button>
         </div>
       </div>

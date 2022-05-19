@@ -20,7 +20,7 @@ return new class extends Migration
             $table->unsignedBigInteger('teacher_id');
             $table->unsignedBigInteger('term_id');
             $table->string('class_name', 25);
-            $table->string('class_suffix', 25)->nullable();
+            $table->string('class_suffix', 25);
             $table->string('subject_name', 50);
             $table->decimal('class_mark', 4);
             $table->decimal('exam_mark', 4);

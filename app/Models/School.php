@@ -36,6 +36,11 @@ class School extends Model
         return $this->hasMany(NoticeBoard::class, 'school_id', 'school_id');
     }
 
+    public function grades()
+    {
+        return $this->hasMany(Grade::class, 'school_id', 'school_id');
+    }
+
     public function gradingScale()
     {
         return $this->hasOne(

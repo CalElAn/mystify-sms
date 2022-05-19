@@ -3,8 +3,8 @@ require('./bootstrap');
 import { createApp, h } from 'vue';
 import { createInertiaApp, Link } from '@inertiajs/inertia-vue3';
 import { InertiaProgress } from '@inertiajs/progress';
-import { MenuIcon } from '@heroicons/vue/solid';
-import { CogIcon } from '@heroicons/vue/outline';
+import { DotsVerticalIcon, ViewListIcon } from '@heroicons/vue/solid';
+// import { CogIcon } from '@heroicons/vue/outline';
 import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue';
 
 import Layout from './Layouts/Layout.vue';
@@ -22,6 +22,8 @@ const baseComponents = {
   MenuItems: MenuItems,
   MenuItem: MenuItem,
   Link: Link,
+  DotsVerticalIcon: DotsVerticalIcon,
+  ViewListIcon: ViewListIcon,
   MenuItemsTransition: MenuItemsTransition,
   MenuItemButton: MenuItemButton,
 };
@@ -38,8 +40,8 @@ createInertiaApp({
   },
   setup({ el, app, props, plugin }) {
     const vueApp = createApp({ render: () => h(app, props) })
-      .component('MenuIcon', MenuIcon)
-      .component('CogIcon', CogIcon)
+      // .component('MenuIcon', MenuIcon)
+      // .component('CogIcon', CogIcon)
       .component('Modal', Modal)
       .component('ProfilePicture', ProfilePicture)
       .use(plugin)

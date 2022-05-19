@@ -74,7 +74,7 @@
             class="font-semibold text-purple-600 group-hover:text-purple-400"
             >{{ term.formatted_name }}</span
           >
-          <MenuIcon class="h-5 w-5 group-hover:text-purple-400" />
+          <ViewListIcon class="h-5 w-5 group-hover:text-purple-400" />
         </button>
         <!-- User's name, profile picture and menu -->
         <div class="flex gap-3">
@@ -86,7 +86,7 @@
           <div class="flex gap-1.5">
             <div class="flex flex-col">
               <div class="text-lg font-semibold text-fuchsia-600">
-                <Link :href="route('users.show', { userId: authUser.id })">
+                <Link class="hover:underline" :href="route('users.show', { userId: authUser.id })">
                   {{ authUser.name }}
                 </Link>
               </div>
