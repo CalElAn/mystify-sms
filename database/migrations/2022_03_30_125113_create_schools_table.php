@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('schools', function (Blueprint $table) {
-            $table->id('school_id');
+            $table->id();
             $table->string('name');
             $table->string('city');
             $table->string('town');
@@ -25,7 +25,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('grading_scale_id')
-                ->references('grading_scale_id')
+                ->references('id')
                 ->on('grading_scales')
                 ->onUpdate('cascade')
                 ->onDelete('no action');

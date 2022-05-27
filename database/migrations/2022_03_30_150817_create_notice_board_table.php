@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('notice_board', function (Blueprint $table) {
-            $table->id('notice_board_id');
+            $table->id();
             $table->unsignedBigInteger('school_id');
             $table->unsignedBigInteger('term_id');
             $table->unsignedBigInteger('user_id');
@@ -25,13 +25,13 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('school_id')
-                ->references('school_id')
+                ->references('id')
                 ->on('schools')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
 
             $table->foreign('term_id')
-                ->references('term_id')
+                ->references('id')
                 ->on('terms')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');

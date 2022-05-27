@@ -90,7 +90,7 @@ class SchoolController extends Controller
                 break;
         }
 
-        $termId = $term->term_id;
+        $termId = $term->id;
         $academicYearId = $term->academic_year_id; 
         $term->append('formatted_name');
 

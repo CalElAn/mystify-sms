@@ -23,9 +23,9 @@ class ClassStudentPivotModelTest extends TestCase
         $student = User::factory()->create(); 
 
         $classStudentPivotId = DB::table('class_student_pivot')->insertGetId([
-            'class_id' => $class->class_id,
+            'class_id' => $class->id,
             'student_id' => $student->id,
-            'academic_year_id' => AcademicYear::factory()->create()->academic_year_id,
+            'academic_year_id' => AcademicYear::factory()->create()->id,
         ]);
 
         $this->assertInstanceOf('App\Models\ClassModel', ClassStudentPivot::find($classStudentPivotId)->classModel);
@@ -38,9 +38,9 @@ class ClassStudentPivotModelTest extends TestCase
         $student = User::factory()->create(); 
 
         $classStudentPivotId = DB::table('class_student_pivot')->insertGetId([
-            'class_id' => $class->class_id,
+            'class_id' => $class->id,
             'student_id' => $student->id,
-            'academic_year_id' => $academicYearId = AcademicYear::factory()->create()->academic_year_id,
+            'academic_year_id' => $academicYearId = AcademicYear::factory()->create()->id,
         ]);
 
         Term::factory()->create(['academic_year_id' => $academicYearId]);

@@ -10,8 +10,6 @@ class Term extends Model
 {
     use HasFactory;
 
-    protected $primaryKey = 'term_id';
-
     protected $casts = [
         'start_date' => 'date',
         'end_date' => 'date',
@@ -39,10 +37,6 @@ class Term extends Model
 
     public function academicYear()
     {
-        return $this->hasOne(
-            AcademicYear::class,
-            'academic_year_id',
-            'academic_year_id',
-        );
+        return $this->belongsTo(AcademicYear::class);
     }
 }

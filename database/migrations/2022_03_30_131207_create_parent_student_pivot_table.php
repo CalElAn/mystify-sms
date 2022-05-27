@@ -14,6 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('parent_student_pivot', function (Blueprint $table) {
+            $table->id();
             $table->unsignedBigInteger('parent_id');
             $table->unsignedBigInteger('student_id');
             $table->timestamps();

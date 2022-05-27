@@ -34,13 +34,13 @@ return new class extends Migration
                 ->onDelete('cascade');
 
             $table->foreign('class_id')
-                ->references('class_id')
+                ->references('id')
                 ->on('classes')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
 
             $table->foreign('term_id')
-                ->references('term_id')
+                ->references('id')
                 ->on('terms')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');

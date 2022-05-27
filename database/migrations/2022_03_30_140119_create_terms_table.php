@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('terms', function (Blueprint $table) {
-            $table->id('term_id');
+            $table->id();
             $table->unsignedBigInteger('academic_year_id');
             $table->string('name', 25);
             $table->date('start_date');
@@ -22,7 +22,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('academic_year_id')
-                ->references('academic_year_id')
+                ->references('id')
                 ->on('academic_years')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');

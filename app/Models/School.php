@@ -9,45 +9,39 @@ class School extends Model
 {
     use HasFactory;
 
-    protected $primaryKey = 'school_id';
-
     public function users()
     {
-        return $this->hasMany(User::class, 'school_id', 'school_id');
+        return $this->hasMany(User::class);
     }
 
     public function academicYears()
     {
-        return $this->hasMany(AcademicYear::class, 'school_id', 'school_id');
+        return $this->hasMany(AcademicYear::class);
     }
 
     public function schoolFeesPaid()
     {
-        return $this->hasMany(SchoolFeesPaid::class, 'school_id', 'school_id');
+        return $this->hasMany(SchoolFeesPaid::class);
     }
 
     public function schoolFees()
     {
-        return $this->hasMany(SchoolFees::class, 'school_id', 'school_id');
+        return $this->hasMany(SchoolFees::class);
     }
 
     public function noticeBoard()
     {
-        return $this->hasMany(NoticeBoard::class, 'school_id', 'school_id');
+        return $this->hasMany(NoticeBoard::class);
     }
 
     public function grades()
     {
-        return $this->hasMany(Grade::class, 'school_id', 'school_id');
+        return $this->hasMany(Grade::class);
     }
 
     public function gradingScale()
     {
-        return $this->hasOne(
-            GradingScale::class,
-            'grading_scale_id',
-            'grading_scale_id',
-        );
+        return $this->belongsTo(GradingScale::class);
     }
 
     public function getStudents()

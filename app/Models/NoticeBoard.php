@@ -13,8 +13,6 @@ class NoticeBoard extends Model
 
     protected $table = 'notice_board';
 
-    protected $primaryKey = 'notice_board_id';
-
     protected $with = ['user'];
 
     protected $appends = ['time_string'];
@@ -28,6 +26,6 @@ class NoticeBoard extends Model
 
     public function user()
     {
-        return $this->hasOne(User::class, 'id', 'user_id');
+        return $this->belongsTo(User::class);
     }
 }

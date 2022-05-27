@@ -21,9 +21,9 @@ class ClassModelTest extends TestCase
         $student = User::factory()->create(); 
 
         DB::table('class_student_pivot')->insert([
-            'class_id' => $class->class_id,
+            'class_id' => $class->id,
             'student_id' => $student->id,
-            'academic_year_id' => AcademicYear::factory()->create()->academic_year_id,
+            'academic_year_id' => AcademicYear::factory()->create()->id,
         ]);
 
         $this->assertInstanceOf('App\Models\User', $class->students[0]);
@@ -36,9 +36,9 @@ class ClassModelTest extends TestCase
         $teacher = User::factory()->create(); 
 
         DB::table('class_teacher_pivot')->insert([
-            'class_id' => $class->class_id,
+            'class_id' => $class->id,
             'teacher_id' => $teacher->id,
-            'academic_year_id' => AcademicYear::factory()->create()->academic_year_id,
+            'academic_year_id' => AcademicYear::factory()->create()->id,
         ]);
 
         $this->assertInstanceOf('App\Models\User', $class->teachers[0]);

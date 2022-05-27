@@ -10,8 +10,6 @@ class Grade extends Model
 {
     use HasFactory;
 
-    protected $primaryKey = 'grade_id';
-
     protected $appends = ['overall_mark', 'class_name_and_suffix'];
 
     protected function overallMark(): Attribute
@@ -30,11 +28,11 @@ class Grade extends Model
 
     public function school()
     {
-        return $this->hasOne(School::class, 'school_id', 'school_id');
+        return $this->belongsTo(School::class);
     }
 
     public function student()
     {
-        return $this->hasOne(User::class, 'id', 'student_id');
+        return $this->belongsTo(User::class);
     }
 }

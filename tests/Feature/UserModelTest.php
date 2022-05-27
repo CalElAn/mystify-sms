@@ -25,7 +25,7 @@ class UserModelTest extends TestCase
     public function a_user_belongs_to_a_school()
     {
         $school = School::factory()->create();
-        $user = User::factory()->create(['school_id' => $school->school_id]);
+        $user = User::factory()->create(['school_id' => $school->id]);
 
         $this->assertInstanceOf('App\Models\School', $user->school);
         $this->assertEquals($school->fresh(), $user->school);
@@ -187,7 +187,7 @@ class UserModelTest extends TestCase
             ->first();
         $this->termId = AcademicYear::find(
             $academicYearId,
-        )->terms->first()->term_id;
+        )->terms->first()->id;
         $this->student->classModel = $this->classModel;
         $this->student->termId = $this->termId;
     }
@@ -346,10 +346,10 @@ class UserModelTest extends TestCase
         $teacher = User::factory()->create(['default_user_type' => 'teacher']);
 
         DB::table('class_teacher_pivot')->insert([
-            'class_id' => $class->class_id,
+            'class_id' => $class->id,
             'teacher_id' => $teacher->id,
             'academic_year_id' => AcademicYear::factory()->create()
-                ->academic_year_id,
+                ->id,
         ]);
 
         $this->assertInstanceOf(

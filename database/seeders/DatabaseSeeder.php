@@ -26,7 +26,7 @@ class DatabaseSeeder extends Seeder
         $faker = \Faker\Factory::create();
 
         //*create default grading scale
-        $gradingScaleId = GradingScale::factory()->create()->grading_scale_id;
+        $gradingScaleId = GradingScale::factory()->create()->id;
 
         //*create school
         $school = School::factory()->create([
@@ -38,14 +38,14 @@ class DatabaseSeeder extends Seeder
             'email' => 'ce@example.com',
             'default_user_type' => 'headteacher',
             'user_type' => 'headteacher',
-            'school_id' => $school->school_id,
+            'school_id' => $school->id,
         ]);
         $teacher = User::factory()->create([
             'default_user_type' => 'teacher',
             'user_type' => 'teacher',
-            'school_id' => $school->school_id,
+            'school_id' => $school->id,
         ]);
-        User::factory(100)->create(['school_id' => $school->school_id]);
+        User::factory(100)->create(['school_id' => $school->id]);
         $allUsers = User::all();
         $allStudents = $allUsers->where('default_user_type', 'student');
         $allTeachers = $allUsers
@@ -91,12 +91,12 @@ class DatabaseSeeder extends Seeder
             $className = 'Class ' . $i;
             $classIds = [];
             $classIds['A'] = DB::table('classes')->insertGetId([
-                'school_id' => $school->school_id,
+                'school_id' => $school->id,
                 'name' => $className,
                 'suffix' => 'A',
             ]);
             $classIds['B'] = DB::table('classes')->insertGetId([
-                'school_id' => $school->school_id,
+                'school_id' => $school->id,
                 'name' => $className,
                 'suffix' => 'B',
             ]);
@@ -104,8 +104,8 @@ class DatabaseSeeder extends Seeder
             //*create academic year 2001 to 2006
             $academicYearName = 2000 + $i;
             $academicYear = AcademicYear::factory()->create([
-                'academic_year_id' => $i,
-                'school_id' => $school->school_id,
+                'id' => $i,
+                'school_id' => $school->id,
                 'name' => $academicYearName,
                 'start_date' => "{$academicYearName}-2-3",
                 'end_date' => "{$academicYearName}-11-3",
@@ -113,13 +113,13 @@ class DatabaseSeeder extends Seeder
 
             //*create first and second terms for each academic year
             $firstTerm = Term::factory()->create([
-                'academic_year_id' => $academicYear->academic_year_id,
+                'academic_year_id' => $academicYear->id,
                 'name' => 'first term',
                 'start_date' => "{$academicYearName}-2-3",
                 'end_date' => "{$academicYearName}-6-10",
             ]);
             $secondTerm = Term::factory()->create([
-                'academic_year_id' => $academicYear->academic_year_id,
+                'academic_year_id' => $academicYear->id,
                 'name' => 'second term',
                 'start_date' => "{$academicYearName}-8-3",
                 'end_date' => "{$academicYearName}-11-3",
@@ -129,12 +129,12 @@ class DatabaseSeeder extends Seeder
             ClassTeacherPivot::factory()->create([
                 'teacher_id' => $allTeachers[0]->id,
                 'class_id' => $classIds['A'],
-                'academic_year_id' => $academicYear->academic_year_id,
+                'academic_year_id' => $academicYear->id,
             ]);
             ClassTeacherPivot::factory()->create([
                 'teacher_id' => $allTeachers[1]->id,
                 'class_id' => $classIds['B'],
-                'academic_year_id' => $academicYear->academic_year_id,
+                'academic_year_id' => $academicYear->id,
             ]);
 
             foreach ([$firstTerm, $secondTerm] as $termItem) {
@@ -144,13 +144,13 @@ class DatabaseSeeder extends Seeder
                         [
                             'subject_name' => $subject,
                             'teacher_id' => $allTeachers[0]->id,
-                            'term_id' => $termItem->term_id,
+                            'term_id' => $termItem->id,
                             'class_id' => $classIds['A'],
                         ],
                         [
                             'subject_name' => $subject,
                             'teacher_id' => $allTeachers[1]->id,
-                            'term_id' => $termItem->term_id,
+                            'term_id' => $termItem->id,
                             'class_id' => $classIds['B'],
                         ],
                     );
@@ -167,7 +167,7 @@ class DatabaseSeeder extends Seeder
                 $schoolFeesRecordsToInsert[] = [
                     'student_id' => $student->id,
                     'school_id' => $student->school_id,
-                    'academic_year_id' => $academicYear->academic_year_id,
+                    'academic_year_id' => $academicYear->id,
                     'amount' => rand(500, 600),
                 ];
 
@@ -176,7 +176,7 @@ class DatabaseSeeder extends Seeder
                     $schoolFeesPaidRecordsToInsert[] = [
                         'student_id' => $student->id,
                         'school_id' => $student->school_id,
-                        'academic_year_id' => $academicYear->academic_year_id,
+                        'academic_year_id' => $academicYear->id,
                         'amount' => rand(0, 100),
                         'created_at' => $faker->dateTimeBetween(
                             '-3 months',
@@ -191,7 +191,7 @@ class DatabaseSeeder extends Seeder
                     'class_id' =>
                         $classIds[$studentsAndClassSuffixesArray[$student->id]],
                     'student_id' => $student->id,
-                    'academic_year_id' => $academicYear->academic_year_id,
+                    'academic_year_id' => $academicYear->id,
                 ];
 
                 //* for each class (1 to 6), for each student, for each term (1 and 2), for each subject, create grades
@@ -201,7 +201,7 @@ class DatabaseSeeder extends Seeder
                             'school_id' => $student->school_id,
                             'student_id' => $student->id,
                             'teacher_id' => $teacher->id,
-                            'term_id' => $termItem->term_id,
+                            'term_id' => $termItem->id,
                             'class_name' => 'Class ' . $i,
                             'class_suffix' =>
                                 $studentsAndClassSuffixesArray[$student->id],
@@ -224,8 +224,8 @@ class DatabaseSeeder extends Seeder
             //*create notice board items for each term 1 and 2
             foreach ([$firstTerm, $secondTerm] as $termItem) {
                 NoticeBoard::factory(25)->create([
-                    'school_id' => $school->school_id,
-                    'term_id' => $termItem->term_id,
+                    'school_id' => $school->id,
+                    'term_id' => $termItem->id,
                     'user_id' => 1, //the headteacher
                     'created_at' => $faker->dateTimeBetween('-6 months', 'now'),
                 ]);

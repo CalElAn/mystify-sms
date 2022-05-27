@@ -16,7 +16,7 @@ class AcademicYearModelTest extends TestCase
     public function an_academic_year_has_many_terms()
     {
         $academicYear = AcademicYear::factory()->create();
-        Term::factory()->create(['academic_year_id' => $academicYear->academic_year_id]);
+        Term::factory()->create(['academic_year_id' => $academicYear->id]);
 
         $this->assertInstanceOf('App\Models\Term', $academicYear->terms->first());
     }

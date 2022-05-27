@@ -138,7 +138,7 @@ class User extends Authenticatable implements MustVerifyEmail
             ),
         );
         $currentSubject = $subjects
-            ->where('class_id', $class->class_id)
+            ->where('class_id', $class->id)
             ->where('term_id', $termId)
             ->sortByDesc('created_at')
             ->values()
@@ -372,8 +372,6 @@ class User extends Authenticatable implements MustVerifyEmail
                 'class_student_pivot',
                 'student_id',
                 'class_id',
-                'id',
-                'class_id',
             )
                 ->withPivot('academic_year_id')
                 ->withTimestamps();
@@ -382,8 +380,6 @@ class User extends Authenticatable implements MustVerifyEmail
                 ClassModel::class,
                 'class_teacher_pivot',
                 'teacher_id',
-                'class_id',
-                'id',
                 'class_id',
             )
                 ->withPivot('academic_year_id', 'teacher_id')
@@ -406,18 +402,18 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function grades()
     {
-        return $this->hasMany(Grade::class, 'student_id', 'id');
+        return $this->hasMany(Grade::class, 'student_id');
     }
 
     public function school()
     {
-        return $this->belongsTo(School::class, 'school_id', 'school_id');
+        return $this->belongsTo(School::class);
     }
 
     public function schoolFeesPaid()
     {
         if ($this->default_user_type === 'student') {
-            return $this->hasMany(SchoolFeesPaid::class, 'student_id', 'id');
+            return $this->hasMany(SchoolFeesPaid::class, 'student_id');
         }
 
         return null;
@@ -426,7 +422,7 @@ class User extends Authenticatable implements MustVerifyEmail
     public function schoolFees()
     {
         if ($this->default_user_type === 'student') {
-            return $this->hasMany(SchoolFees::class, 'student_id', 'id');
+            return $this->hasMany(SchoolFees::class, 'student_id');
         }
 
         return null;
@@ -440,8 +436,6 @@ class User extends Authenticatable implements MustVerifyEmail
                 'parent_student_pivot',
                 'student_id',
                 'parent_id',
-                'id',
-                'id',
             )->withTimestamps();
         }
 

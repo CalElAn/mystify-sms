@@ -14,11 +14,11 @@ class SubjectTeacherPivot extends Model
 
     public function classModel()
     {
-        return $this->hasOne(ClassModel::class, 'class_id', 'class_id');
+        return $this->hasOne(ClassModel::class, 'id', 'class_id');
     }
 
     public function term()
     {
-        return $this->hasOne(Term::class, 'term_id', 'term_id');
+        return $this->belongsTo(Term::class);
     }
 }

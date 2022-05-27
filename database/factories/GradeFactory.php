@@ -22,10 +22,10 @@ class GradeFactory extends Factory
     public function definition()
     {
         $school = School::factory()->create()->fresh();
-        $class = ClassModel::factory()->create(['school_id' => $school->school_id]);
+        $class = ClassModel::factory()->create(['school_id' => $school->id]);
         $subject = Subject::factory()->create();
         return [
-            'school_id' => $school->school_id,
+            'school_id' => $school->id,
             'student_id' => User::factory(),
             'teacher_id' => User::factory(), 
             'term_id' => Term::factory(),

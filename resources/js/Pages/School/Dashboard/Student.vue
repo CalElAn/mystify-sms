@@ -218,7 +218,7 @@
                 v-slot="{ active }"
               >
                 <MenuItemButton
-                  @click="changeTerm(termItem.term_id)"
+                  @click="changeTerm(termItem.id)"
                   :active="active"
                 >
                   {{ termItem.name }}

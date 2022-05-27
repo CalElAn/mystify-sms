@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('school_fees', function (Blueprint $table) {
-            $table->id('school_fees_id');
+            $table->id();
             $table->unsignedBigInteger('student_id');
             $table->unsignedBigInteger('school_id');
             $table->unsignedBigInteger('academic_year_id');
@@ -28,13 +28,13 @@ return new class extends Migration
                 ->onDelete('no action');
 
             $table->foreign('school_id')
-                ->references('school_id')
+                ->references('id')
                 ->on('schools')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
 
             $table->foreign('academic_year_id')
-                ->references('academic_year_id')
+                ->references('id')
                 ->on('academic_years')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');

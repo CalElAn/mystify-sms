@@ -10,8 +10,6 @@ class GradingScale extends Model
 {
     use HasFactory;
 
-    protected $primaryKey = 'grading_scale_id';
-
     protected $casts = [
         'scale' => AsCollection::class,
     ];

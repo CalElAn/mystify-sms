@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('grading_scales', function (Blueprint $table) {
-            $table->id('grading_scale_id');
+            $table->id();
             $table->json('scale');
             $table->timestamps();
         });

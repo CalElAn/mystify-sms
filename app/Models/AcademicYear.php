@@ -9,10 +9,8 @@ class AcademicYear extends Model
 {
     use HasFactory;
 
-    protected $primaryKey = 'academic_year_id';
-
     public function terms()
     {
-        return $this->hasMany(Term::class, 'academic_year_id', 'academic_year_id');
+        return $this->hasMany(Term::class);
     }
 }

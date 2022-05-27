@@ -14,6 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('student_teacher_pivot', function (Blueprint $table) {
+            $table->id();
             $table->unsignedBigInteger('student_id');
             $table->unsignedBigInteger('teacher_id');
             $table->unsignedBigInteger('class_id');
@@ -32,7 +33,7 @@ return new class extends Migration
                 ->onDelete('cascade');
             
             $table->foreign('class_id')
-                ->references('class_id')
+                ->references('id')
                 ->on('classes')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');

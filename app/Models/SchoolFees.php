@@ -10,5 +10,4 @@ class SchoolFees extends Model
     use HasFactory;
     
     protected $table = 'school_fees';
-    protected $primaryKey = 'school_fees_id';
 }

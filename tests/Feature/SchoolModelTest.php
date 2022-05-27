@@ -33,7 +33,7 @@ class SchoolModelTest extends TestCase
     public function a_school_has_many_users()
     {
         $user = User::factory(10)->create([
-            'school_id' => $this->school->school_id,
+            'school_id' => $this->school->id,
         ]);
 
         $this->assertTrue($this->school->users->contains($user[0]));
@@ -45,7 +45,7 @@ class SchoolModelTest extends TestCase
     public function a_school_has_many_academic_years()
     {
         $academicYears = AcademicYear::factory(1)->create([
-            'school_id' => $this->school->school_id,
+            'school_id' => $this->school->id,
         ]);
 
         $this->assertTrue($this->school->academicYears->contains($academicYears->first()));
@@ -58,15 +58,15 @@ class SchoolModelTest extends TestCase
     {
         $student = User::factory(3)->create([
             'default_user_type' => 'student',
-            'school_id' => $this->school->school_id,
+            'school_id' => $this->school->id,
         ]);
         $feesPaid = SchoolFeesPaid::factory(3)->create([
             'student_id' => $student[0]->id,
-            'school_id' => $this->school->school_id,
+            'school_id' => $this->school->id,
         ]);
         SchoolFeesPaid::factory(2)->create([
             'student_id' => $student[1]->id,
-            'school_id' => $this->school->school_id,
+            'school_id' => $this->school->id,
         ]);
 
         $this->assertTrue(
@@ -84,12 +84,12 @@ class SchoolModelTest extends TestCase
     {
         $student = User::factory(3)->create([
             'default_user_type' => 'student',
-            'school_id' => $this->school->school_id,
+            'school_id' => $this->school->id,
         ]);
         $student->each(function ($item) {
             SchoolFees::factory()->create([
                 'student_id' => $item->id,
-                'school_id' => $this->school->school_id,
+                'school_id' => $this->school->id,
             ]);
         });
 
@@ -108,29 +108,29 @@ class SchoolModelTest extends TestCase
     {
         $students = User::factory(3)->create([
             'default_user_type' => 'student',
-            'school_id' => $this->school->school_id,
+            'school_id' => $this->school->id,
         ]);
         $academicYear = AcademicYear::factory()->create();
 
         $arrayOfSchoolFeesPaid = [
             [
                 'student_id' => $students[0]->id,
-                'school_id' => $this->school->school_id,
-                'academic_year_id' => $academicYear->academic_year_id,
+                'school_id' => $this->school->id,
+                'academic_year_id' => $academicYear->id,
                 'amount' => 26,
                 'created_at' => '2022-03-01T04:49:30.000000Z',
             ],
             [
                 'student_id' => $students[1]->id,
-                'school_id' => $this->school->school_id,
-                'academic_year_id' => $academicYear->academic_year_id,
+                'school_id' => $this->school->id,
+                'academic_year_id' => $academicYear->id,
                 'amount' => 27,
                 'created_at' => '2022-04-04T01:10:06.000000Z',
             ],
             [
                 'student_id' => $students[2]->id,
-                'school_id' => $this->school->school_id,
-                'academic_year_id' => $academicYear->academic_year_id,
+                'school_id' => $this->school->id,
+                'academic_year_id' => $academicYear->id,
                 'amount' => 72,
                 'created_at' => '2022-02-07T00:03:12.000000Z',
             ],
@@ -164,7 +164,7 @@ class SchoolModelTest extends TestCase
         $this->assertEquals(
             $sortedArray,
             $this->school
-                ->getSchoolFeesDataForLineChart($academicYear->academic_year_id)
+                ->getSchoolFeesDataForLineChart($academicYear->id)
                 ->toArray(),
         );
     }
@@ -174,12 +174,12 @@ class SchoolModelTest extends TestCase
     {
         $academicYear = AcademicYear::factory()->create();
         $term = Term::factory()->create([
-            'academic_year_id' => $academicYear->academic_year_id,
+            'academic_year_id' => $academicYear->id,
         ]);
 
         NoticeBoard::factory(3)->create([
-            'school_id' => $this->school->school_id,
-            'term_id' => $term->term_id,
+            'school_id' => $this->school->id,
+            'term_id' => $term->id,
         ]);
 
         $this->assertTrue(
@@ -196,7 +196,7 @@ class SchoolModelTest extends TestCase
     public function a_school_has_one_grading_scale()
     {
         $gradingScale = GradingScale::factory()->create();
-        $this->school->grading_scale_id = $gradingScale->grading_scale_id;
+        $this->school->grading_scale_id = $gradingScale->id;
         $this->school->save();
         $this->assertInstanceOf(
             'App\Models\GradingScale',
@@ -212,7 +212,7 @@ class SchoolModelTest extends TestCase
     public function a_school_can_get_the_grade_for_a_mark()
     {
         $gradingScale = GradingScale::factory()->create();
-        $this->school->grading_scale_id = $gradingScale->grading_scale_id;
+        $this->school->grading_scale_id = $gradingScale->id;
         $this->school->save();
 
         $this->school->gradingScale->scale->each(function ($item, $key) {
@@ -227,7 +227,7 @@ class SchoolModelTest extends TestCase
     public function a_school_can_get_its_students()
     {
         $user = User::factory(10)->create([
-            'school_id' => $this->school->school_id,
+            'school_id' => $this->school->id,
             'default_user_type' => 'student',
         ]);
 
@@ -243,31 +243,31 @@ class SchoolModelTest extends TestCase
     public function a_school_can_get_its_parents()
     {
         $student0 = User::factory()->create([
-            'school_id' => $this->school->school_id,
+            'school_id' => $this->school->id,
             'default_user_type' => 'student',
         ]);
         $student1 = User::factory()->create([
-            'school_id' => $this->school->school_id,
+            'school_id' => $this->school->id,
             'default_user_type' => 'student',
         ]);
         $student2 = User::factory()->create([
-            'school_id' => $this->school->school_id,
+            'school_id' => $this->school->id,
             'default_user_type' => 'student',
         ]);
         $parent1 = User::factory()->create([
-            'school_id' => $this->school->school_id,
+            'school_id' => $this->school->id,
             'default_user_type' => 'parent',
         ]);
         $parent2 = User::factory()->create([
-            'school_id' => $this->school->school_id,
+            'school_id' => $this->school->id,
             'default_user_type' => 'parent',
         ]);
         $parent3 = User::factory()->create([
-            'school_id' => $this->school->school_id,
+            'school_id' => $this->school->id,
             'default_user_type' => 'parent',
         ]);
         $parent4 = User::factory()->create([
-            'school_id' => $this->school->school_id,
+            'school_id' => $this->school->id,
             'default_user_type' => 'parent',
         ]);
 
@@ -286,7 +286,7 @@ class SchoolModelTest extends TestCase
     public function a_school_can_get_its_teachers()
     {
         $user = User::factory(10)->create([
-            'school_id' => $this->school->school_id,
+            'school_id' => $this->school->id,
             'default_user_type' => 'teacher',
         ]);
 
@@ -302,7 +302,7 @@ class SchoolModelTest extends TestCase
     public function a_school_can_get_its_administrators()
     {
         $user = User::factory(10)->create([
-            'school_id' => $this->school->school_id,
+            'school_id' => $this->school->id,
             'default_user_type' => 'school administrator',
         ]);
 

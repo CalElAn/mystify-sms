@@ -21,7 +21,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('class_id')
-                ->references('class_id')
+                ->references('id')
                 ->on('classes')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
@@ -33,7 +33,7 @@ return new class extends Migration
                 ->onDelete('cascade');
 
             $table->foreign('academic_year_id')
-                ->references('academic_year_id')
+                ->references('id')
                 ->on('academic_years')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');

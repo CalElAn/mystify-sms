@@ -29,7 +29,7 @@ return new class extends Migration {
             $table->timestamps();
 
             $table->foreign('school_id')
-                ->references('school_id')
+                ->references('id')
                 ->on('schools')
                 ->onUpdate('cascade')
                 ->onDelete('no action');
