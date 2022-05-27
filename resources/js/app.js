@@ -26,6 +26,8 @@ const baseComponents = {
   ViewListIcon: ViewListIcon,
   MenuItemsTransition: MenuItemsTransition,
   MenuItemButton: MenuItemButton,
+  ProfilePicture: ProfilePicture,
+  Modal: Modal,
 };
 
 createInertiaApp({
@@ -40,10 +42,6 @@ createInertiaApp({
   },
   setup({ el, app, props, plugin }) {
     const vueApp = createApp({ render: () => h(app, props) })
-      // .component('MenuIcon', MenuIcon)
-      // .component('CogIcon', CogIcon)
-      .component('Modal', Modal)
-      .component('ProfilePicture', ProfilePicture)
       .use(plugin)
       .mixin({ methods: { route } });
 

@@ -17,7 +17,6 @@ return new class extends Migration
             $table->id();
             $table->string('subject_name', 50);
             $table->unsignedBigInteger('teacher_id');
-            $table->unsignedBigInteger('school_id');
             $table->unsignedBigInteger('class_id');
             $table->unsignedBigInteger('term_id');
             $table->timestamps();
@@ -31,12 +30,6 @@ return new class extends Migration
             $table->foreign('teacher_id')
                 ->references('id')
                 ->on('users')
-                ->onUpdate('cascade')
-                ->onDelete('cascade');
-
-            $table->foreign('school_id')
-                ->references('school_id')
-                ->on('schools')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
 

@@ -33,7 +33,7 @@ class Grade extends Model
         return $this->hasOne(School::class, 'school_id', 'school_id');
     }
 
-    public function student() //TODO test
+    public function student()
     {
         return $this->hasOne(User::class, 'id', 'student_id');
     }

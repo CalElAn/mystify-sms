@@ -39,7 +39,6 @@ class Term extends Model
 
     public function academicYear()
     {
-        //TODO test
         return $this->hasOne(
             AcademicYear::class,
             'academic_year_id',

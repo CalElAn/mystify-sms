@@ -1,6 +1,6 @@
 <template>
   <!-- Summary statistics -->
-  <section class="grid grid-cols-4 gap-3 font-semibold text-white">
+  <section class="grid grid-cols-4 gap-3 pt-2 font-semibold text-white">
     <div
       class="flex flex-col gap-2 rounded-lg bg-purple-400 py-4 px-6 shadow hover:cursor-pointer hover:shadow-md"
     >
@@ -40,13 +40,11 @@
   </section>
   <section class="flex gap-6">
     <!-- Line chart -->
-    <div class="w-4/6 base-card p-2">
+    <div class="base-card w-4/6 p-2">
       <LineChart :chartData="lineChartData" :options="lineChartOptions" />
     </div>
     <!-- Doughnut chart -->
-    <div
-      class="flex w-2/6 flex-col justify-evenly base-card p-3"
-    >
+    <div class="base-card flex w-2/6 flex-col justify-evenly p-3">
       <p class="p-2 text-center text-lg font-medium">
         Total school fees:
         <span class="text-2xl font-bold text-purple-600">
@@ -66,7 +64,9 @@
           Total fees collected
         </div>
         <div>
-          <button class="text-center block w-full text-3xl font-bold underline text-[#FF6384]">
+          <button
+            class="block w-full text-center text-3xl font-bold text-[#FF6384] underline"
+          >
             {{
               (
                 props.totalSchoolFees - props.totalSchoolFeesCollected
@@ -80,11 +80,23 @@
   </section>
   <section class="flex gap-6">
     <!-- Notice board -->
-    <TimelineCard :title="'Notice board'" :messages="props.noticeBoardMessages" class="w-2/5"/>
+    <TimelineCard
+      :title="'Notice board'"
+      :messages="props.noticeBoardMessages"
+      class="w-2/5"
+    />
     <!-- Notifications -->
-    <TimelineCard :title="'Notifications'" :messages="props.noticeBoardMessages" class="w-2/5"/>
+    <TimelineCard
+      :title="'Notifications'"
+      :messages="props.noticeBoardMessages"
+      class="w-2/5"
+    />
     <!-- Recent activities -->
-    <TimelineCard :title="'Recent activities'" :messages="props.noticeBoardMessages" class="w-1/5"/>
+    <TimelineCard
+      :title="'Recent activities'"
+      :messages="props.noticeBoardMessages"
+      class="w-1/5"
+    />
   </section>
 </template>
 

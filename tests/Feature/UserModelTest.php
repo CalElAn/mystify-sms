@@ -12,6 +12,9 @@ use App\Models\SchoolFeesPaid;
 use App\Models\SchoolFees;
 use App\Models\ClassModel;
 use App\Models\AcademicYear;
+use App\Models\Subject;
+use App\Models\SubjectTeacherPivot;
+use App\Models\Term;
 use Illuminate\Support\Facades\DB;
 
 class UserModelTest extends TestCase
@@ -46,6 +49,22 @@ class UserModelTest extends TestCase
         $this->assertTrue($student->parents->contains($parent1));
         $this->assertTrue($student->parents->contains($parent2));
         $this->assertInstanceOf('App\Models\User', $student->parents[0]);
+    }
+
+    /** @test */
+    public function a_user_who_is_a_teacher_has_many_subjects()
+    {
+        $teacher = User::factory()->create(['default_user_type' => 'teacher']);
+        $student = User::factory()->create(['default_user_type' => 'student']);
+
+        SubjectTeacherPivot::factory()->create(['teacher_id' => $teacher->id]);
+
+        $this->expectException('LogicException');
+        $student->subjects;
+
+        $this->assertTrue($teacher->subject->contains(SubjectTeacherPivot::find(1)));
+        $this->assertEquals(1, $teacher->subject->count());
+        $this->assertInstanceOf('App\Models\SubjectTeacherPivot', $teacher->subjects->first());
     }
 
     /** @test */
@@ -152,7 +171,7 @@ class UserModelTest extends TestCase
     }
 
     public User $student;
-    public ClassModel $class;
+    public ClassModel $classModel;
     public int $termId;
 
     public function seedAndSetUpStudent()
@@ -162,12 +181,14 @@ class UserModelTest extends TestCase
         $academicYearId = 6; //for class 6 results
 
         $this->student = User::where('user_type', 'student')->first();
-        $this->class = $this->student
+        $this->classModel = $this->student
             ->classes()
             ->where('academic_year_id', $academicYearId)
             ->first();
-        $this->termId = AcademicYear::find($academicYearId)->terms->first()->term_id;
-        $this->student->class = $this->class;
+        $this->termId = AcademicYear::find(
+            $academicYearId,
+        )->terms->first()->term_id;
+        $this->student->classModel = $this->classModel;
         $this->student->termId = $this->termId;
     }
 
@@ -176,7 +197,7 @@ class UserModelTest extends TestCase
     {
         $this->seedAndSetUpStudent();
 
-        $studentsInClass = $this->class->load('students')->students; //dd($studentsInClass->toArray());
+        $studentsInClass = $this->classModel->load('students')->students; //dd($studentsInClass->toArray());
 
         $studentsAndGrades = $this->student->getAllStudentsAndTheirGradesInClass();
 
@@ -186,8 +207,8 @@ class UserModelTest extends TestCase
                     'grades' => fn($query) => $query->where([
                         ['school_id', $this->student->school_id],
                         ['term_id', $this->termId],
-                        ['class_name', $this->class->name],
-                        ['class_suffix', $this->class->suffix],
+                        ['class_name', $this->classModel->name],
+                        ['class_suffix', $this->classModel->suffix],
                     ]),
                 ])->grades,
                 $studentsAndGrades->find($item->id)->grades,
@@ -284,8 +305,8 @@ class UserModelTest extends TestCase
                     Grade::where([
                         ['school_id', $this->student->school_id],
                         ['term_id', $this->termId],
-                        ['class_name', $this->class->name],
-                        ['class_suffix', $this->class->suffix],
+                        ['class_name', $this->classModel->name],
+                        ['class_suffix', $this->classModel->suffix],
                         ['subject_name', $item->subject_name],
                     ])
                         ->get()
@@ -312,22 +333,29 @@ class UserModelTest extends TestCase
     {
         $this->seedAndSetUpStudent();
 
-        $this->assertInstanceOf('App\Models\ClassModel', $this->student->classes[0]);
+        $this->assertInstanceOf(
+            'App\Models\ClassModel',
+            $this->student->classes[0],
+        );
     }
 
     /** @test */
     public function a_teacher_belongs_to_many_classes()
     {
         $class = ClassModel::factory()->create();
-        $teacher = User::factory()->create(['default_user_type' => 'teacher']); 
+        $teacher = User::factory()->create(['default_user_type' => 'teacher']);
 
         DB::table('class_teacher_pivot')->insert([
             'class_id' => $class->class_id,
             'teacher_id' => $teacher->id,
-            'academic_year_id' => AcademicYear::factory()->create()->academic_year_id
+            'academic_year_id' => AcademicYear::factory()->create()
+                ->academic_year_id,
         ]);
 
-        $this->assertInstanceOf('App\Models\ClassModel', $teacher->classes->first());
+        $this->assertInstanceOf(
+            'App\Models\ClassModel',
+            $teacher->classes->first(),
+        );
     }
 
     /** @test */
@@ -338,7 +366,7 @@ class UserModelTest extends TestCase
         $this->assertInstanceOf('App\Models\Grade', $this->student->grades[0]);
     }
 
-     /** @test */
+    /** @test */
     public function a_student_knows_how_much_school_fees_he_has()
     {
         $student = User::factory()->create(['default_user_type' => 'student']);
@@ -358,5 +386,5 @@ class UserModelTest extends TestCase
             $student->schoolFees[0],
         );
         $this->assertEquals(3, $student->schoolFees->count());
-    }   
+    }
 }

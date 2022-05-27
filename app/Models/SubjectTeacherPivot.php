@@ -12,12 +12,12 @@ class SubjectTeacherPivot extends Model
     protected $with = ['classModel', 'term'];
 
 
-    public function classModel()//TODO test
+    public function classModel()
     {
         return $this->hasOne(ClassModel::class, 'class_id', 'class_id');
     }
 
-    public function term()//TODO test
+    public function term()
     {
         return $this->hasOne(Term::class, 'term_id', 'term_id');
     }

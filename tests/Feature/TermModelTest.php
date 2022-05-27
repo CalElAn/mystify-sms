@@ -29,4 +29,14 @@ class TermModelTest extends TestCase
 
         $this->assertEquals('2021/2022, First term', $term->formatted_short_name);
     }
+
+    /** @test */
+    public function a_term_has_one_academic_year()
+    {
+        $academicYear = AcademicYear::factory()->create();
+        $term = Term::factory()->create(['academic_year_id' => $academicYear->academic_year_id]);
+
+        $this->assertInstanceOf('App\Models\AcademicYear', $term->academicYear);
+    }
+
 }

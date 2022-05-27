@@ -156,7 +156,7 @@
       </table>
     </div>
   </section>
-  <hr />
+  <hr class="my-2" />
   <section class="flex flex-col items-center justify-center gap-4">
     <div class="flex gap-4">
       <!-- subject, class and term -->
@@ -338,6 +338,28 @@
       </button>
     </div>
   </section>
+  <hr class="my-2" />
+  <section class="flex gap-6">
+    <!-- Notice board -->
+    <TimelineCard
+      :title="'Notice board'"
+      :messages="noticeBoardMessages"
+      class="w-2/5"
+    />
+    <!-- Notifications -->
+    <TimelineCard
+      :title="'Notifications'"
+      :messages="noticeBoardMessages"
+      class="w-2/5"
+    />
+    <!-- Recent activities -->
+    <TimelineCard
+      :title="'Recent activities'"
+      :messages="noticeBoardMessages"
+      class="w-1/5"
+    />
+  </section>
+
   <!-- MODALS -->
   <!-- Modal containing list of classes -->
   <Modal
@@ -402,6 +424,7 @@ import { usePage } from '@inertiajs/inertia-vue3';
 
 import { defaultProps, changeAcademicYear } from '@/helpers';
 import ProfilePicture from '@/Components/ProfilePicture.vue';
+import TimelineCard from '@/Components/TimelineCard.vue';
 
 const props = defineProps({
   ...defaultProps,

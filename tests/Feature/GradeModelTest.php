@@ -34,4 +34,12 @@ class GradeModelTest extends TestCase
 
         $this->assertInstanceOf('App\Models\School', $grade->school);
     }
+
+    /** @test */
+    public function a_grade_belongs_to_a_student()
+    {
+        $grade = Grade::factory()->create();
+
+        $this->assertInstanceOf('App\Models\User', $grade->student);
+    }
 }

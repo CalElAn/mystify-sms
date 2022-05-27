@@ -12,7 +12,10 @@
         mystify-sms
       </div>
       <!-- school name and logo -->
-      <div class="flex flex-col gap-2">
+      <div
+        v-if="$page.component !== 'School/Dashboard/Parent'"
+        class="flex flex-col gap-2"
+      >
         <div
           class="h-28 w-28 place-self-center rounded-full bg-[url('/images/school-crests/default.png')] bg-contain bg-center bg-no-repeat"
           alt="school crest"
@@ -63,12 +66,13 @@
     >
       <!-- Nav bar -->
       <div
-        class="absolute top-0 left-0 flex h-14 w-full items-center justify-evenly border-b border-gray-200 shadow-sm"
+        class="absolute top-0 left-0 flex h-16 w-full items-center justify-end border-b border-gray-200 bg-white shadow-sm"
       >
         <!-- Current term -->
         <button
+          v-if="$page.component !== 'School/Dashboard/Parent'"
           @click="shouldOpenModalContainingListOfAcademicYearsWithTerms = true"
-          class="group flex items-center justify-center gap-2 rounded-md border border-gray-600 py-2 px-3 shadow-sm"
+          class="group mx-auto flex items-center justify-center gap-2 rounded-md border border-gray-500 py-2 px-3 shadow-sm"
         >
           <span
             class="font-semibold text-purple-600 group-hover:text-purple-400"
@@ -77,7 +81,9 @@
           <ViewListIcon class="h-5 w-5 group-hover:text-purple-400" />
         </button>
         <!-- User's name, profile picture and menu -->
-        <div class="flex gap-3">
+        <div
+          class="mr-12 flex gap-3 rounded-3xl border border-gray-500 px-2 shadow-sm"
+        >
           <ProfilePicture
             :profilePicturePath="authUser.profile_picture_path"
             widthClass="w-10"
@@ -86,7 +92,10 @@
           <div class="flex gap-1.5">
             <div class="flex flex-col">
               <div class="text-lg font-semibold text-fuchsia-600">
-                <Link class="hover:underline" :href="route('users.show', { userId: authUser.id })">
+                <Link
+                  class="hover:underline"
+                  :href="route('users.show', { userId: authUser.id })"
+                >
                   {{ authUser.name }}
                 </Link>
               </div>
@@ -255,7 +264,10 @@
                       active ? 'bg-violet-500 text-white' : 'text-gray-900',
                       'group flex w-full items-center justify-center rounded-md px-2 py-2 text-sm',
                     ]"
-                    @click="changeTerm(termItem.term_id)"
+                    @click="
+                      changeTerm(termItem.term_id);
+                      shouldOpenModalContainingListOfAcademicYearsWithTerms = false;
+                    "
                   >
                     {{ termItem.name }}
                   </button>

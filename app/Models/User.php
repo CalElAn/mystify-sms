@@ -10,7 +10,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\DB;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     use HasApiTokens, HasFactory, Notifiable;
 
@@ -46,10 +46,127 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public ClassModel $class;
+    public ClassModel $classModel;
     public int $termId;
     //so as to cache the results in a variable and not re-compute them every time its called
     public ?Collection $allStudentsAndTheirGradesInClass = null;
+
+    public function getPropsForHeadmasterDashboard($academicYearId): array
+    {
+        //TODO test
+        $school = $this->school;
+        
+        return [
+            'numberOfStudents' => $school->getStudents()->count(),
+            'numberOfParents' => $school->getParents()->count(),
+            'numberOfTeachers' => $school->getTeachers()->count(),
+            'numberOfAdministrators' => $school->getAdministrators()->count(),
+            'schoolFeesDataForLineChart' => $school->getSchoolFeesDataForLineChart(
+                $academicYearId,
+            ),
+            'totalSchoolFees' => round(
+                $school
+                    ->schoolFees()
+                    ->where('academic_year_id', $academicYearId)
+                    ->sum('amount'),
+                2,
+            ),
+            'totalSchoolFeesCollected' => round(
+                $school
+                    ->schoolFeesPaid()
+                    ->where('academic_year_id', $academicYearId)
+                    ->sum('amount'),
+                2,
+            ),
+        ];
+    }
+
+    public function getPropsForStudentDashboard($academicYearId, $termId): array
+    {
+        //TODO test
+        $classesWithTerms = ClassStudentPivot::where('student_id', $this->id)
+            ->with(['terms', 'classModel'])
+            ->get();
+        $classModel = $classesWithTerms
+            ->where('academic_year_id', $academicYearId)
+            ->first()->classModel;
+        $this->classModel = $classModel;
+        $this->termId = $termId;
+        $averageMark = $this->getAverageMarkOfStudentInClass();
+
+        return [
+            'classesWithTerms' => $classesWithTerms,
+            'classModel' => $classModel,
+            'classTeacher' => $classModel->teachers->first(),
+            'gradesDataForLineChart' => $this->getOverallGradesDataForLineChart(),
+            'gradesDataPerSubjectForLineChart' => $this->getOverallGradesDataPerSubjectForLineChart(),
+            'totalSchoolFees' => round(
+                $this->schoolFees()
+                    ->where('academic_year_id', $academicYearId)
+                    ->sum('amount'),
+                2,
+            ),
+            'totalSchoolFeesPaid' => round(
+                $this->schoolFeesPaid()
+                    ->where('academic_year_id', $academicYearId)
+                    ->sum('amount'),
+                2,
+            ),
+            'positionInClass' => $this->getPositionInClass(),
+            'positionStatisticsOfAllStudentsInClass' => $this->getPositionStatisticsOfAllStudentsInClass(),
+            'numberOfStudentsInClass' => $this->getTotalNumberOfStudentsInClass(),
+            'averageMark' => $averageMark,
+            'gradeForAverageMark' => $this->school->getGradeForMark(
+                $averageMark,
+            ),
+            'subjectsAndGrades' => $this->getSubjectsAndGrades(),
+        ];
+    }
+
+    public function getPropsForTeacherDashboard($academicYearId, $termId): array //TODO test
+    {
+        $school = $this->school;
+
+        $classes = $this->classes;
+        $class = $classes
+            ->where('pivot.academic_year_id', $academicYearId)
+            ->first();
+        $subjects = $this->subjects;
+        $subjects->each(
+            fn($subjectItem) => $subjectItem->term->append(
+                'formatted_short_name',
+            ),
+        );
+        $currentSubject = $subjects
+            ->where('class_id', $class->class_id)
+            ->where('term_id', $termId)
+            ->sortByDesc('created_at')
+            ->values()
+            ->first();
+        $gradesForCurrentSubjectWithStudent = $school
+            ->grades()
+            ->where([
+                ['term_id', $termId],
+                ['class_name', $class->name],
+                ['class_suffix', $class->suffix],
+                ['subject_name', $currentSubject->subject_name],
+            ])
+            ->with('student')
+            ->get();
+            
+        return [
+            'classes' => $classes,
+            'classModel' => $class,
+            'classTeacher' => User::find($class->pivot->teacher_id),
+            'studentsInClass' => $class->students
+                ->where('pivot.academic_year_id', $academicYearId)
+                ->sortBy('name')
+                ->values(),
+            'subjects' => $subjects,
+            'currentSubject' => $currentSubject,
+            'gradesForCurrentSubjectWithStudent' => $gradesForCurrentSubjectWithStudent,
+        ];
+    }
 
     public function getOverallGradesDataForLineChart(
         Collection $grades = null,
@@ -82,7 +199,9 @@ class User extends Authenticatable
             ->unique()
             ->values();
 
-        $gradesDataForOtherStudents = $this->school->grades()->whereIn('term_id', $termIds)
+        $gradesDataForOtherStudents = $this->school
+            ->grades()
+            ->whereIn('term_id', $termIds)
             ->get()
             ->whereIn('class_name', $classNames)
             ->whereIn('class_suffix', $classSuffixes);
@@ -124,14 +243,14 @@ class User extends Authenticatable
             return $this->allStudentsAndTheirGradesInClass;
         }
 
-        $this->allStudentsAndTheirGradesInClass = $this->class->load([
+        $this->allStudentsAndTheirGradesInClass = $this->classModel->load([
             'students.grades' => function ($query) {
                 //the $query constrains only the 'grades' relationship
                 $query->where([
                     ['school_id', $this->school_id],
                     ['term_id', $this->termId],
-                    ['class_name', $this->class->name],
-                    ['class_suffix', $this->class->suffix],
+                    ['class_name', $this->classModel->name],
+                    ['class_suffix', $this->classModel->suffix],
                 ]);
             },
         ])->students;
@@ -193,12 +312,15 @@ class User extends Authenticatable
 
     public function getSubjectsAndGrades(): Collection
     {
-        $allGrades = $this->school->grades()->where([
-            ['school_id', $this->school_id],
-            ['term_id', $this->termId],
-            ['class_name', $this->class->name],
-            ['class_suffix', $this->class->suffix],
-        ])->get();
+        $allGrades = $this->school
+            ->grades()
+            ->where([
+                ['school_id', $this->school_id],
+                ['term_id', $this->termId],
+                ['class_name', $this->classModel->name],
+                ['class_suffix', $this->classModel->suffix],
+            ])
+            ->get();
 
         $allGradesBySubject = $allGrades->groupBy('subject_name');
 
@@ -272,7 +394,6 @@ class User extends Authenticatable
 
     public function subjects()
     {
-        //TODO test
         if ($this->default_user_type === 'teacher') {
             return $this->hasMany(
                 SubjectTeacherPivot::class,
