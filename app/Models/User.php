@@ -49,13 +49,15 @@ class User extends Authenticatable implements MustVerifyEmail
     public ClassModel $classModel;
     public int $termId;
     //so as to cache the results in a variable and not re-compute them every time its called
+    //without a null default it throws a "Typed property ... must not be accessed before initialization" error
     public ?Collection $allStudentsAndTheirGradesInClass = null;
+    public ?Collection $gradesDataForOtherStudents = null;
 
     public function getPropsForHeadmasterDashboard($academicYearId): array
     {
         //TODO test
         $school = $this->school;
-        
+
         return [
             'numberOfStudents' => $school->getStudents()->count(),
             'numberOfParents' => $school->getParents()->count(),
@@ -123,8 +125,9 @@ class User extends Authenticatable implements MustVerifyEmail
         ];
     }
 
-    public function getPropsForTeacherDashboard($academicYearId, $termId): array //TODO test
+    public function getPropsForTeacherDashboard($academicYearId, $termId): array
     {
+        //TODO test
         $school = $this->school;
 
         $classes = $this->classes;
@@ -138,7 +141,7 @@ class User extends Authenticatable implements MustVerifyEmail
             ),
         );
         $currentSubject = $subjects
-            ->where('class_id', $class->id)
+            ->where('class_id', $class?->id)
             ->where('term_id', $termId)
             ->sortByDesc('created_at')
             ->values()
@@ -147,18 +150,18 @@ class User extends Authenticatable implements MustVerifyEmail
             ->grades()
             ->where([
                 ['term_id', $termId],
-                ['class_name', $class->name],
-                ['class_suffix', $class->suffix],
-                ['subject_name', $currentSubject->subject_name],
+                ['class_name', $class?->name],
+                ['class_suffix', $class?->suffix],
+                ['subject_name', $currentSubject?->subject_name],
             ])
             ->with('student')
             ->get();
-            
+
         return [
             'classes' => $classes,
             'classModel' => $class,
-            'classTeacher' => User::find($class->pivot->teacher_id),
-            'studentsInClass' => $class->students
+            'classTeacher' => User::find($class?->pivot->teacher_id),
+            'studentsInClass' => $class?->students
                 ->where('pivot.academic_year_id', $academicYearId)
                 ->sortBy('name')
                 ->values(),
@@ -168,9 +171,19 @@ class User extends Authenticatable implements MustVerifyEmail
         ];
     }
 
+    public function getPropsForParentDashboard(): array
+    {
+        return [
+            'showTerm' => false,
+            'children' => $this->children,
+        ];
+    }
+
     public function getOverallGradesDataForLineChart(
         Collection $grades = null,
+        string $subjectName = null,
     ): array {
+        //TODO update test
         if (!$grades) {
             $grades = $this->grades()->get();
         }
@@ -199,12 +212,23 @@ class User extends Authenticatable implements MustVerifyEmail
             ->unique()
             ->values();
 
-        $gradesDataForOtherStudents = $this->school
-            ->grades()
-            ->whereIn('term_id', $termIds)
-            ->get()
-            ->whereIn('class_name', $classNames)
-            ->whereIn('class_suffix', $classSuffixes);
+        if (!$this->gradesDataForOtherStudents) {
+            $this->gradesDataForOtherStudents = $this->school
+                ->grades()
+                ->whereIn('term_id', $termIds)
+                ->get()
+                ->whereIn('class_name', $classNames)
+                ->whereIn('class_suffix', $classSuffixes);
+        }
+
+        $gradesDataForOtherStudents = $this->gradesDataForOtherStudents;
+
+        if ($subjectName) {
+            $gradesDataForOtherStudents = $gradesDataForOtherStudents->where(
+                'subject_name',
+                $subjectName,
+            );
+        }
 
         $gradesDataForOtherStudents
             ->groupBy('class_name_and_suffix')
@@ -220,6 +244,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function getOverallGradesDataPerSubjectForLineChart(): array
     {
+        //TODO update test
         $grades = $this->grades()->get();
         $subjectNames = $grades
             ->pluck('subject_name')
@@ -230,6 +255,7 @@ class User extends Authenticatable implements MustVerifyEmail
         foreach ($subjectNames as $subjectName) {
             $chartData[$subjectName] = $this->getOverallGradesDataForLineChart(
                 $grades->where('subject_name', $subjectName),
+                $subjectName,
             );
         }
 
@@ -428,17 +454,58 @@ class User extends Authenticatable implements MustVerifyEmail
         return null;
     }
 
-    public function parents()
+    /**
+     * Scope a query to only include student users.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return void
+     */
+    public function scopeStudentScope($query) //TODO test
     {
-        if ($this->default_user_type === 'student') {
+        return $query->where('default_user_type', 'student');
+    }
+
+    public function scopeParentScope($query) //TODO test
+    {
+        return $query->where('default_user_type', 'parent');
+    }
+
+    public function scopeTeacherScope($query) //TODO test
+    {
+        return $query->where('default_user_type', 'teacher');
+    }
+
+    public function scopeAdministratorScope($query) //TODO test
+    {
+        return $query->where('default_user_type', 'administrator');
+    }
+
+    public function parents() //TODO update test
+    {
+        // if ($this->default_user_type === 'student') {
             return $this->belongsToMany(
                 User::class,
                 'parent_student_pivot',
                 'student_id',
                 'parent_id',
             )->withTimestamps();
-        }
+        // }
 
-        return null;
+        // return null;
+    }
+
+    public function children()
+    {
+        //TODO update test
+        // if ($this->default_user_type === 'parent') {
+            return $this->belongsToMany(
+                User::class,
+                'parent_student_pivot',
+                'parent_id',
+                'student_id',
+            )->withTimestamps();
+        // }
+
+        // return null;
     }
 }

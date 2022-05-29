@@ -1,4 +1,20 @@
 <template>
+  <!-- dashboard heading component -->
+  <section v-if="shouldShowDashboardHeading">
+    <div class="flex items-center gap-3 text-2xl font-semibold text-gray-500">
+      Student dashboard:
+      <div
+        class="flex items-center gap-1 text-xl tracking-wide text-fuchsia-600"
+      >
+        <ProfilePicture
+          :profilePicturePath="user.profile_picture_path"
+          widthClass="w-10"
+          heightClass="h-10"
+        />
+        {{ user.name }}
+      </div>
+    </div>
+  </section>
   <section class="flex items-center justify-evenly">
     <!-- class name and teacher -->
     <div class="base-card flex w-[30rem] items-center justify-evenly p-2">
@@ -299,7 +315,7 @@ const props = defineProps({
   numberOfStudentsInClass: Number,
   averageMark: Number,
   gradeForAverageMark: String,
-  subjectsAndGrades: Array,
+  subjectsAndGrades: [Array, Object],
 });
 
 const shouldOpenModalContainingListOfClasses = ref(false);
@@ -339,6 +355,7 @@ const lineChartDataForGradesPerSubject = {
   datasets: [
     {
       label: "Student's performance over time ",
+      //select the first subject in the "gradesDataPerSubjectForLineChart" object
       data: props.gradesDataPerSubjectForLineChart[
         Object.keys(props.gradesDataPerSubjectForLineChart)[0]
       ].gradesDataForStudent,
@@ -350,6 +367,7 @@ const lineChartDataForGradesPerSubject = {
     },
     {
       label: "Average class' performance over time ",
+      //select the first subject in the "gradesDataPerSubjectForLineChart" object
       data: props.gradesDataPerSubjectForLineChart[
         Object.keys(props.gradesDataPerSubjectForLineChart)[0]
       ].gradesDataForOtherStudents,
@@ -365,6 +383,10 @@ const lineChartDataForGradesPerSubject = {
 function setlineChartDataAndOptionsForGradesPerSubject(subjectName) {
   lineChartDataForGradesPerSubject.datasets[0].data =
     props.gradesDataPerSubjectForLineChart[subjectName].gradesDataForStudent;
+  lineChartDataForGradesPerSubject.datasets[1].data =
+    props.gradesDataPerSubjectForLineChart[
+      subjectName
+    ].gradesDataForOtherStudents;
   lineChartOptionsForGradesPerSuject.plugins.title.text = subjectName;
 }
 

@@ -12,6 +12,9 @@
   .base-card {
       @apply shadow rounded-lg bg-white
   }
+  .h1-title {
+      @apply text-3xl font-semibold tracking-wide
+  }
   .menu-items {
       @apply divide-y divide-gray-200 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none absolute
   }

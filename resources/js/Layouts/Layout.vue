@@ -6,7 +6,7 @@
     >
       <!-- App name and logo -->
       <div
-        class="absolute top-0 flex h-14 w-full items-center justify-center gap-0.5 bg-fuchsia-600 text-lg font-medium tracking-wide text-white"
+        class="absolute top-0 flex h-16 w-full items-center justify-center gap-0.5 bg-fuchsia-600 text-lg font-medium tracking-wide text-white"
       >
         <LightningBoltIcon class="h-6 w-6" />
         mystify-sms
@@ -28,36 +28,66 @@
       </div>
       <!-- side bar buttons -->
       <div class="flex w-full flex-col gap-2">
-        <button
-          class="flex w-full items-center justify-start gap-2 rounded-full bg-purple-600 py-2 pl-5 text-lg font-medium tracking-wide text-white"
+        <Link
+          :href="route('dashboard')"
+          :class="[
+            $page.url.startsWith('/dashboard')
+              ? 'bg-purple-600 text-white'
+              : 'hover:text-purple-600 hover:underline',
+          ]"
+          class="flex w-full items-center justify-start gap-2 rounded-full py-2 pl-5 text-lg font-medium tracking-wide"
         >
           <DesktopComputerIcon class="h-5 w-5" />
           Dashboard
-        </button>
-        <button
-          class="flex w-full items-center justify-start gap-2 rounded-full py-2 pl-5 text-lg font-medium tracking-wide hover:text-purple-600 hover:underline"
+        </Link>
+        <Link
+          :href="route('users', 'students')"
+          :class="[
+            $page.url.startsWith('/users/students')
+              ? 'bg-purple-600 text-white'
+              : 'hover:text-purple-600 hover:underline',
+          ]"
+          class="flex w-full items-center justify-start gap-2 rounded-full py-2 pl-5 text-lg font-medium tracking-wide"
         >
           <AcademicCapIcon class="h-5 w-5" />
           Students
-        </button>
-        <button
-          class="flex w-full items-center justify-start gap-2 rounded-full py-2 pl-5 text-lg font-medium tracking-wide hover:text-purple-600 hover:underline"
+        </Link>
+        <Link
+          :href="route('users', 'parents')"
+          :class="[
+            $page.url.startsWith('/users/parents')
+              ? 'bg-purple-600 text-white'
+              : 'hover:text-purple-600 hover:underline',
+          ]"
+          class="flex w-full items-center justify-start gap-2 rounded-full py-2 pl-5 text-lg font-medium tracking-wide"
         >
           <UserGroupIcon class="h-5 w-5" />
           Parents
-        </button>
-        <button
-          class="flex w-full items-center justify-start gap-2 rounded-full py-2 pl-5 text-lg font-medium tracking-wide hover:text-purple-600 hover:underline"
+        </Link>
+        <Link
+          :href="route('users', 'teachers')"
+          :class="[
+            $page.url.startsWith('/users/teachers')
+              ? 'bg-purple-600 text-white'
+              : 'hover:text-purple-600 hover:underline',
+          ]"
+          class="flex w-full items-center justify-start gap-2 rounded-full py-2 pl-5 text-lg font-medium tracking-wide"
         >
           <UsersIcon class="h-5 w-5" />
           Teachers
-        </button>
-        <button
-          class="flex w-full items-center justify-start gap-2 rounded-full py-2 pl-5 text-lg font-medium tracking-wide hover:text-purple-600 hover:underline"
+        </Link>
+        <Link
+          :href="route('users', 'administrators')"
+          :class="[
+            $page.url.startsWith('/users/administrators')
+              ? 'bg-purple-600 text-white'
+              : 'hover:text-purple-600 hover:underline',
+          ]"
+          class="flex w-full items-center justify-start gap-2 rounded-full py-2 pl-5 text-lg font-medium tracking-wide"
         >
           <ArchiveIcon class="h-5 w-5" />
           Administrators
-        </button>
+        </Link>
       </div>
     </div>
     <!-- main content div -->
@@ -70,13 +100,13 @@
       >
         <!-- Current term -->
         <button
-          v-if="$page.component !== 'School/Dashboard/Parent'"
+          v-if="showTerm"
           @click="shouldOpenModalContainingListOfAcademicYearsWithTerms = true"
           class="group mx-auto flex items-center justify-center gap-2 rounded-md border border-gray-500 py-2 px-3 shadow-sm"
         >
           <span
             class="font-semibold text-purple-600 group-hover:text-purple-400"
-            >{{ term.formatted_name }}</span
+            >{{ term?.formatted_name }}</span
           >
           <ViewListIcon class="h-5 w-5 group-hover:text-purple-400" />
         </button>
@@ -265,7 +295,7 @@
                       'group flex w-full items-center justify-center rounded-md px-2 py-2 text-sm',
                     ]"
                     @click="
-                      changeTerm(termItem.term_id);
+                      changeTerm(termItem.id);
                       shouldOpenModalContainingListOfAcademicYearsWithTerms = false;
                     "
                   >

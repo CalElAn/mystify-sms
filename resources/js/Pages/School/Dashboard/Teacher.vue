@@ -1,11 +1,11 @@
 <template>
   <section class="flex items-center justify-center">
     <!-- class name and teacher -->
-    <div class="base-card flex w-[32rem] items-center justify-evenly p-2">
+    <div class="base-card flex gap-2 items-center justify-evenly py-2 px-4">
       <div
         class="flex items-center justify-center gap-2 text-xl font-semibold text-purple-600"
       >
-        {{ classModel.name }} {{ classModel.suffix }}
+        {{ classModel?.name }} {{ classModel?.suffix }}
         <button
           @click="shouldOpenModalContainingListOfClasses = true"
           class="text-gray-700 hover:text-purple-600"
@@ -45,15 +45,15 @@
         <div class="inline-block">Class teacher:</div>
         <div class="flex items-center justify-center gap-2">
           <ProfilePicture
-            :profilePicturePath="classTeacher.profile_picture_path"
+            :profilePicturePath="classTeacher?.profile_picture_path"
             widthClass="w-14"
             heightClass="h-14"
           />
           <Link
-            :href="route('users.show', { userId: classTeacher.id })"
+            :href="route('users.show', { userId: classTeacher?.id })"
             class="inline-block text-lg font-semibold tracking-wide text-purple-600 underline underline-offset-1"
           >
-            {{ classTeacher.name }}
+            {{ classTeacher?.name }}
           </Link>
         </div>
       </div>
@@ -75,14 +75,14 @@
             <div class="px-1 py-1">
               <MenuItem as="div" v-slot="{ active }">
                 <MenuItemButton :active="active">
-                  Add student(s) to {{ classModel.name }}
-                  {{ classModel.suffix }}
+                  Add student(s) to {{ classModel?.name }}
+                  {{ classModel?.suffix }}
                 </MenuItemButton>
               </MenuItem>
               <MenuItem as="div" v-slot="{ active }">
                 <MenuItemButton :active="active">
-                  Remove student(s) from {{ classModel.name }}
-                  {{ classModel.suffix }}
+                  Remove student(s) from {{ classModel?.name }}
+                  {{ classModel?.suffix }}
                 </MenuItemButton>
               </MenuItem>
             </div>
@@ -103,81 +103,30 @@
       </Menu>
     </div>
     <!-- list of students in class -->
-    <div class="base-card w-11/12 p-2">
-      <p class="mb-1 text-center text-xl font-semibold tracking-wide">
-        Students
-      </p>
-      <table class="w-full table-auto text-left">
-        <thead class="bg-purple-100 text-gray-500">
-          <tr>
-            <th class="p-2"></th>
-            <th class="p-2">Name</th>
-            <th class="p-2">Email</th>
-            <th class="p-2">Number</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            v-for="(student, index) in studentsInClass"
-            :key="index"
-            class="odd:bg-white even:bg-gray-50"
-          >
-            <td class="flex justify-center p-2">
-              <ProfilePicture
-                :profilePicturePath="student.profile_picture_path"
-                widthClass="w-10"
-                heightClass="h-10"
-              />
-            </td>
-            <td class="p-2">
-              <Link
-                class="decoration-purple-600 hover:underline"
-                :href="route('users.show', { userId: student.id })"
-                >{{ student.name }}</Link
-              >
-            </td>
-            <td class="p-2">
-              <a
-                class="decoration-purple-600 hover:underline"
-                :href="'mailto:' + student.email"
-              >
-                {{ student.email }}
-              </a>
-            </td>
-            <td class="p-2">
-              <a
-                class="decoration-purple-600 hover:underline"
-                :href="'tel:' + student.phone_number"
-                >{{ student.phone_number }}</a
-              >
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <UserTable :title="`Students in ${classModel?.name ?? ''} ${classModel?.suffix}`" :users="studentsInClass"/>
   </section>
   <hr class="my-2" />
   <section class="flex flex-col items-center justify-center gap-4">
     <div class="flex gap-4">
       <!-- subject, class and term -->
       <div
-        class="base-card flex w-[30rem] items-center justify-evenly p-2 text-lg font-semibold tracking-wide"
+        class="base-card flex gap-4 items-center justify-evenly px-4 py-3 text-lg font-semibold tracking-wide"
       >
         <div>
-          {{ currentSubject.subject_name }}
+          {{ currentSubject?.subject_name }}
         </div>
         <div
           style="height: 36px; width: 2px; background: #ddd; display: inline"
         ></div>
         <div>
-          {{ currentSubject.class_model.name }}
-          {{ currentSubject.class_model.suffix }}
+          {{ currentSubject?.class_model.name }}
+          {{ currentSubject?.class_model.suffix }}
         </div>
         <div
           style="height: 36px; width: 2px; background: #ddd; display: inline"
         ></div>
         <div>
-          {{ currentSubject.term.formatted_short_name }}
+          {{ currentSubject?.term.formatted_short_name }}
         </div>
       </div>
       <div class="flex items-center justify-center gap-2 text-purple-600">
@@ -191,7 +140,7 @@
             />
           </button>
         </div>
-        <!-- cog icon button -->
+        <!-- dots icon button -->
         <Menu as="div" class="base-card relative">
           <MenuButton class="w-full p-2">
             <DotsVerticalIcon
@@ -236,7 +185,7 @@
                   <MenuItemButton :active="active">
                     Add student(s) grade
                     {{
-                      `(${currentSubject.subject_name} | ${currentSubject.class_model.name} ${currentSubject.class_model.suffix} | ${currentSubject.term.formatted_short_name})`
+                      `(${currentSubject?.subject_name} | ${currentSubject?.class_model.name} ${currentSubject?.class_model.suffix} | ${currentSubject?.term.formatted_short_name})`
                     }}
                   </MenuItemButton>
                 </MenuItem>
@@ -244,7 +193,7 @@
                   <MenuItemButton :active="active">
                     Remove student(s) grade(s)
                     {{
-                      `(${currentSubject.subject_name} | ${currentSubject.class_model.name} ${currentSubject.class_model.suffix} | ${currentSubject.term.formatted_short_name})`
+                      `(${currentSubject?.subject_name} | ${currentSubject?.class_model.name} ${currentSubject?.class_model.suffix} | ${currentSubject?.term.formatted_short_name})`
                     }}
                   </MenuItemButton>
                 </MenuItem>
@@ -267,7 +216,7 @@
           Grades
           <span class="text-base font-light tracking-normal">
             {{
-              `(${currentSubject.subject_name} | ${currentSubject.class_model.name} ${currentSubject.class_model.suffix} | ${currentSubject.term.formatted_short_name})`
+              `(${currentSubject?.subject_name} | ${currentSubject?.class_model.name} ${currentSubject?.class_model.suffix} | ${currentSubject?.term.formatted_short_name})`
             }}
           </span>
         </p>
@@ -413,20 +362,17 @@
 
 <script setup>
 import { ref, computed } from 'vue';
-// import {  PlusIcon } from '@heroicons/vue/solid';
 import {
-  PlusCircleIcon,
   CheckCircleIcon,
   MinusCircleIcon,
 } from '@heroicons/vue/outline';
 import { usePage } from '@inertiajs/inertia-vue3';
-// import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue';
 
 import { defaultProps, changeAcademicYear } from '@/helpers';
-import ProfilePicture from '@/Components/ProfilePicture.vue';
 import TimelineCard from '@/Components/TimelineCard.vue';
+import UserTable from '@/Components/User/Table.vue';
 
-const props = defineProps({
+defineProps({
   ...defaultProps,
   classes: Object,
   classModel: Object,

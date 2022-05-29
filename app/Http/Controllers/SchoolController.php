@@ -12,6 +12,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\Builder;
 
 class SchoolController extends Controller
 {
@@ -60,21 +61,32 @@ class SchoolController extends Controller
     /**
      * Show school's dashboard.
      *
-     * @param  \App\Models\School  $school
-     * @return \Illuminate\Http\Response
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Inertia\Response
      */
-    public function showDashboard(Request $request)
+    public function dashboard(Request $request)
     {
         /** @var \App\Models\User */
-        $authUser = Auth::user();
-        // $authUser = User::where('user_type', 'student')->first();
-        // $authUser = User::where('user_type', 'teacher')->first();
-        $authUser = User::where('user_type', 'parent')->first();
+        $user = Auth::user();
+        // $user = User::where('user_type', 'student')->first();
+        // $user = User::where('user_type', 'teacher')->first();
+        // $user = User::where('user_type', 'parent')->first();
+
+        $shouldShowDashboardHeading = false;
+
+        if ($request->userId) {
+            $user = User::find($request->userId);
+            $shouldShowDashboardHeading = true;
+        }
 
         /** @var \App\Models\School */
-        $school = $authUser->school;
+        $school = $user->school;
 
-        $academicYearsWithTerms = $school->academicYears()->with('terms')->latest('end_date')->get();
+        $academicYearsWithTerms = $school
+            ->academicYears()
+            ->with('terms')
+            ->latest('end_date')
+            ->get();
 
         switch (true) {
             case $request->termId:
@@ -82,59 +94,142 @@ class SchoolController extends Controller
                 break;
 
             case $request->academicYearId:
-                $term = AcademicYear::find($request->academicYearId)->terms()->latest('end_date')->first();
+                $term = AcademicYear::find($request->academicYearId)
+                    ->terms()
+                    ->latest('end_date')
+                    ->first();
                 break;
-            
+
             default:
-                $term = $academicYearsWithTerms->first()->terms->sortByDesc('end_date')->values()->first();
+                $term = $academicYearsWithTerms
+                    ->first()
+                    ->terms->sortByDesc('end_date')
+                    ->values()
+                    ->first();
                 break;
         }
 
         $termId = $term->id;
-        $academicYearId = $term->academic_year_id; 
+        $academicYearId = $term->academic_year_id;
         $term->append('formatted_name');
 
         $defaultProps = [
+            'user' => $user,
+            'shouldShowDashboardHeading' => $shouldShowDashboardHeading,
             'school' => $school,
             'academicYearsWithTerms' => $academicYearsWithTerms,
             'term' => $term,
-            'noticeBoardMessages' 
-                => $school
-                    ->noticeBoard()
-                    ->where('term_id', $termId)
-                    ->latest()
-                    ->get()
-                    ->groupBy(function ($item) {
-                        return "{$item->created_at->format('l\, jS F Y')} ...({$item->created_at->diffForHumans()})";
-                    }),
+            'showTerm' => true,
+            'noticeBoardMessages' => $school
+                ->noticeBoard()
+                ->where('term_id', $termId)
+                ->latest()
+                ->get()
+                ->groupBy(function ($item) {
+                    return "{$item->created_at->format(
+                        'l\, jS F Y',
+                    )} ...({$item->created_at->diffForHumans()})";
+                }),
         ];
 
-        switch ($authUser->user_type) {
+        switch ($user->user_type) {
             case 'headteacher':
                 $component = 'Headteacher';
-                $props = $authUser->getPropsForHeadmasterDashboard($academicYearId);
-                break;
-            
-            case 'student':
-                $component = 'Student';
-                $props = $authUser->getPropsForStudentDashboard($academicYearId, $termId);
-                break;
-            
-            case 'teacher':
-                $component = 'Teacher';
-                $props = $authUser->getPropsForTeacherDashboard($academicYearId, $termId);
+                $props = $user->getPropsForHeadmasterDashboard($academicYearId);
                 break;
 
-            case 'parent':
-                $component = 'Parent';
-                $props = [];
+            case 'student':
+                $component = 'Student';
+                $props = $user->getPropsForStudentDashboard(
+                    $academicYearId,
+                    $termId,
+                );
                 break;
-            
+
+            case 'teacher':
+                $component = 'Teacher';
+                $props = $user->getPropsForTeacherDashboard(
+                    $academicYearId,
+                    $termId,
+                );
+                break;
+
+            case 'parent': //TODO update test
+                $component = 'Parent';
+                $props = $user->getPropsForParentDashboard();
+                break;
+
             default:
                 # code...
                 break;
         }
-        return Inertia::render("School/Dashboard/{$component}", array_merge($props, $defaultProps));
+
+        return Inertia::render(
+            "School/Dashboard/{$component}",
+            //order is important so any repeated keys in $props will overwrite the keys in $defaultProps
+            array_merge($defaultProps, $props),
+        );
+    }
+
+    /**
+     * Show all requested user types for school.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Inertia\Response
+     */
+    public function users(Request $request)
+    {
+        //TODO test
+        /** @var \App\Models\School */
+        $school = Auth::user()->school;
+        $userType = $request->userType;
+
+        switch ($userType) {
+            case 'students':
+                $query = $school
+                    ->users()
+                    ->studentScope();
+                break;
+
+            case 'parents':
+                $query = User::parentScope()
+                    ->whereHas(
+                        'children',
+                        fn(Builder $query) => $query->where(
+                            'school_id',
+                            $school->id,
+                        ),
+                    );
+                break;
+
+            case 'teachers':
+                $query = $school
+                    ->users()
+                    ->teacherScope();
+                break;
+
+            case 'administrators':
+                $query = $school
+                    ->users()
+                    ->administratorScope();
+                break;
+
+            default:
+                # code...
+                break;
+        }
+
+        if ($request->name) {
+            $query->where('name', 'LIKE', "%{$request->name}%");
+        }
+
+        return Inertia::render('School/Users', [
+            'school' => $school,
+            'showTerm' => false,
+            'users' => $query->orderBy('name')->paginate(10)->withQueryString(),
+            'userType' => $userType,
+            'name' => $request->name,
+        ]);
     }
 
     /**

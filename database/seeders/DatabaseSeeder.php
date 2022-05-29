@@ -51,6 +51,22 @@ class DatabaseSeeder extends Seeder
         $allTeachers = $allUsers
             ->where('default_user_type', 'teacher')
             ->values();
+        $allParents = $allUsers->where('default_user_type', 'parent')->values();
+
+        //*select two random parents for each student
+        $parentRecordsToInsert = [];
+        foreach ($allStudents as $studentToBeGivenParents) {
+            $randomParents = $allParents->random(2)->values();
+            $parentRecordsToInsert[] = [
+                'student_id' => $studentToBeGivenParents->id,
+                'parent_id' => $randomParents[0]->id,
+            ];
+            $parentRecordsToInsert[] = [
+                'student_id' => $studentToBeGivenParents->id,
+                'parent_id' => $randomParents[1]->id,
+            ];
+        }
+        DB::table('parent_student_pivot')->insert($parentRecordsToInsert);
 
         //*create an array that maps each student id to a random class suffix
         $studentsAndClassSuffixesArray = [];

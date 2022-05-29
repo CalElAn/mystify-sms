@@ -109,7 +109,7 @@ class School extends Model
         return $chartData;
     }
 
-    public function getParents()
+    public function getParents()//TODO rewrite to use scope
     {
         $parents = collect();
         $students = $this->getStudents();

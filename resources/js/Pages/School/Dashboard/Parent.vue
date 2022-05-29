@@ -1,16 +1,28 @@
 <template>
-  <section
-    class="flex items-center justify-start gap-4 text-4xl font-semibold tracking-wide"
-  >
+  <!-- dashboard heading component -->
+  <section v-if="shouldShowDashboardHeading">
+    <div class="flex items-center gap-3 text-2xl text-gray-500 font-semibold">
+      Parent dashboard:
+      <div
+        class="flex items-center gap-1 text-xl tracking-wide text-fuchsia-600"
+      >
+        <ProfilePicture
+          :profilePicturePath="user.profile_picture_path"
+          widthClass="w-10"
+          heightClass="h-10"
+        />
+        {{ user.name }}
+      </div>
+    </div>
+  </section>
+  <section class="h1-title flex items-center justify-start gap-4">
     Children
     <Menu as="div" class="base-card relative text-base">
-      <MenuButton class="w-full p-2">
-        <DotsVerticalIcon
-          class="h-5 w-5 text-purple-600 transition-transform hover:scale-110"
-        />
+      <MenuButton class="flex w-full items-center justify-center p-1.5">
+        <DotsVerticalIcon class="h-5 w-5 text-purple-600" />
       </MenuButton>
       <MenuItemsTransition>
-        <MenuItems class="menu-items right-0 z-10 mt-2 w-max origin-top-right">
+        <MenuItems class="menu-items left-0 z-10 mt-2 w-max origin-top-left">
           <div class="px-1 py-1">
             <MenuItem as="div" v-slot="{ active }">
               <MenuItemButton :active="active"> Add child </MenuItemButton>
@@ -23,37 +35,16 @@
       </MenuItemsTransition>
     </Menu>
   </section>
-  <section class="grid mt-6 mb-auto grid-cols-3">
-    <button class="base-card border-white hover:border-purple-600 border flex gap-6 p-4">
-      <ProfilePicture
-        :profilePicturePath="$page.props.auth.user.profile_picture_path"
-        widthClass="w-1/4"
-        heightClass="h-full"
-      />
-      <div class="flex flex-col gap-2">
-        <div class="text-xl text-fuchsia-600 font-semibold tracking-wide">
-          {{ $page.props.auth.user.name }}
-        </div>
-        <div>
-          <a
-            class="decoration-purple-600 hover:underline"
-            :href="'tel:' + $page.props.auth.user.phone_number"
-            >{{ $page.props.auth.user.phone_number }}</a
-          >
-        </div>
-        <div>
-          <a
-            class="decoration-purple-600 hover:underline"
-            :href="'mailto:' + $page.props.auth.user.email"
-          >
-            {{ $page.props.auth.user.email }}
-          </a>
-        </div>
-      </div>
-    </button>
+  <section class="mt-6 mb-auto grid grid-cols-3 gap-6">
+    <UserCard v-for="child in children" :user="child"></UserCard>
   </section>
 </template>
 
-<script setup></script>
+<script setup>
+import { defaultProps } from '@/helpers';
 
-<style lang="scss" scoped></style>
+defineProps({
+  ...defaultProps,
+  children: Object,
+});
+</script>

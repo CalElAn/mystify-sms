@@ -12,7 +12,12 @@ export function getProfilePictureUrl(profilePicturePath) {
 }
 
 export function changeTerm(termId) {
-  Inertia.get(route('dashboard', { termId: termId }));
+  let urlSearchParams = new URLSearchParams(window.location.search);
+  let routeData = { termId: termId }
+
+  if (urlSearchParams.has('userId')) routeData.userId = urlSearchParams.get('userId')
+
+  Inertia.get(route('dashboard', routeData));
 }
 
 export function changeAcademicYear(academicYearId) {
@@ -20,8 +25,11 @@ export function changeAcademicYear(academicYearId) {
 }
 
 export const defaultProps = {
+  user: Object,
+  shouldShowDashboardHeading: Boolean,
   school: Object,
   term: Object,
+  showTerm: Boolean,
   academicYearsWithTerms: Array,
   noticeBoardMessages: Object,
 }

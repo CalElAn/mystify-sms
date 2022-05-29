@@ -9,7 +9,7 @@ class SubjectTeacherPivot extends Model
 {
     use HasFactory;
     protected $table = 'subject_teacher_pivot';
-    protected $with = ['classModel', 'term'];
+    protected $with = ['classModel', 'term.academicYear'];
 
 
     public function classModel()

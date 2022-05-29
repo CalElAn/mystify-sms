@@ -26,7 +26,12 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/dashboard', [SchoolController::class, 'showDashboard'])->middleware(['auth', 'verified'])->name('dashboard');
-Route::get('/profile', function() {return;})->middleware(['auth', 'verified'])->name('users.show');
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/dashboard', [SchoolController::class, 'dashboard'])->name('dashboard');
+    Route::get('/users/{userType}', [SchoolController::class, 'users'])->name('users');
+
+    Route::get('/profile', function() {return;})->name('users.show');
+});
+
 
 require __DIR__.'/auth.php';

@@ -9,7 +9,8 @@ import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue';
 
 import Layout from './Layouts/Layout.vue';
 import Modal from '@/Components/Modal.vue';
-import ProfilePicture from '@/Components/ProfilePicture.vue';
+import ProfilePicture from '@/Components/User/ProfilePicture.vue';
+import UserCard from '@/Components/User/Card.vue';
 import MenuItemsTransition from '@/Components/MenuItemsTransition.vue';
 import MenuItemButton from '@/Components/MenuItemButton.vue';
 
@@ -27,6 +28,7 @@ const baseComponents = {
   MenuItemsTransition: MenuItemsTransition,
   MenuItemButton: MenuItemButton,
   ProfilePicture: ProfilePicture,
+  UserCard: UserCard,
   Modal: Modal,
 };
 
