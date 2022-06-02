@@ -4,7 +4,7 @@
       {{ title }}
     </p>
     <table class="w-full table-auto text-left">
-      <thead class="bg-purple-100 text-gray-500">
+      <thead class="thead">
         <tr>
           <th class="p-2"></th>
           <th class="p-2">Name</th>
@@ -16,7 +16,7 @@
         <tr
           v-for="(user, index) in users"
           :key="index"
-          class="odd:bg-white even:bg-gray-50 hover:bg-gray-200"
+          class="tbody"
         >
           <td class="flex justify-center p-2">
             <ProfilePicture
@@ -27,14 +27,14 @@
           </td>
           <td class="p-2">
             <Link
-              class="decoration-purple-600 hover:underline"
+              class="tda"
               :href="route('dashboard', { userId: user.id })"
               >{{ user.name }}</Link
             >
           </td>
           <td class="p-2">
             <a
-              class="decoration-purple-600 hover:underline"
+              class="tda"
               :href="'mailto:' + user.email"
             >
               {{ user.email }}
@@ -42,7 +42,7 @@
           </td>
           <td class="p-2">
             <a
-              class="decoration-purple-600 hover:underline"
+              class="tda"
               :href="'tel:' + user.phone_number"
               >{{ user.phone_number }}</a
             >

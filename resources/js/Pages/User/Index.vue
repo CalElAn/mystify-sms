@@ -6,7 +6,7 @@
     <div class="flex w-11/12 items-center justify-start gap-2">
       <SearchIcon class="h-6 w-6 text-gray-500" />
       <input
-        v-model="searchFilter"
+        v-model="name"
         class="custom-input w-1/3"
         placeholder="Search..."
         type="text"
@@ -19,11 +19,13 @@
           <MenuItems class="menu-items left-0 z-10 mt-2 w-max origin-top-left">
             <div class="px-1 py-1">
               <MenuItem as="div" v-slot="{ active }">
-                <MenuItemButton :active="active"> Add {{userType}} </MenuItemButton>
+                <MenuItemButton :active="active">
+                  Add {{ userType }}
+                </MenuItemButton>
               </MenuItem>
               <MenuItem as="div" v-slot="{ active }">
                 <MenuItemButton :active="active">
-                  Remove {{userType}}
+                  Remove {{ userType }}
                 </MenuItemButton>
               </MenuItem>
             </div>
@@ -48,14 +50,14 @@ import { Inertia } from '@inertiajs/inertia';
 import UserTable from '@/Components/User/Table.vue';
 import Pagination from '@/Components/Pagination.vue';
 
-const searchFilter = ref(props.name);
+const name = ref(props.nameFilter);
 
 watch(
-  searchFilter,
+  name,
   _.throttle((newName) => {
     Inertia.get(
-      route('users', props.userType),
-      { name: newName },
+      route('users.index', props.userType),
+      { nameFilter: newName },
       { preserveState: true, replace: true }
     );
   }, 150)
@@ -63,7 +65,7 @@ watch(
 
 const props = defineProps({
   users: Object,
-  name: String,
+  nameFilter: String,
   userType: String,
 });
 </script>

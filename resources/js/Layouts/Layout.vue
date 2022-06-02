@@ -41,7 +41,7 @@
           Dashboard
         </Link>
         <Link
-          :href="route('users', 'students')"
+          :href="route('users.index', 'students')"
           :class="[
             $page.url.startsWith('/users/students')
               ? 'bg-purple-600 text-white'
@@ -53,7 +53,28 @@
           Students
         </Link>
         <Link
-          :href="route('users', 'parents')"
+          :href="route('classes.index')"
+          :class="[
+            $page.url.startsWith('/classes')
+              ? 'bg-purple-600 text-white'
+              : 'hover:text-purple-600 hover:underline',
+          ]"
+          class="flex w-full items-center justify-start gap-2 rounded-full py-2 pl-5 text-lg font-medium tracking-wide"
+        >
+          <svg
+            class="h-5 w-5"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fill="currentColor"
+              d="M22 17a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4a1 1 0 011-1h4zm-1 2h-2v2h2v-2zm-7-2a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4a1 1 0 011-1h4zm-1 2h-2v2h2v-2zm-7-2a1 1 0 011 1v4a1 1 0 01-1 1H2a1 1 0 01-1-1v-4a1 1 0 011-1h4zm-1 2H3v2h2v-2zM22 9a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4a1 1 0 011-1h4zm-1 2h-2v2h2v-2zm-7-2a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4a1 1 0 011-1h4zm-1 2h-2v2h2v-2zM6 9a1 1 0 011 1v4a1 1 0 01-1 1H2a1 1 0 01-1-1v-4a1 1 0 011-1h4zm-1 2H3v2h2v-2zM22 1a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1V2a1 1 0 011-1h4zm-1 2h-2v2h2V3zm-7-2a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1V2a1 1 0 011-1h4zm-1 2h-2v2h2V3zM6 1a1 1 0 011 1v4a1 1 0 01-1 1H2a1 1 0 01-1-1V2a1 1 0 011-1h4zM5 3H3v2h2V3z"
+            />
+          </svg>
+          Classes
+        </Link>
+        <Link
+          :href="route('users.index', 'parents')"
           :class="[
             $page.url.startsWith('/users/parents')
               ? 'bg-purple-600 text-white'
@@ -65,7 +86,7 @@
           Parents
         </Link>
         <Link
-          :href="route('users', 'teachers')"
+          :href="route('users.index', 'teachers')"
           :class="[
             $page.url.startsWith('/users/teachers')
               ? 'bg-purple-600 text-white'
@@ -77,7 +98,7 @@
           Teachers
         </Link>
         <Link
-          :href="route('users', 'administrators')"
+          :href="route('users.index', 'administrators')"
           :class="[
             $page.url.startsWith('/users/administrators')
               ? 'bg-purple-600 text-white'
@@ -106,7 +127,7 @@
         >
           <span
             class="font-semibold text-purple-600 group-hover:text-purple-400"
-            >{{ term?.formatted_name }}</span
+            >{{ term.formatted_name }}</span
           >
           <ViewListIcon class="h-5 w-5 group-hover:text-purple-400" />
         </button>

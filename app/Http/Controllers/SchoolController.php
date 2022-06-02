@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 
 class SchoolController extends Controller
 {
@@ -82,36 +83,11 @@ class SchoolController extends Controller
         /** @var \App\Models\School */
         $school = $user->school;
 
-        $academicYearsWithTerms = $school
-            ->academicYears()
-            ->with('terms')
-            ->latest('end_date')
-            ->get();
+        $academicYearsWithTerms = $school->getAcademicYearsWithTerms();
 
-        switch (true) {
-            case $request->termId:
-                $term = Term::find($request->termId);
-                break;
-
-            case $request->academicYearId:
-                $term = AcademicYear::find($request->academicYearId)
-                    ->terms()
-                    ->latest('end_date')
-                    ->first();
-                break;
-
-            default:
-                $term = $academicYearsWithTerms
-                    ->first()
-                    ->terms->sortByDesc('end_date')
-                    ->values()
-                    ->first();
-                break;
-        }
-
+        $term = $school->getTerm($request);
         $termId = $term->id;
         $academicYearId = $term->academic_year_id;
-        $term->append('formatted_name');
 
         $defaultProps = [
             'user' => $user,
@@ -165,71 +141,10 @@ class SchoolController extends Controller
         }
 
         return Inertia::render(
-            "School/Dashboard/{$component}",
+            "Dashboard/{$component}",
             //order is important so any repeated keys in $props will overwrite the keys in $defaultProps
             array_merge($defaultProps, $props),
         );
-    }
-
-    /**
-     * Show all requested user types for school.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Inertia\Response
-     */
-    public function users(Request $request)
-    {
-        //TODO test
-        /** @var \App\Models\School */
-        $school = Auth::user()->school;
-        $userType = $request->userType;
-
-        switch ($userType) {
-            case 'students':
-                $query = $school
-                    ->users()
-                    ->studentScope();
-                break;
-
-            case 'parents':
-                $query = User::parentScope()
-                    ->whereHas(
-                        'children',
-                        fn(Builder $query) => $query->where(
-                            'school_id',
-                            $school->id,
-                        ),
-                    );
-                break;
-
-            case 'teachers':
-                $query = $school
-                    ->users()
-                    ->teacherScope();
-                break;
-
-            case 'administrators':
-                $query = $school
-                    ->users()
-                    ->administratorScope();
-                break;
-
-            default:
-                # code...
-                break;
-        }
-
-        if ($request->name) {
-            $query->where('name', 'LIKE', "%{$request->name}%");
-        }
-
-        return Inertia::render('School/Users', [
-            'school' => $school,
-            'showTerm' => false,
-            'users' => $query->orderBy('name')->paginate(10)->withQueryString(),
-            'userType' => $userType,
-            'name' => $request->name,
-        ]);
     }
 
     /**

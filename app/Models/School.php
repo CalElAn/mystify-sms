@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -39,9 +41,49 @@ class School extends Model
         return $this->hasMany(Grade::class);
     }
 
+    public function classes()
+    {
+        //TODO test
+        return $this->hasMany(ClassModel::class);
+    }
+
     public function gradingScale()
     {
         return $this->belongsTo(GradingScale::class);
+    }
+
+    public function getAcademicYearsWithTerms(): Collection
+    {
+        return $this->academicYears()
+            ->with('terms')
+            ->latest('end_date')
+            ->get();
+    }
+
+    public function getTerm(Request $request): Term
+    {
+        switch (true) {
+            case $request->termId:
+                $term = Term::find($request->termId);
+                break;
+
+            case $request->academicYearId:
+                $term = AcademicYear::find($request->academicYearId)
+                    ->terms()
+                    ->latest('end_date')
+                    ->first();
+                break;
+
+            default:
+                $term = $this->getAcademicYearsWithTerms()
+                    ->first()
+                    ->terms->sortByDesc('end_date')
+                    ->values()
+                    ->first();
+                break;
+        }
+
+        return $term->append('formatted_name');
     }
 
     public function getStudents()
@@ -109,8 +151,9 @@ class School extends Model
         return $chartData;
     }
 
-    public function getParents()//TODO rewrite to use scope
+    public function getParents()
     {
+        //TODO rewrite to use scope
         $parents = collect();
         $students = $this->getStudents();
 

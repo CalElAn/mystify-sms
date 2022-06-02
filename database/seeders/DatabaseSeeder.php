@@ -142,6 +142,7 @@ class DatabaseSeeder extends Seeder
             ]);
 
             //*for each academic year, insert a class teacher for Class A and B
+            //TODO there should be a class_teacher_pivot entry for all years for all classes
             ClassTeacherPivot::factory()->create([
                 'teacher_id' => $allTeachers[0]->id,
                 'class_id' => $classIds['A'],

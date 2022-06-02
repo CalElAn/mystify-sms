@@ -1,135 +1,88 @@
 <template>
-  <section class="flex items-center justify-center">
-    <!-- class name and teacher -->
-    <div class="base-card flex gap-2 items-center justify-evenly py-2 px-4">
-      <div
-        class="flex items-center justify-center gap-2 text-xl font-semibold text-purple-600"
-      >
-        {{ classModel?.name }} {{ classModel?.suffix }}
+  <!-- Navbar -->
+  <nav
+    class="ml-12 border-b border-gray-300 text-gray-500 dark:border-gray-700 dark:text-gray-400"
+  >
+    <ul class="flex flex-wrap gap-6">
+      <li>
         <button
-          @click="shouldOpenModalContainingListOfClasses = true"
-          class="text-gray-700 hover:text-purple-600"
+          @click="selectedTab = 1"
+          :class="[
+            selectedTab === 1
+              ? 'border-blue-600 text-blue-600'
+              : 'border-transparent hover:border-gray-400 hover:text-gray-600',
+          ]"
+          class="border-b-2 p-2 text-lg font-semibold tracking-wide"
         >
-          <ViewListIcon class="h-5 w-5" />
+          Class
         </button>
-        <Menu as="div" class="relative">
-          <MenuButton class="flex h-full w-full items-center justify-center">
-            <DotsVerticalIcon
-              class="h-5 w-5 text-gray-700 hover:text-purple-600"
-            />
-          </MenuButton>
-          <MenuItemsTransition>
-            <MenuItems
-              class="menu-items right-0 z-10 mt-2 w-max origin-top-right"
-            >
-              <div class="px-1 py-1">
-                <MenuItem as="div" v-slot="{ active }">
-                  <MenuItemButton :active="active">
-                    Add class(es)
-                  </MenuItemButton>
-                </MenuItem>
-                <MenuItem as="div" v-slot="{ active }">
-                  <MenuItemButton :active="active">
-                    Remove class(es)
-                  </MenuItemButton>
-                </MenuItem>
-              </div>
-            </MenuItems>
-          </MenuItemsTransition>
-        </Menu>
-      </div>
-      <div
-        style="height: 36px; width: 2px; background: #ddd; display: inline"
-      ></div>
-      <div class="flex items-center gap-2">
-        <div class="inline-block">Class teacher:</div>
-        <div class="flex items-center justify-center gap-2">
-          <ProfilePicture
-            :profilePicturePath="classTeacher?.profile_picture_path"
-            widthClass="w-14"
-            heightClass="h-14"
-          />
-          <Link
-            :href="route('users.show', { userId: classTeacher?.id })"
-            class="inline-block text-lg font-semibold tracking-wide text-purple-600 underline underline-offset-1"
-          >
-            {{ classTeacher?.name }}
-          </Link>
-        </div>
+      </li>
+      <li>
+        <button
+          @click="selectedTab = 2"
+          :class="[
+            selectedTab === 2
+              ? 'border-blue-600 text-blue-600'
+              : 'border-transparent hover:border-gray-400 hover:text-gray-600',
+          ]"
+          class="border-b-2 p-2 text-lg font-semibold tracking-wide"
+        >
+          Grades
+        </button>
+      </li>
+    </ul>
+  </nav>
+  <ClassPanel
+    v-if="classModel && selectedTab === 1"
+    :classModel="classModel"
+    :studentsInClass="studentsInClass"
+    :academicYearName="term.academic_year.name"
+  />
+  <div v-if="!classModel && selectedTab === 1" class="flex justify-center items-center">
+    <div
+      class="rounded-lg bg-red-300 px-10 py-4 text-lg text-white shadow"
+    >
+      <p>
+        You have no classes associated with your account for this academic year
+        ({{ term.academic_year.name }})
+      </p>
+      <div class="mt-2 flex justify-end">
+        <button
+          class="rounded-lg border border-fuchsia-600 bg-red-50 p-2 text-base font-semibold tracking-wide text-fuchsia-600 shadow-sm hover:bg-red-100"
+        >
+          Add class
+        </button>
       </div>
     </div>
-  </section>
-  <section class="flex flex-col items-center justify-center gap-2">
-    <div class="flex w-11/12 justify-end pr-6">
-      <!-- cog icon button -->
-      <Menu as="div" class="base-card relative">
-        <MenuButton class="w-full p-2">
-          <DotsVerticalIcon
-            class="h-6 w-6 text-purple-600 transition-transform hover:scale-110"
-          />
-        </MenuButton>
-        <MenuItemsTransition>
-          <MenuItems
-            class="menu-items right-0 z-10 mt-2 w-max origin-top-right"
-          >
-            <div class="px-1 py-1">
-              <MenuItem as="div" v-slot="{ active }">
-                <MenuItemButton :active="active">
-                  Add student(s) to {{ classModel?.name }}
-                  {{ classModel?.suffix }}
-                </MenuItemButton>
-              </MenuItem>
-              <MenuItem as="div" v-slot="{ active }">
-                <MenuItemButton :active="active">
-                  Remove student(s) from {{ classModel?.name }}
-                  {{ classModel?.suffix }}
-                </MenuItemButton>
-              </MenuItem>
-            </div>
-            <div class="px-1 py-1">
-              <MenuItem as="div" v-slot="{ active }">
-                <MenuItemButton :active="active">
-                  Send text message to student(s)
-                </MenuItemButton>
-              </MenuItem>
-              <MenuItem as="div" v-slot="{ active }">
-                <MenuItemButton :active="active">
-                  Send text message to parent(s)
-                </MenuItemButton>
-              </MenuItem>
-            </div>
-          </MenuItems>
-        </MenuItemsTransition>
-      </Menu>
-    </div>
-    <!-- list of students in class -->
-    <UserTable :title="`Students in ${classModel?.name ?? ''} ${classModel?.suffix}`" :users="studentsInClass"/>
-  </section>
-  <hr class="my-2" />
-  <section class="flex flex-col items-center justify-center gap-4">
-    <div class="flex gap-4">
+  </div>
+  <section
+    v-show="selectedTab === 2"
+    class="flex flex-col items-center justify-center gap-4"
+  >
+    <div v-if="currentSubject" class="flex gap-4">
       <!-- subject, class and term -->
       <div
-        class="base-card flex gap-4 items-center justify-evenly px-4 py-3 text-lg font-semibold tracking-wide"
+        class="base-card flex items-center justify-evenly gap-4 px-4 py-3 text-lg font-semibold tracking-wide"
       >
         <div>
-          {{ currentSubject?.subject_name }}
+          {{ currentSubject.subject_name }}
         </div>
         <div
           style="height: 36px; width: 2px; background: #ddd; display: inline"
         ></div>
         <div>
-          {{ currentSubject?.class_model.name }}
-          {{ currentSubject?.class_model.suffix }}
+          {{ currentSubject.class_model.name }}
+          {{ currentSubject.class_model.suffix }}
         </div>
         <div
           style="height: 36px; width: 2px; background: #ddd; display: inline"
         ></div>
         <div>
-          {{ currentSubject?.term.formatted_short_name }}
+          {{ currentSubject.term.formatted_short_name }}
         </div>
       </div>
       <div class="flex items-center justify-center gap-2 text-purple-600">
+        <!-- list icon button -->
         <div class="base-card p-2">
           <button
             class="flex items-center justify-center hover:text-purple-400"
@@ -168,7 +121,26 @@
         </Menu>
       </div>
     </div>
-    <div class="flex w-full flex-col items-center justify-center gap-2">
+    <div
+      v-else
+      class="base-card border border-red-500 px-10 py-4 text-lg text-red-400"
+    >
+      <p>
+        You have no subjects associated with your account for this academic year
+        ({{ term.academic_year.name }})
+      </p>
+      <div class="mt-2 flex justify-end">
+        <button
+          class="rounded-lg border border-transparent bg-purple-100 p-2 text-base font-semibold tracking-wide text-purple-600 hover:bg-purple-200"
+        >
+          Add subject
+        </button>
+      </div>
+    </div>
+    <div
+      v-if="currentSubject"
+      class="flex w-full flex-col items-center justify-center gap-2"
+    >
       <div class="flex w-2/3 justify-end pr-6">
         <Menu as="div" class="base-card relative">
           <MenuButton class="w-full p-2">
@@ -185,7 +157,7 @@
                   <MenuItemButton :active="active">
                     Add student(s) grade
                     {{
-                      `(${currentSubject?.subject_name} | ${currentSubject?.class_model.name} ${currentSubject?.class_model.suffix} | ${currentSubject?.term.formatted_short_name})`
+                      `(${currentSubject.subject_name} | ${currentSubject.class_model.name} ${currentSubject.class_model.suffix} | ${currentSubject.term.formatted_short_name})`
                     }}
                   </MenuItemButton>
                 </MenuItem>
@@ -193,7 +165,7 @@
                   <MenuItemButton :active="active">
                     Remove student(s) grade(s)
                     {{
-                      `(${currentSubject?.subject_name} | ${currentSubject?.class_model.name} ${currentSubject?.class_model.suffix} | ${currentSubject?.term.formatted_short_name})`
+                      `(${currentSubject.subject_name} | ${currentSubject.class_model.name} ${currentSubject.class_model.suffix} | ${currentSubject.term.formatted_short_name})`
                     }}
                   </MenuItemButton>
                 </MenuItem>
@@ -206,7 +178,7 @@
         >
           <PlusCircleIcon class="h-5 w-5" />
           Add student(s)
-        </button> -->
+          </button> -->
       </div>
       <!-- list of students and grades per selected subject -->
       <div class="base-card w-2/3 p-2">
@@ -216,7 +188,7 @@
           Grades
           <span class="text-base font-light tracking-normal">
             {{
-              `(${currentSubject?.subject_name} | ${currentSubject?.class_model.name} ${currentSubject?.class_model.suffix} | ${currentSubject?.term.formatted_short_name})`
+              `(${currentSubject.subject_name} | ${currentSubject.class_model.name} ${currentSubject.class_model.suffix} | ${currentSubject.term.formatted_short_name})`
             }}
           </span>
         </p>
@@ -365,18 +337,18 @@ import { ref, computed } from 'vue';
 import {
   CheckCircleIcon,
   MinusCircleIcon,
+  PlusCircleIcon,
 } from '@heroicons/vue/outline';
 import { usePage } from '@inertiajs/inertia-vue3';
 
 import { defaultProps, changeAcademicYear } from '@/helpers';
 import TimelineCard from '@/Components/TimelineCard.vue';
-import UserTable from '@/Components/User/Table.vue';
+import ClassPanel from '@/Components/Class/Panel.vue';
 
 defineProps({
   ...defaultProps,
   classes: Object,
   classModel: Object,
-  classTeacher: Object,
   studentsInClass: Array,
   subjects: Array,
   currentSubject: Object,
@@ -384,6 +356,7 @@ defineProps({
 });
 
 const authUser = computed(() => usePage().props.value.auth.user);
+const selectedTab = ref(1);
 const shouldOpenModalContainingListOfClasses = ref(false);
 const shouldOpenModalContainingListOfSubjects = ref(false);
 </script>

@@ -4,6 +4,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ClassController;
 use App\Http\Controllers\SchoolController;
 
 /*
@@ -28,7 +29,9 @@ Route::get('/', function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [SchoolController::class, 'dashboard'])->name('dashboard');
-    Route::get('/users/{userType}', [SchoolController::class, 'users'])->name('users');
+    Route::get('/classes', [ClassController::class, 'index'])->name('classes.index');
+    Route::get('/class/{classModel}', [ClassController::class, 'show'])->name('classes.show');
+    Route::get('/users/{userType}', [UserController::class, 'index'])->name('users.index');
 
     Route::get('/profile', function() {return;})->name('users.show');
 });

@@ -130,41 +130,52 @@ class User extends Authenticatable implements MustVerifyEmail
         //TODO test
         $school = $this->school;
 
-        $classes = $this->classes;
+        $classes = $this->classes()->with('teachers')->get();
         $class = $classes
             ->where('pivot.academic_year_id', $academicYearId)
             ->first();
+
         $subjects = $this->subjects;
         $subjects->each(
             fn($subjectItem) => $subjectItem->term->append(
                 'formatted_short_name',
             ),
         );
-        $currentSubject = $subjects
-            ->where('class_id', $class?->id)
-            ->where('term_id', $termId)
-            ->sortByDesc('created_at')
-            ->values()
-            ->first();
-        $gradesForCurrentSubjectWithStudent = $school
-            ->grades()
-            ->where([
-                ['term_id', $termId],
-                ['class_name', $class?->name],
-                ['class_suffix', $class?->suffix],
-                ['subject_name', $currentSubject?->subject_name],
-            ])
-            ->with('student')
-            ->get();
+
+        $studentsInClass = null;
+        $currentSubject = null;
+        $gradesForCurrentSubjectWithStudent = null;
+        
+        if ($class) {
+            $studentsInClass = $class->students
+                ->where('pivot.academic_year_id', $academicYearId)
+                ->sortBy('name')
+                ->values();
+            $currentSubject = $subjects
+                ->where('class_id', $class->id)
+                ->where('term_id', $termId)
+                ->sortByDesc('created_at')
+                ->values()
+                ->first();
+
+            if ($currentSubject) {
+                $gradesForCurrentSubjectWithStudent = $school
+                    ->grades()
+                    ->where([
+                        ['term_id', $termId],
+                        ['class_name', $class->name],
+                        ['class_suffix', $class->suffix],
+                        ['subject_name', $currentSubject->subject_name],
+                    ])
+                    ->with('student')
+                    ->get();
+            }
+        }
 
         return [
             'classes' => $classes,
             'classModel' => $class,
-            'classTeacher' => User::find($class?->pivot->teacher_id),
-            'studentsInClass' => $class?->students
-                ->where('pivot.academic_year_id', $academicYearId)
-                ->sortBy('name')
-                ->values(),
+            'studentsInClass' => $studentsInClass,
             'subjects' => $subjects,
             'currentSubject' => $currentSubject,
             'gradesForCurrentSubjectWithStudent' => $gradesForCurrentSubjectWithStudent,
@@ -460,35 +471,40 @@ class User extends Authenticatable implements MustVerifyEmail
      * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return void
      */
-    public function scopeStudentScope($query) //TODO test
+    public function scopeStudentScope($query)
     {
+        //TODO test
         return $query->where('default_user_type', 'student');
     }
 
-    public function scopeParentScope($query) //TODO test
+    public function scopeParentScope($query)
     {
+        //TODO test
         return $query->where('default_user_type', 'parent');
     }
 
-    public function scopeTeacherScope($query) //TODO test
+    public function scopeTeacherScope($query)
     {
+        //TODO test
         return $query->where('default_user_type', 'teacher');
     }
 
-    public function scopeAdministratorScope($query) //TODO test
+    public function scopeAdministratorScope($query)
     {
+        //TODO test
         return $query->where('default_user_type', 'administrator');
     }
 
-    public function parents() //TODO update test
+    public function parents()
     {
+        //TODO update test
         // if ($this->default_user_type === 'student') {
-            return $this->belongsToMany(
-                User::class,
-                'parent_student_pivot',
-                'student_id',
-                'parent_id',
-            )->withTimestamps();
+        return $this->belongsToMany(
+            User::class,
+            'parent_student_pivot',
+            'student_id',
+            'parent_id',
+        )->withTimestamps();
         // }
 
         // return null;
@@ -498,12 +514,12 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         //TODO update test
         // if ($this->default_user_type === 'parent') {
-            return $this->belongsToMany(
-                User::class,
-                'parent_student_pivot',
-                'parent_id',
-                'student_id',
-            )->withTimestamps();
+        return $this->belongsToMany(
+            User::class,
+            'parent_student_pivot',
+            'parent_id',
+            'student_id',
+        )->withTimestamps();
         // }
 
         // return null;
