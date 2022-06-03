@@ -27,14 +27,12 @@
                 widthClass="w-10"
                 heightClass="h-10"
               />
-              <a
+              <button
+                @click="showTeacherCardModal(classItem.teachers[0])"
                 class="tda"
-                :href="
-                  route('dashboard', { userId: classItem.teachers[0]?.id })
-                "
               >
                 {{ classItem.teachers[0]?.name }}
-              </a>
+              </button>
             </td>
           </tr>
           <tr v-if="classes.length === 0">
@@ -43,10 +41,26 @@
         </tbody>
       </table>
     </div>
+    <TeacherCardModal
+      :teacher="teacherRef"
+      :show="shouldOpenTeacherCardModal"
+      @closeModal="shouldOpenTeacherCardModal = false"
+    />
   </section>
 </template>
 
 <script setup>
+import TeacherCardModal from '@/Components/User/TeacherCardModal.vue';
+import { ref } from 'vue';
+
+const shouldOpenTeacherCardModal = ref(false);
+const teacherRef = ref({});
+
+function showTeacherCardModal(teacher) {
+  teacherRef.value = teacher
+  shouldOpenTeacherCardModal.value = true;
+}
+
 defineProps({
   term: Object,
   classes: Array,

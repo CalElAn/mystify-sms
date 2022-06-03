@@ -9,6 +9,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\DB;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -52,6 +53,13 @@ class User extends Authenticatable implements MustVerifyEmail
     //without a null default it throws a "Typed property ... must not be accessed before initialization" error
     public ?Collection $allStudentsAndTheirGradesInClass = null;
     public ?Collection $gradesDataForOtherStudents = null;
+
+    public function uniqueSubjects(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->subjects->unique('subject_name')->pluck('subject_name')
+        );
+    }
 
     public function getPropsForHeadmasterDashboard($academicYearId): array
     {
@@ -131,7 +139,7 @@ class User extends Authenticatable implements MustVerifyEmail
         $school = $this->school;
 
         $classes = $this->classes()->with('teachers')->get();
-        $class = $classes
+        $classModel = $classes
             ->where('pivot.academic_year_id', $academicYearId)
             ->first();
 
@@ -146,13 +154,15 @@ class User extends Authenticatable implements MustVerifyEmail
         $currentSubject = null;
         $gradesForCurrentSubjectWithStudent = null;
         
-        if ($class) {
-            $studentsInClass = $class->students
+        if ($classModel) {
+            $classModel->teachers->first()?->append('unique_subjects');
+            
+            $studentsInClass = $classModel->students
                 ->where('pivot.academic_year_id', $academicYearId)
                 ->sortBy('name')
                 ->values();
             $currentSubject = $subjects
-                ->where('class_id', $class->id)
+                ->where('class_id', $classModel->id)
                 ->where('term_id', $termId)
                 ->sortByDesc('created_at')
                 ->values()
@@ -163,8 +173,8 @@ class User extends Authenticatable implements MustVerifyEmail
                     ->grades()
                     ->where([
                         ['term_id', $termId],
-                        ['class_name', $class->name],
-                        ['class_suffix', $class->suffix],
+                        ['class_name', $classModel->name],
+                        ['class_suffix', $classModel->suffix],
                         ['subject_name', $currentSubject->subject_name],
                     ])
                     ->with('student')
@@ -174,7 +184,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
         return [
             'classes' => $classes,
-            'classModel' => $class,
+            'classModel' => $classModel,
             'studentsInClass' => $studentsInClass,
             'subjects' => $subjects,
             'currentSubject' => $currentSubject,
@@ -427,14 +437,14 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function subjects()
     {
-        if ($this->default_user_type === 'teacher') {
+        // if ($this->default_user_type === 'teacher') {
             return $this->hasMany(
                 SubjectTeacherPivot::class,
                 'teacher_id',
                 'id',
             );
-        }
-        return null;
+        // }
+        // return null;
     }
 
     public function grades()

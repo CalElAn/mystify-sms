@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ClassController;
-use App\Http\Controllers\SchoolController;
+use App\Http\Controllers\DashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,7 +28,7 @@ Route::get('/', function () {
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/dashboard', [SchoolController::class, 'dashboard'])->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/classes', [ClassController::class, 'index'])->name('classes.index');
     Route::get('/class/{classModel}', [ClassController::class, 'show'])->name('classes.show');
     Route::get('/users/{userType}', [UserController::class, 'index'])->name('users.index');

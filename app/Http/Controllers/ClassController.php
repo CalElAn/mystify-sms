@@ -6,6 +6,7 @@ use App\Models\ClassModel;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ClassController extends Controller
 {
@@ -31,8 +32,12 @@ class ClassController extends Controller
                     'academic_year_id',
                     $term->academic_year_id,
                 ),
+                'teachers.subjects',
             ])
             ->get();
+        $classes->each(
+            fn($item) => $item->teachers->first()?->append('unique_subjects'),
+        );
 
         return Inertia::render('Class/Index', [
             'school' => $school,
@@ -72,27 +77,32 @@ class ClassController extends Controller
      */
     public function show(ClassModel $classModel, Request $request)
     {
+        //TODO test
         /** @var \App\Models\School */
-        $school = Auth::user()->school; //dd($classModel);
+        $school = Auth::user()->school;
 
         $academicYearsWithTerms = $school->getAcademicYearsWithTerms();
         $term = $school->getTerm($request);
+
+        $classModel = $classModel->load([
+            'teachers' => fn($query) => $query->where(
+                'academic_year_id',
+                $term->academic_year_id,
+            ),
+            'students' => fn($query) => $query->where(
+                'academic_year_id',
+                $term->academic_year_id,
+            ),
+        ]);
+
+        $classModel->teachers->first()?->append('unique_subjects');
 
         return Inertia::render('Class/Show', [
             'school' => $school,
             'academicYearsWithTerms' => $academicYearsWithTerms,
             'showTerm' => true,
             'term' => $school->getTerm($request),
-            'classModel' => $classModel->load([
-                'teachers' => fn($query) => $query->where(
-                    'academic_year_id',
-                    $term->academic_year_id,
-                ),
-                'students' => fn($query) => $query->where(
-                    'academic_year_id',
-                    $term->academic_year_id,
-                ),
-            ]),
+            'classModel' => $classModel,
         ]);
     }
 

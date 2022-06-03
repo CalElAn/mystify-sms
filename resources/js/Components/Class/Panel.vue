@@ -52,19 +52,17 @@
             widthClass="w-14"
             heightClass="h-14"
           />
-          <Link
-            :href="route('users.show', { userId: classModel.teachers[0]?.id })"
+          <button
+            @click="shouldOpenTeacherCardModal = true"
             class="inline-block text-lg font-semibold tracking-wide text-purple-600 underline underline-offset-1"
           >
             {{ classModel.teachers[0]?.name }}
-          </Link>
+          </button>
         </div>
       </div>
     </div>
   </section>
-  <section
-    class="flex flex-col items-center justify-center gap-2"
-  >
+  <section class="flex flex-col items-center justify-center gap-2">
     <div class="flex w-11/12 justify-end pr-6">
       <!-- cog icon button -->
       <Menu as="div" class="base-card relative">
@@ -113,15 +111,26 @@
       :users="studentsInClass"
     />
   </section>
+  <!-- modal with teacher's information  -->
+  <TeacherCardModal
+    :teacher="classModel.teachers[0]"
+    :show="shouldOpenTeacherCardModal"
+    @closeModal="shouldOpenTeacherCardModal = false"
+  />
 </template>
 
 <script setup>
-import UserTable from '@/Components/User/Table.vue'
+import { ref } from 'vue';
+
+import UserTable from '@/Components/User/Table.vue';
+import TeacherCardModal from '@/Components/User/TeacherCardModal.vue';
+
+const shouldOpenTeacherCardModal = ref(false);
 
 defineProps({
   classModel: Object,
   studentsInClass: Array,
-  academicYearName: String
+  academicYearName: String,
 });
 </script>
 

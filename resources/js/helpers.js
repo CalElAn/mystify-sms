@@ -2,8 +2,7 @@ import { Inertia } from '@inertiajs/inertia';
 
 export function getProfilePictureUrl(profilePicturePath) {
   if (profilePicturePath) {
-    if (profilePicturePath.includes('https://'))
-      return profilePicturePath;
+    if (profilePicturePath.includes('https://')) return profilePicturePath;
 
     return '/storage/' + profilePicturePath;
   }
@@ -12,12 +11,16 @@ export function getProfilePictureUrl(profilePicturePath) {
 }
 
 export function changeTerm(termId) {
+  let routeData = { termId: termId };
+
   let urlSearchParams = new URLSearchParams(window.location.search);
-  let routeData = { termId: termId }
 
-  if (urlSearchParams.has('userId')) routeData.userId = urlSearchParams.get('userId')
+  if (urlSearchParams.has('userId'))
+    routeData.userId = urlSearchParams.get('userId');
 
-  Inertia.get(route('dashboard', routeData));
+  let queryString = new URLSearchParams(routeData).toString();
+
+  Inertia.get(`${window.location.pathname}?${queryString}`);
 }
 
 export function changeAcademicYear(academicYearId) {
@@ -32,4 +35,4 @@ export const defaultProps = {
   showTerm: Boolean,
   academicYearsWithTerms: Array,
   noticeBoardMessages: Object,
-}
+};
