@@ -15,28 +15,45 @@ class TermModelTest extends TestCase
     /** @test */
     public function a_term_has_a_formatted_name()
     {
-        $academicYear = AcademicYear::factory()->create();
-        $term = Term::factory()->create(['academic_year_id' => $academicYear->id]);
+        $academicYear = AcademicYear::factory()->create([
+            'name' => '2021/2022',
+        ]);
+        $term = Term::factory()->create([
+            'academic_year_id' => $academicYear->id,
+            'name' => 'First term',
+        ]);
 
-        $this->assertEquals('2021/2022, First term (3rd Feb - 3rd Jun)', $term->formatted_name);
+        $this->assertEquals(
+            '2021/2022, First term (3rd Feb - 3rd Jun)',
+            $term->formatted_name,
+        );
     }
 
     /** @test */
     public function a_term_has_a_formatted_short_name()
     {
-        $academicYear = AcademicYear::factory()->create();
-        $term = Term::factory()->create(['academic_year_id' => $academicYear->id]);
+        $academicYear = AcademicYear::factory()->create([
+            'name' => '2021/2022',
+        ]);
+        $term = Term::factory()->create([
+            'academic_year_id' => $academicYear->id,
+            'name' => 'First term',
+        ]);
 
-        $this->assertEquals('2021/2022, First term', $term->formatted_short_name);
+        $this->assertEquals(
+            '2021/2022, First term',
+            $term->formatted_short_name,
+        );
     }
 
     /** @test */
     public function a_term_has_one_academic_year()
     {
         $academicYear = AcademicYear::factory()->create();
-        $term = Term::factory()->create(['academic_year_id' => $academicYear->id]);
+        $term = Term::factory()->create([
+            'academic_year_id' => $academicYear->id,
+        ]);
 
         $this->assertInstanceOf('App\Models\AcademicYear', $term->academicYear);
     }
-
 }

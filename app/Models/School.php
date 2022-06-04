@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 
 class School extends Model
 {
@@ -43,7 +44,6 @@ class School extends Model
 
     public function classes()
     {
-        //TODO test
         return $this->hasMany(ClassModel::class);
     }
 
@@ -86,7 +86,7 @@ class School extends Model
         return $term->append('formatted_name');
     }
 
-    public function getStudents()
+    public function getStudents(): Collection
     {
         return $this->users()
             ->where('default_user_type', 'student')
@@ -104,7 +104,7 @@ class School extends Model
         });
     }
 
-    public function getSchoolFeesDataForLineChart($academicYearId)
+    public function getSchoolFeesDataForLineChart($academicYearId): \Illuminate\Support\Collection
     {
         $chartData = collect();
         $weekNumber = 1;
@@ -151,37 +151,25 @@ class School extends Model
         return $chartData;
     }
 
-    public function getParents()
+    public function getParents(): Collection
     {
-        //TODO rewrite to use scope
-        $parents = collect();
-        $students = $this->getStudents();
-
-        foreach ($students as $student) {
-            foreach ($student->parents as $parentsValue) {
-                if (
-                    $parents->doesntContain(function ($value, $key) use (
-                        $parentsValue,
-                    ) {
-                        return $value->id === $parentsValue->id;
-                    })
-                ) {
-                    $parents->push($parentsValue);
-                }
-            }
-        }
-
-        return $parents;
+        return $this->users()
+            ->parentScope()
+            ->whereHas(
+                'children',
+                fn(Builder $query) => $query->where('school_id', $this->id),
+            )
+            ->get();
     }
 
-    public function getTeachers()
+    public function getTeachers(): Collection
     {
         return $this->users()
             ->where('default_user_type', 'teacher')
             ->get();
     }
 
-    public function getAdministrators()
+    public function getAdministrators(): Collection
     {
         return $this->users()
             ->where('default_user_type', 'school administrator')

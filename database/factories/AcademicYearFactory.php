@@ -19,9 +19,9 @@ class AcademicYearFactory extends Factory
     {
         return [
             'school_id' => School::factory(),
-            'name' => '2021/2022',
+            'name' => $this->faker->randomNumber() . '2021/2022',
             'start_date' => '2021-2-3',
-            'end_date' => '2022-11-3'
+            'end_date' => '2022-11-3',
         ];
     }
 }

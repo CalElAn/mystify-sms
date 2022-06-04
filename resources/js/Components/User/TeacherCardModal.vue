@@ -38,6 +38,7 @@
             <li
               class="text-purple-600"
               v-for="(subjectItem, subjectIndex) in teacher.unique_subjects"
+              :key="subjectIndex"
             >
               <span class="text-gray-800">{{ subjectItem }}</span>
             </li>

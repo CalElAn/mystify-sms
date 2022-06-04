@@ -17,7 +17,7 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        //TODO test
+        //TODO write test when done with admin portions and functions (cos )
         /** @var \App\Models\School */
         $school = Auth::user()->school;
         $userType = $request->userType;
@@ -54,11 +54,13 @@ class UserController extends Controller
             $query->where('name', 'LIKE', "%{$request->nameFilter}%");
         }
 
+        $query->orderBy('name');
+
         return Inertia::render('User/Index', [
             'school' => $school,
             'showTerm' => false,
             'users' => $query
-                ->orderBy('name')
+                // ->orderBy('name')
                 ->paginate(10)
                 ->withQueryString(),
             'userType' => $userType,

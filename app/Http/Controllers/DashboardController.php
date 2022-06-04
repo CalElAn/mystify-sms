@@ -34,6 +34,7 @@ class DashboardController extends Controller
         $shouldShowDashboardHeading = false;
 
         if ($request->userId) {
+            /** @var \App\Models\User */
             $user = User::find($request->userId);
             $shouldShowDashboardHeading = true;
         }
@@ -44,8 +45,6 @@ class DashboardController extends Controller
         $academicYearsWithTerms = $school->getAcademicYearsWithTerms();
 
         $term = $school->getTerm($request);
-        $termId = $term->id;
-        $academicYearId = $term->academic_year_id;
 
         $defaultProps = [
             'user' => $user,
@@ -56,7 +55,7 @@ class DashboardController extends Controller
             'showTerm' => true,
             'noticeBoardMessages' => $school
                 ->noticeBoard()
-                ->where('term_id', $termId)
+                ->where('term_id', $term->id)
                 ->latest()
                 ->get()
                 ->groupBy(function ($item) {
@@ -69,26 +68,20 @@ class DashboardController extends Controller
         switch ($user->user_type) {
             case 'headteacher':
                 $component = 'Headteacher';
-                $props = $user->getPropsForHeadmasterDashboard($academicYearId);
+                $props = $user->getPropsForHeadteacherDashboard($term);
                 break;
 
             case 'student':
                 $component = 'Student';
-                $props = $user->getPropsForStudentDashboard(
-                    $academicYearId,
-                    $termId,
-                );
+                $props = $user->getPropsForStudentDashboard($term);
                 break;
 
             case 'teacher':
                 $component = 'Teacher';
-                $props = $user->getPropsForTeacherDashboard(
-                    $academicYearId,
-                    $termId,
-                );
+                $props = $user->getPropsForTeacherDashboard($term);
                 break;
 
-            case 'parent': //TODO update test
+            case 'parent':
                 $component = 'Parent';
                 $props = $user->getPropsForParentDashboard();
                 break;

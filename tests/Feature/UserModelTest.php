@@ -32,39 +32,186 @@ class UserModelTest extends TestCase
     }
 
     /** @test */
-    public function a_user_who_is_a_student_belongs_to_many_parents()
+    public function a_student_belongs_to_many_parents()
     {
         $student = User::factory()->create(['default_user_type' => 'student']);
         $parent1 = User::factory()->create(['default_user_type' => 'parent']);
         $parent2 = User::factory()->create(['default_user_type' => 'parent']);
+        $parent3 = User::factory()->create(['default_user_type' => 'parent']);
 
         DB::table('parent_student_pivot')->insert([
             ['student_id' => $student->id, 'parent_id' => $parent1->id],
             ['student_id' => $student->id, 'parent_id' => $parent2->id],
         ]);
 
-        $this->expectException('LogicException');
-        $parent1->parents;
-
         $this->assertTrue($student->parents->contains($parent1));
         $this->assertTrue($student->parents->contains($parent2));
+        $this->assertTrue($student->parents->doesntContain($parent3));
         $this->assertInstanceOf('App\Models\User', $student->parents[0]);
     }
 
     /** @test */
-    public function a_user_who_is_a_teacher_has_many_subjects()
+    public function a_parent_has_many_children()
+    {
+        $parent = User::factory()->create(['default_user_type' => 'parent']);
+        $student1 = User::factory()->create(['default_user_type' => 'student']);
+        $student2 = User::factory()->create(['default_user_type' => 'parent']);
+        $student3 = User::factory()->create(['default_user_type' => 'parent']);
+
+        DB::table('parent_student_pivot')->insert([
+            ['student_id' => $student1->id, 'parent_id' => $parent->id],
+            ['student_id' => $student2->id, 'parent_id' => $parent->id],
+        ]);
+
+        $this->assertTrue($parent->children->contains($student1));
+        $this->assertTrue($parent->children->contains($student2));
+        $this->assertTrue($parent->children->doesntContain($student3));
+        $this->assertInstanceOf('App\Models\User', $parent->children[0]);
+    }
+
+    /** @test */
+    public function a_teacher_has_many_subjects()
     {
         $teacher = User::factory()->create(['default_user_type' => 'teacher']);
-        $student = User::factory()->create(['default_user_type' => 'student']);
 
         SubjectTeacherPivot::factory()->create(['teacher_id' => $teacher->id]);
 
-        $this->expectException('LogicException');
-        $student->subjects;
+        $this->assertTrue(
+            $teacher->subjects->contains(SubjectTeacherPivot::find(1)),
+        );
+        $this->assertEquals(1, $teacher->subjects->count());
+        $this->assertInstanceOf(
+            'App\Models\SubjectTeacherPivot',
+            $teacher->subjects->first(),
+        );
+    }
 
-        $this->assertTrue($teacher->subject->contains(SubjectTeacherPivot::find(1)));
-        $this->assertEquals(1, $teacher->subject->count());
-        $this->assertInstanceOf('App\Models\SubjectTeacherPivot', $teacher->subjects->first());
+    /** @test */
+    public function a_teacher_can_access_unique_subjects()
+    {
+        $teacher = User::factory()->create(['default_user_type' => 'teacher']);
+
+        Subject::factory()->create(['name' => 'A']);
+        Subject::factory()->create(['name' => 'B']);
+        Subject::factory()->create(['name' => 'C']);
+
+        SubjectTeacherPivot::factory()
+            ->create(['teacher_id' => $teacher->id, 'subject_name' => 'A']);
+        SubjectTeacherPivot::factory()
+            ->create(['teacher_id' => $teacher->id, 'subject_name' => 'A']);
+        SubjectTeacherPivot::factory()
+            ->create(['teacher_id' => $teacher->id, 'subject_name' => 'B']);
+
+        $this->assertEquals($teacher->unique_subjects->toArray(), ['A', 'B']);
+    }
+
+    /** @test */
+    public function scopes_are_applied_when_called()
+    {
+        $this->seed();
+
+        User::studentScope()
+            ->get()
+            ->each(
+                fn($item) => $this->assertEquals(
+                    $item->default_user_type,
+                    'student',
+                ),
+            );
+
+        User::parentScope()
+            ->get()
+            ->each(
+                fn($item) => $this->assertEquals(
+                    $item->default_user_type,
+                    'parent',
+                ),
+            );
+
+        User::teacherScope()
+            ->get()
+            ->each(
+                fn($item) => $this->assertEquals(
+                    $item->default_user_type,
+                    'teacher',
+                ),
+            );
+
+        User::administratorScope()
+            ->get()
+            ->each(
+                fn($item) => $this->assertEquals(
+                    $item->default_user_type,
+                    'administrator',
+                ),
+            );
+    }
+
+    /** @test */
+    public function a_user_can_get_props_for_headteacher_dashboard()
+    {
+        $this->seed();
+        $headteacher = User::where('user_type', 'headteacher')->first();
+        $props = $headteacher->getPropsForHeadteacherDashboard(Term::find(6));
+
+        $this->assertArrayHasKey('numberOfStudents', $props);
+        $this->assertArrayHasKey('numberOfParents', $props);
+        $this->assertArrayHasKey('numberOfTeachers', $props);
+        $this->assertArrayHasKey('numberOfAdministrators', $props);
+        $this->assertArrayHasKey('schoolFeesDataForLineChart', $props);
+        $this->assertArrayHasKey('totalSchoolFees', $props);
+        $this->assertArrayHasKey('totalSchoolFeesCollected', $props);
+    }
+
+    /** @test */
+    public function a_user_can_get_props_for_student_dashboard()
+    {
+        $this->seed();
+        $student = User::where('user_type', 'student')->first();
+        $props = $student->getPropsForStudentDashboard(Term::find(6));
+
+        $this->assertArrayHasKey('classesWithTerms', $props);
+        $this->assertArrayHasKey('classModel', $props);
+        $this->assertArrayHasKey('classTeacher', $props);
+        $this->assertArrayHasKey('gradesDataForLineChart', $props);
+        $this->assertArrayHasKey('gradesDataPerSubjectForLineChart', $props);
+        $this->assertArrayHasKey('totalSchoolFees', $props);
+        $this->assertArrayHasKey('totalSchoolFeesPaid', $props);
+        $this->assertArrayHasKey('positionInClass', $props);
+        $this->assertArrayHasKey(
+            'positionStatisticsOfAllStudentsInClass',
+            $props,
+        );
+        $this->assertArrayHasKey('numberOfStudentsInClass', $props);
+        $this->assertArrayHasKey('averageMark', $props);
+        $this->assertArrayHasKey('gradeForAverageMark', $props);
+        $this->assertArrayHasKey('subjectsAndGrades', $props);
+    }
+
+    /** @test */
+    public function a_user_can_get_props_for_teacher_dashboard()
+    {
+        $this->seed();
+        $teacher = User::where('user_type', 'student')->first();
+        $props = $teacher->getPropsForTeacherDashboard(Term::find(6));
+
+        $this->assertArrayHasKey('classes', $props);
+        $this->assertArrayHasKey('classModel', $props);
+        $this->assertArrayHasKey('studentsInClass', $props);
+        $this->assertArrayHasKey('subjects', $props);
+        $this->assertArrayHasKey('currentSubject', $props);
+        $this->assertArrayHasKey('gradesForCurrentSubjectWithStudent', $props);
+    }
+
+    /** @test */
+    public function a_user_can_get_props_for_parent_dashboard()
+    {
+        $this->seed();
+        $parent = User::where('user_type', 'parent')->first();
+        $props = $parent->getPropsForParentDashboard(Term::find(6));
+
+        $this->assertArrayHasKey('showTerm', $props);
+        $this->assertArrayHasKey('children', $props);
     }
 
     /** @test */
@@ -89,8 +236,11 @@ class UserModelTest extends TestCase
         $this->assertEquals(3, $student->schoolFeesPaid->count());
     }
 
-    public function get_overall_grades_data_for_line_chart($grades, $chartData)
-    {
+    public function assert_overall_grades_data_for_line_chart(
+        $grades,
+        $chartData,
+        $subjectName = null,
+    ) {
         foreach ($chartData['gradesDataForStudent'] as $value) {
             $this->assertEquals(
                 $grades
@@ -121,6 +271,9 @@ class UserModelTest extends TestCase
                 Grade::whereIn('term_id', $termIds)
                     ->whereIn('class_name', $classNames)
                     ->whereIn('class_suffix', $classSuffixes)
+                    ->when($subjectName, function ($query, $subjectName) {
+                        $query->where('subject_name', $subjectName);
+                    })
                     ->get()
                     ->where(
                         'class_name_and_suffix',
@@ -143,7 +296,7 @@ class UserModelTest extends TestCase
 
         $grades = $student->grades;
 
-        $this->get_overall_grades_data_for_line_chart($grades, $chartData);
+        $this->assert_overall_grades_data_for_line_chart($grades, $chartData);
     }
 
     /** @test */
@@ -163,9 +316,10 @@ class UserModelTest extends TestCase
             ->values();
 
         foreach ($subjectNames as $subjectName) {
-            $this->get_overall_grades_data_for_line_chart(
+            $this->assert_overall_grades_data_for_line_chart(
                 $grades->where('subject_name', $subjectName),
                 $chartData[$subjectName],
+                $subjectName,
             );
         }
     }
@@ -185,9 +339,7 @@ class UserModelTest extends TestCase
             ->classes()
             ->where('academic_year_id', $academicYearId)
             ->first();
-        $this->termId = AcademicYear::find(
-            $academicYearId,
-        )->terms->first()->id;
+        $this->termId = AcademicYear::find($academicYearId)->terms->first()->id;
         $this->student->classModel = $this->classModel;
         $this->student->termId = $this->termId;
     }
@@ -348,8 +500,7 @@ class UserModelTest extends TestCase
         DB::table('class_teacher_pivot')->insert([
             'class_id' => $class->id,
             'teacher_id' => $teacher->id,
-            'academic_year_id' => AcademicYear::factory()->create()
-                ->id,
+            'academic_year_id' => AcademicYear::factory()->create()->id,
         ]);
 
         $this->assertInstanceOf(

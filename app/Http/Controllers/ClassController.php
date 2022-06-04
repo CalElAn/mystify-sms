@@ -17,7 +17,6 @@ class ClassController extends Controller
      */
     public function index(Request $request)
     {
-        //TODO test
         /** @var \App\Models\School */
         $school = Auth::user()->school;
 
@@ -32,7 +31,7 @@ class ClassController extends Controller
                     'academic_year_id',
                     $term->academic_year_id,
                 ),
-                'teachers.subjects',
+                // 'teachers.subjects',
             ])
             ->get();
         $classes->each(
@@ -77,7 +76,6 @@ class ClassController extends Controller
      */
     public function show(ClassModel $classModel, Request $request)
     {
-        //TODO test
         /** @var \App\Models\School */
         $school = Auth::user()->school;
 

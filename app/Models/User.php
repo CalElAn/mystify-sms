@@ -57,13 +57,15 @@ class User extends Authenticatable implements MustVerifyEmail
     public function uniqueSubjects(): Attribute
     {
         return Attribute::make(
-            get: fn() => $this->subjects->unique('subject_name')->pluck('subject_name')
+            get: fn() => $this->subjects
+                ->unique('subject_name')
+                ->pluck('subject_name'),
         );
     }
 
-    public function getPropsForHeadmasterDashboard($academicYearId): array
+    public function getPropsForHeadteacherDashboard(Term $term): array
     {
-        //TODO test
+        $academicYearId = $term->academic_year_id;
         $school = $this->school;
 
         return [
@@ -91,9 +93,9 @@ class User extends Authenticatable implements MustVerifyEmail
         ];
     }
 
-    public function getPropsForStudentDashboard($academicYearId, $termId): array
+    public function getPropsForStudentDashboard(Term $term): array
     {
-        //TODO test
+        $academicYearId = $term->academic_year_id;
         $classesWithTerms = ClassStudentPivot::where('student_id', $this->id)
             ->with(['terms', 'classModel'])
             ->get();
@@ -101,7 +103,7 @@ class User extends Authenticatable implements MustVerifyEmail
             ->where('academic_year_id', $academicYearId)
             ->first()->classModel;
         $this->classModel = $classModel;
-        $this->termId = $termId;
+        $this->termId = $term->id;
         $averageMark = $this->getAverageMarkOfStudentInClass();
 
         return [
@@ -133,12 +135,15 @@ class User extends Authenticatable implements MustVerifyEmail
         ];
     }
 
-    public function getPropsForTeacherDashboard($academicYearId, $termId): array
+    public function getPropsForTeacherDashboard(Term $term): array
     {
-        //TODO test
+        $termId = $term->id;
+        $academicYearId = $term->academic_year_id;
         $school = $this->school;
 
-        $classes = $this->classes()->with('teachers')->get();
+        $classes = $this->classes()
+            ->with('teachers')
+            ->get();
         $classModel = $classes
             ->where('pivot.academic_year_id', $academicYearId)
             ->first();
@@ -153,10 +158,10 @@ class User extends Authenticatable implements MustVerifyEmail
         $studentsInClass = null;
         $currentSubject = null;
         $gradesForCurrentSubjectWithStudent = null;
-        
+
         if ($classModel) {
             $classModel->teachers->first()?->append('unique_subjects');
-            
+
             $studentsInClass = $classModel->students
                 ->where('pivot.academic_year_id', $academicYearId)
                 ->sortBy('name')
@@ -204,7 +209,6 @@ class User extends Authenticatable implements MustVerifyEmail
         Collection $grades = null,
         string $subjectName = null,
     ): array {
-        //TODO update test
         if (!$grades) {
             $grades = $this->grades()->get();
         }
@@ -265,7 +269,6 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function getOverallGradesDataPerSubjectForLineChart(): array
     {
-        //TODO update test
         $grades = $this->grades()->get();
         $subjectNames = $grades
             ->pluck('subject_name')
@@ -437,14 +440,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function subjects()
     {
-        // if ($this->default_user_type === 'teacher') {
-            return $this->hasMany(
-                SubjectTeacherPivot::class,
-                'teacher_id',
-                'id',
-            );
-        // }
-        // return null;
+        return $this->hasMany(SubjectTeacherPivot::class, 'teacher_id', 'id');
     }
 
     public function grades()
@@ -483,55 +479,41 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function scopeStudentScope($query)
     {
-        //TODO test
         return $query->where('default_user_type', 'student');
     }
 
     public function scopeParentScope($query)
     {
-        //TODO test
         return $query->where('default_user_type', 'parent');
     }
 
     public function scopeTeacherScope($query)
     {
-        //TODO test
         return $query->where('default_user_type', 'teacher');
     }
 
     public function scopeAdministratorScope($query)
     {
-        //TODO test
         return $query->where('default_user_type', 'administrator');
     }
 
     public function parents()
     {
-        //TODO update test
-        // if ($this->default_user_type === 'student') {
         return $this->belongsToMany(
             User::class,
             'parent_student_pivot',
             'student_id',
             'parent_id',
         )->withTimestamps();
-        // }
-
-        // return null;
     }
 
     public function children()
     {
-        //TODO update test
-        // if ($this->default_user_type === 'parent') {
         return $this->belongsToMany(
             User::class,
             'parent_student_pivot',
             'parent_id',
             'student_id',
         )->withTimestamps();
-        // }
-
-        // return null;
     }
 }

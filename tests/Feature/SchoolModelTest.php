@@ -13,6 +13,8 @@ use App\Models\NoticeBoard;
 use App\Models\SchoolFeesPaid;
 use App\Models\SchoolFees;
 use App\Models\Term;
+use App\Models\Grade;
+use App\Models\ClassModel;
 use Illuminate\Support\Facades\DB;
 
 class SchoolModelTest extends TestCase
@@ -48,8 +50,13 @@ class SchoolModelTest extends TestCase
             'school_id' => $this->school->id,
         ]);
 
-        $this->assertTrue($this->school->academicYears->contains($academicYears->first()));
-        $this->assertInstanceOf('App\Models\AcademicYear', $this->school->academicYears->first());
+        $this->assertTrue(
+            $this->school->academicYears->contains($academicYears->first()),
+        );
+        $this->assertInstanceOf(
+            'App\Models\AcademicYear',
+            $this->school->academicYears->first(),
+        );
         $this->assertEquals(1, $this->school->academicYears->count());
     }
 
@@ -205,6 +212,116 @@ class SchoolModelTest extends TestCase
         $this->assertEquals(
             $gradingScale->fresh(),
             $this->school->gradingScale,
+        );
+    }
+
+    /** @test */
+    public function a_school_has_many_grades()
+    {
+        $classModel = ClassModel::factory()->create([
+            'school_id' => $this->school->id,
+        ]);
+
+        Grade::factory()->create([
+            'school_id' => $this->school->id,
+            'class_name' => $classModel->name,
+            'class_suffix' => $classModel->suffix,
+        ]);
+
+        $this->assertInstanceOf('App\Models\Grade', $this->school->grades[0]);
+        $this->assertEquals(1, $this->school->grades->count());
+    }
+
+    /** @test */
+    public function a_school_has_many_classes()
+    {
+        ClassModel::factory()->create(['school_id' => $this->school->id]);
+
+        $this->assertInstanceOf(
+            'App\Models\ClassModel',
+            $this->school->classes[0],
+        );
+        $this->assertEquals(1, $this->school->classes->count());
+    }
+
+    /** @test */
+    public function a_school_can_get_its_academic_years_with_terms()
+    {
+        AcademicYear::factory()
+            ->count(3)
+            ->state([
+                'school_id' => $this->school->id,
+            ])
+            ->has(Term::factory()->count(2), 'terms')
+            ->create();
+
+        $academicYearsWithTerms = $this->school->getAcademicYearsWithTerms();
+
+        $this->assertEquals(3, $academicYearsWithTerms->count());
+
+        $academicYearsWithTerms->each(function ($item) {
+            $this->assertEquals(2, $item->terms->count());
+            $this->assertInstanceOf('App\Models\Term', $item->terms[0]);
+        });
+    }
+
+    /** @test */
+    public function a_school_can_get_the_term_from_a_request()
+    {
+        AcademicYear::factory()
+            ->count(3)
+            ->state([
+                'school_id' => $this->school->id,
+            ])
+            ->has(
+                Term::factory()
+                    ->count(2)
+                    ->state(function (
+                        array $attributes,
+                        AcademicYear $academicYear,
+                    ) {
+                        return [
+                            //dd($attributes),
+                            'start_date' =>
+                                '2022-' .
+                                $academicYear->terms()->count() .
+                                '-1',
+                            'end_date' =>
+                                '2022-' .
+                                $academicYear->terms()->count() .
+                                '-20',
+                        ];
+                    }),
+                'terms',
+            )
+            ->create();
+
+        $this->assertEquals(
+            Term::find(3)->append('formatted_name'),
+            $this->school->getTerm(
+                new \Illuminate\Http\Request(['termId' => 3]),
+            ),
+        );
+        $this->assertEquals(
+            Term::find(
+                AcademicYear::find(2)
+                    ->terms()
+                    ->latest('end_date')
+                    ->first()->id,
+            )->append('formatted_name'),
+            $this->school->getTerm(
+                new \Illuminate\Http\Request(['academicYearId' => 2]),
+            ),
+        );
+        $this->assertEquals(
+            $this->school
+                ->getAcademicYearsWithTerms()
+                ->first()
+                ->terms->sortByDesc('end_date')
+                ->values()
+                ->first()
+                ->append('formatted_name'),
+            $this->school->getTerm(new \Illuminate\Http\Request()),
         );
     }
 
