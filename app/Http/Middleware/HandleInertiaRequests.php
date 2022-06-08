@@ -36,25 +36,10 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request)
     {
         //TODO test?
-        $authUser = null;
-
-        if (Auth::check()) {
-            $authUser = $request->user();
-            $authUser->can = [
-                'viewStudents' => $authUser->can('viewStudents', $authUser),
-                'viewClasses' => $authUser->can('viewClasses', $authUser),
-                'viewParents' => $authUser->can('viewParents', $authUser),
-                'viewTeachers' => $authUser->can('viewTeachers', $authUser),
-                'viewAdministrators' => $authUser->can(
-                    'viewAdministrators',
-                    $authUser,
-                ),
-            ];
-        }
 
         return array_merge(parent::share($request), [
             'auth' => [
-                'user' => $authUser,
+                'user' => $request->user()?->append(['permissions', 'user_types']),
             ],
             'ziggy' => function () {
                 return (new Ziggy())->toArray();

@@ -41,7 +41,7 @@
           Dashboard
         </Link>
         <Link
-          v-if="authUser.can.viewStudents"
+          v-if="authUser.permissions.viewStudents"
           :href="route('users.index', 'students')"
           :class="[
             $page.url.startsWith('/users/students')
@@ -54,7 +54,7 @@
           Students
         </Link>
         <Link
-          v-if="authUser.can.viewClasses"
+          v-if="authUser.permissions.viewClasses"
           :href="route('classes.index')"
           :class="[
             $page.url.startsWith('/class')
@@ -76,7 +76,7 @@
           Classes
         </Link>
         <Link
-          v-if="authUser.can.viewParents"
+          v-if="authUser.permissions.viewParents"
           :href="route('users.index', 'parents')"
           :class="[
             $page.url.startsWith('/users/parents')
@@ -89,7 +89,7 @@
           Parents
         </Link>
         <Link
-          v-if="authUser.can.viewTeachers"
+          v-if="authUser.permissions.viewTeachers"
           :href="route('users.index', 'teachers')"
           :class="[
             $page.url.startsWith('/users/teachers')
@@ -102,7 +102,7 @@
           Teachers
         </Link>
         <Link
-          v-if="authUser.can.viewAdministrators"
+          v-if="authUser.permissions.viewAdministrators"
           :href="route('users.index', 'administrators')"
           :class="[
             $page.url.startsWith('/users/administrators')
@@ -155,7 +155,7 @@
                   {{ authUser.name }}
                 </Link>
               </div>
-              <div class="text-sm">{{ authUser.default_user_type }}</div>
+              <div class="text-sm">{{ authUser.user_type }}</div>
             </div>
             <Menu v-slot="{ open }" as="div" class="relative">
               <MenuButton
@@ -174,6 +174,25 @@
                     <MenuItem as="div" v-slot="{ active }">
                       <MenuItemButton :active="active">
                         Profile
+                      </MenuItemButton>
+                    </MenuItem>
+                    <MenuItem
+                      v-if="authUser.permissions.changeUserType"
+                      as="div"
+                      v-slot="{ active }"
+                    >
+                      <MenuItemButton
+                        @click="shouldOpenModalContainingListOfUserTypes = true"
+                        :active="active"
+                      >
+                        Change account type
+                      </MenuItemButton>
+                    </MenuItem>
+                  </div>
+                  <div class="px-1 py-1">
+                    <MenuItem as="div" v-slot="{ active }">
+                      <MenuItemButton @click="$inertia.post(route('logout'))" :active="active">
+                        Log out
                       </MenuItemButton>
                     </MenuItem>
                   </div>
@@ -334,6 +353,23 @@
         </Menu>
       </div>
     </Modal>
+    <!-- Modal containing list of user types -->
+    <Modal
+      :show="shouldOpenModalContainingListOfUserTypes"
+      :maxWidthClass="'max-w-xs'"
+      @closeModal="shouldOpenModalContainingListOfUserTypes = false"
+    >
+      <div class="flex flex-col gap-3 text-purple-600">
+        <button
+          v-for="(item, index) in authUser.user_types"
+          :key="index"
+          @click="shouldOpenModalContainingListOfUserTypes = false;$inertia.post('/users/change-user-type', {user_type: item})"
+          class="relative inline-block rounded-full border p-2 font-medium tracking-wide odd:border-gray-300 odd:bg-white even:bg-gray-100 hover:text-purple-500 hover:underline"
+        >
+          {{ item }}
+        </button>
+      </div>
+    </Modal>
   </div>
 </template>
 
@@ -355,6 +391,7 @@ import { changeTerm, defaultProps } from '@/helpers';
 defineProps({ ...defaultProps });
 
 const shouldOpenModalContainingListOfAcademicYearsWithTerms = ref(false);
+const shouldOpenModalContainingListOfUserTypes = ref(false);
 
 const authUser = computed(() => usePage().props.value.auth.user);
 // in the tempalate you can access inertia page props directly by $page.props.auth.user

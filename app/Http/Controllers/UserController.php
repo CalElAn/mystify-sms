@@ -13,7 +13,7 @@ class UserController extends Controller
     /**
      * Show all requested user types for school.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Inertia\Response
      */
     public function index(Request $request)
     {
@@ -52,7 +52,7 @@ class UserController extends Controller
                 break;
 
             default:
-                # code...
+                abort(404);
                 break;
         }
 
@@ -76,6 +76,27 @@ class UserController extends Controller
             'userType' => $userType,
             'nameFilter' => $request->nameFilter,
         ]);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Inertia\Response
+     */
+    public function changeUserType(Request $request)
+    {
+        //TODO test
+        $this->authorize('changeUserType', User::class);
+
+        /** @var \App\Models\User */
+        $user = Auth::user();
+        
+        $user->update([
+            'user_type' => $request->user_type
+        ]);
+
+        return \Redirect::route('dashboard');
     }
 
     /**

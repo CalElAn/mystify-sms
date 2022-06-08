@@ -91,7 +91,7 @@ class DashboardController extends Controller
                 break;
 
             default:
-                # code...
+                abort(404);
                 break;
         }
 

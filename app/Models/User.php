@@ -47,8 +47,6 @@ class User extends Authenticatable implements MustVerifyEmail
         'email_verified_at' => 'datetime',
     ];
 
-    public array $can;
-
     public ClassModel $classModel;
     public int $termId;
     //so as to cache the results in a variable and not re-compute them every time its called
@@ -65,10 +63,68 @@ class User extends Authenticatable implements MustVerifyEmail
         );
     }
 
+    public function permissions(): Attribute
+    {
+        //TODO test
+        return Attribute::make(
+            get: fn() => [
+                'viewStudents' => $this->can('viewStudents', $this),
+                'viewClasses' => $this->can('viewClasses', $this),
+                'viewParents' => $this->can('viewParents', $this),
+                'viewTeachers' => $this->can('viewTeachers', $this),
+                'viewAdministrators' => $this->can('viewAdministrators', $this),
+                'changeUserType' => $this->can('changeUserType', $this),
+            ],
+        );
+    }
+
+    public function userTypes(): Attribute
+    {
+        //TODO test
+        return Attribute::make(
+            get: function () {
+                return array_unique([
+                    $this->default_user_type,
+                    'teacher',
+                    'parent',
+                ]);
+            },
+        );
+    }
+
     public function getPropsForHeadteacherDashboard(Term $term): array
     {
+        //TODO update test
         $academicYearId = $term->academic_year_id;
+
+        /** @var \App\Models\School */
         $school = $this->school;
+
+        $studentsAndSchoolFeesData = $school
+            ->users()
+            ->studentScope()
+            ->with([
+                'schoolFees' => fn($query) => $query->where(
+                    'academic_year_id',
+                    $academicYearId,
+                ),
+                'schoolFeesPaid' => fn($query) => $query->where(
+                    'academic_year_id',
+                    $academicYearId,
+                ),
+            ])
+            ->get();
+
+        $studentsWhoOweSchoolFees = $studentsAndSchoolFeesData
+            ->filter(function ($item) {
+                $amountOwed =
+                    $item->schoolFees->first()->amount -
+                    $item->schoolFeesPaid->sum('amount');
+                $item->amountOwed = $amountOwed;
+                return $amountOwed > 0;
+            })
+            ->sortByDesc('amountOwed')
+            ->values();
 
         return [
             'numberOfStudents' => $school->getStudents()->count(),
@@ -92,6 +148,7 @@ class User extends Authenticatable implements MustVerifyEmail
                     ->sum('amount'),
                 2,
             ),
+            'studentsWhoOweSchoolFees' => $studentsWhoOweSchoolFees,
         ];
     }
 
@@ -430,7 +487,9 @@ class User extends Authenticatable implements MustVerifyEmail
             )
                 ->withPivot('academic_year_id')
                 ->withTimestamps();
-        } elseif ($this->default_user_type === 'teacher') {
+        } elseif ($this->user_type === 'teacher') {
+            //using user_type instead of default_user_type cos for eg a headmaster can log in as a
+            //teacher and this returns null when classes is accessed
             return $this->belongsToMany(
                 ClassModel::class,
                 'class_teacher_pivot',
@@ -460,20 +519,20 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function schoolFeesPaid()
     {
-        if ($this->default_user_type === 'student') {
-            return $this->hasMany(SchoolFeesPaid::class, 'student_id');
-        }
+        // if ($this->default_user_type === 'student') {
+        return $this->hasMany(SchoolFeesPaid::class, 'student_id');
+        // }
 
-        return null;
+        // return null;
     }
 
     public function schoolFees()
     {
-        if ($this->default_user_type === 'student') {
-            return $this->hasMany(SchoolFees::class, 'student_id');
-        }
+        // if ($this->default_user_type === 'student') {
+        return $this->hasMany(SchoolFees::class, 'student_id');
+        // }
 
-        return null;
+        // return null;
     }
 
     /**

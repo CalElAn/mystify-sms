@@ -10,4 +10,9 @@ class SchoolFees extends Model
     use HasFactory;
     
     protected $table = 'school_fees';
+
+    public function student()//TODO test
+    {
+        return $this->belongsTo(User::class);
+    }
 }

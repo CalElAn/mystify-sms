@@ -136,13 +136,13 @@
       />
       <div class="flex items-center justify-between text-lg font-medium">
         <div>
-          <p class="text-center text-3xl font-bold text-[#36A2EB]">
+          <p class="text-center text-2xl font-bold text-[#36A2EB]">
             {{ totalSchoolFeesPaid.toLocaleString() }}
           </p>
           Total fees paid
         </div>
         <div>
-          <p class="text-center text-3xl font-bold text-[#FF6384]">
+          <p class="text-center text-2xl font-bold text-[#FF6384]">
             {{ (totalSchoolFees - totalSchoolFeesPaid).toLocaleString() }}
           </p>
           Total fees remaining

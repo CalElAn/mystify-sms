@@ -1,7 +1,8 @@
 <template>
   <!-- Summary statistics -->
   <section class="grid grid-cols-4 gap-3 pt-2 font-semibold text-white">
-    <div
+    <Link
+      :href="route('users.index', 'students')"
       class="flex flex-col gap-2 rounded-lg bg-purple-400 py-4 px-6 shadow hover:cursor-pointer hover:shadow-md"
     >
       <p class="">Total students</p>
@@ -9,8 +10,9 @@
         <AcademicCapIcon class="h-12 w-12" />
         {{ numberOfStudents }}
       </div>
-    </div>
-    <div
+    </Link>
+    <Link
+      :href="route('users.index', 'parents')"
       class="flex flex-col gap-2 rounded-lg bg-fuchsia-400 py-4 px-6 shadow hover:cursor-pointer hover:shadow-md"
     >
       <p class="">Total parents</p>
@@ -18,8 +20,9 @@
         <UserGroupIcon class="h-12 w-12" />
         {{ numberOfParents }}
       </div>
-    </div>
-    <div
+    </Link>
+    <Link
+      :href="route('users.index', 'teachers')"
       class="flex flex-col gap-2 rounded-lg bg-violet-400 py-4 px-6 shadow hover:cursor-pointer hover:shadow-md"
     >
       <p class="">Total teachers</p>
@@ -27,8 +30,9 @@
         <UsersIcon class="h-12 w-12" />
         {{ numberOfTeachers }}
       </div>
-    </div>
-    <div
+    </Link>
+    <Link
+      :href="route('users.index', 'administrators')"
       class="flex flex-col gap-2 rounded-lg bg-pink-400 py-4 px-6 shadow hover:cursor-pointer hover:shadow-md"
     >
       <p class="">Total administrators</p>
@@ -36,7 +40,7 @@
         <ArchiveIcon class="h-12 w-12" />
         {{ numberOfAdministrators }}
       </div>
-    </div>
+    </Link>
   </section>
   <section class="flex gap-6">
     <!-- Line chart -->
@@ -58,15 +62,19 @@
       />
       <div class="flex items-center justify-between text-lg font-medium">
         <div>
-          <p class="text-center text-3xl font-bold text-[#36A2EB]">
+          <p class="text-center text-2xl font-bold text-[#36A2EB]">
             {{ props.totalSchoolFeesCollected.toLocaleString() }}
           </p>
           Total fees collected
         </div>
         <div>
           <button
-            class="block w-full text-center text-3xl font-bold text-[#FF6384] underline"
+            @click="
+              shouldOpenModalContainingListOfStudentsWhoOweSchoolFees = true
+            "
+            class="flex w-full items-center gap-2 text-center text-2xl font-bold text-[#FF6384] underline hover:opacity-75"
           >
+            <ViewListIcon class="h-5 w-5" />
             {{
               (
                 props.totalSchoolFees - props.totalSchoolFeesCollected
@@ -98,10 +106,60 @@
       class="w-1/5"
     />
   </section>
+  <!-- MODALS -->
+  <!-- Modal containing list of students who owe school fees -->
+  <Modal
+    :show="shouldOpenModalContainingListOfStudentsWhoOweSchoolFees"
+    :maxWidthClass="'max-w-md'"
+    @closeModal="
+      shouldOpenModalContainingListOfStudentsWhoOweSchoolFees = false
+    "
+  >
+    <table class="w-full text-sm table-auto text-center">
+      <thead class="thead">
+        <tr>
+          <th class="p-2"></th>
+          <th class="p-2">Name</th>
+          <th class="p-2">Amount owed</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          v-for="(student, index) in studentsWhoOweSchoolFees"
+          :key="index"
+          class="tbody"
+        >
+          <td class="flex justify-center p-1.5">
+            <ProfilePicture
+              :profilePicturePath="student.profile_picture_path"
+              widthClass="w-9"
+              heightClass="h-9"
+            />
+          </td>
+          <td class="p-2 text-left">
+            <Link
+              class="tda"
+              :href="route('dashboard', { userId: student.id })"
+            >
+              {{ student.name }}
+            </Link>
+          </td>
+          <td class="p-2 text-[#FF6384] font-semibold">
+            {{ student.amountOwed }}
+          </td>
+        </tr>
+        <tr v-if="studentsWhoOweSchoolFees.length === 0">
+          <td class="border-t px-6 py-4" colspan="3">
+            No students found owing school fees.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </Modal>
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { usePage } from '@inertiajs/inertia-vue3';
 import { DoughnutChart, LineChart } from 'vue-chart-3';
 import { Chart, registerables } from 'chart.js';
@@ -125,9 +183,12 @@ const props = defineProps({
   schoolFeesDataForLineChart: Array,
   totalSchoolFees: Number,
   totalSchoolFeesCollected: Number,
+  studentsWhoOweSchoolFees: Array,
 });
 
 const user = computed(() => usePage().props.value.auth.user);
+
+const shouldOpenModalContainingListOfStudentsWhoOweSchoolFees = ref(false);
 
 const lineChartData = {
   datasets: [

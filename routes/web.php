@@ -32,6 +32,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/classes', [ClassController::class, 'index'])->name('classes.index');
     Route::get('/class/{classModel}', [ClassController::class, 'show'])->name('classes.show');
     Route::get('/users/{userType}', [UserController::class, 'index'])->name('users.index');
+    Route::post('/users/change-user-type', [UserController::class, 'changeUserType']);
 
     Route::get('/profile', function() {return;})->name('users.show');
 });

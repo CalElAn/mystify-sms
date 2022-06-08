@@ -44,7 +44,7 @@ class UserPolicy
     }
 
     public function viewParentDashboard(User $authUser, User $parent)
-    {       
+    {
         if ($authUser->parents->contains($parent)) {
             return true;
         }
@@ -94,6 +94,18 @@ class UserPolicy
     public function viewAdministrators(User $authUser)
     {
         if ($authUser->user_type === 'parent') {
+            return false;
+        }
+
+        return true;
+    }
+
+    public function changeUserType(User $authUser) //TODO test
+    {
+        if (
+            $authUser->default_user_type === 'student' ||
+            $authUser->default_user_type === 'parent'
+        ) {
             return false;
         }
 
