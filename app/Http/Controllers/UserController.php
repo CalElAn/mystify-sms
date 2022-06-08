@@ -17,17 +17,18 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        //TODO write test when done with admin portions and functions (cos )
         /** @var \App\Models\School */
-        $school = Auth::user()->school;
+        $school = $request->user()->school;
         $userType = $request->userType;
 
         switch ($userType) {
             case 'students':
+                $this->authorize('viewStudents', User::class);
                 $query = $school->users()->studentScope();
                 break;
 
             case 'parents':
+                $this->authorize('viewParents', User::class);
                 $query = User::parentScope()->whereHas(
                     'children',
                     fn(Builder $query) => $query->where(
@@ -38,10 +39,15 @@ class UserController extends Controller
                 break;
 
             case 'teachers':
-                $query = $school->users()->teacherScope();
+                $this->authorize('viewTeachers', User::class);
+                $query = $school
+                    ->users()
+                    ->teacherScope()
+                    ->with('subjects');
                 break;
 
             case 'administrators':
+                $this->authorize('viewAdministrators', User::class);
                 $query = $school->users()->administratorScope();
                 break;
 
@@ -54,18 +60,22 @@ class UserController extends Controller
             $query->where('name', 'LIKE', "%{$request->nameFilter}%");
         }
 
-        $query->orderBy('name');
-
-        return Inertia::render('User/Index', [
+        return Inertia::render('Users/Index', [
             'school' => $school,
             'showTerm' => false,
             'users' => $query
-                // ->orderBy('name')
+                ->orderBy('name')
                 ->paginate(10)
+                ->through(function ($user) use ($userType) {
+                    if ($userType === 'teachers') {
+                        $user->append('unique_subjects');
+                    }
+                    return $user;
+                })
                 ->withQueryString(),
             'userType' => $userType,
             'nameFilter' => $request->nameFilter,
-        ]);        
+        ]);
     }
 
     /**

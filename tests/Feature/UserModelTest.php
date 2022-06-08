@@ -140,9 +140,9 @@ class UserModelTest extends TestCase
         User::administratorScope()
             ->get()
             ->each(
-                fn($item) => $this->assertEquals(
+                fn($item) => $this->assertContains(
                     $item->default_user_type,
-                    'administrator',
+                    ['administrator', 'headteacher'],
                 ),
             );
     }
@@ -170,6 +170,7 @@ class UserModelTest extends TestCase
         $student = User::where('user_type', 'student')->first();
         $props = $student->getPropsForStudentDashboard(Term::find(6));
 
+        $this->assertArrayHasKey('parents', $props);
         $this->assertArrayHasKey('classesWithTerms', $props);
         $this->assertArrayHasKey('classModel', $props);
         $this->assertArrayHasKey('classTeacher', $props);

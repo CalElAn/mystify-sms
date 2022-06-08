@@ -165,14 +165,14 @@ class School extends Model
     public function getTeachers(): Collection
     {
         return $this->users()
-            ->where('default_user_type', 'teacher')
+            ->teacherScope()
             ->get();
     }
 
     public function getAdministrators(): Collection
     {
         return $this->users()
-            ->where('default_user_type', 'school administrator')
+            ->administratorScope()
             ->get();
     }
 }

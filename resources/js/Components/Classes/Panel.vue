@@ -120,12 +120,11 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import UserTable from '@/Components/Users/Table.vue';
+import TeacherCardModal from '@/Components/Users/TeacherCardModal.vue';
+import { useTeacherCardModal } from '@/Components/Users/teacherCardModal.js';
 
-import UserTable from '@/Components/User/Table.vue';
-import TeacherCardModal from '@/Components/User/TeacherCardModal.vue';
-
-const shouldOpenTeacherCardModal = ref(false);
+const { shouldOpenTeacherCardModal } = useTeacherCardModal();
 
 defineProps({
   classModel: Object,

@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\School;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -12,11 +13,13 @@ class DashboardControllerTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected $seed = true; //the database will be seeded before every test
+
     /** @test */
     public function the_dashboard_can_be_viewed()
     {
         // $this->withoutExceptionHandling();
-        $this->seed();
+        // $this->seed();
 
         $this->get('/dashboard')->assertRedirect();
 
@@ -25,31 +28,22 @@ class DashboardControllerTest extends TestCase
         $this->actingAs($user)
             ->get('/dashboard')
             ->assertRedirect();
-
-        //Headteacher asserions
-        $this->assertHeadteacherDashboardProps(
-            User::where('user_type', 'headteacher')->first(),
-        );
-
-        //Student asserions
-        $this->assertStudentDashboardProps(
-            User::where('user_type', 'student')->first(),
-        );
-
-        //Teacher asserions
-        $this->assertTeacherDashboardProps(
-            User::where('user_type', 'teacher')->first(),
-        );
-
-        //Parent asserions
-        $this->assertParentDashboardProps(
-            User::where('user_type', 'parent')->first(),
-        );
     }
 
-    public function assertHeadteacherDashboardProps($user)
+    /** @test */
+    public function headteacher_dashboard_can_be_viewed()
     {
-        $this->actingAs($user)
+        /** @var \Illuminate\Contracts\Auth\Authenticatable */
+        $user1 = User::factory()->create(['school_id' => 1]);
+
+        //No one apart from the particluar headmaster can view his dashboard
+        $this->actingAs($user1)
+            ->get('dashboard?userId=1')
+            ->assertForbidden();
+
+        $headteacher = User::where('user_type', 'headteacher')->first();
+
+        $this->actingAs($headteacher)
             ->get('dashboard')
             ->assertInertia(
                 fn(Assert $page) => $page
@@ -65,12 +59,49 @@ class DashboardControllerTest extends TestCase
                     ),
             );
 
-        $this->assertDefaultProps($user);
+        $this->assertDefaultProps($headteacher);
     }
 
-    public function assertStudentDashboardProps($user)
+    /** @test */
+    public function student_dashboard_can_be_viewed()
     {
-        $this->actingAs($user)
+        $student = User::where('user_type', 'student')->first();
+
+        /** @var \Illuminate\Contracts\Auth\Authenticatable */
+        $unauthorizedStudentUser = User::factory()->create([
+            'user_type' => 'student',
+            'school_id' => 1,
+        ]);
+        //a student cannot view another student's dashboard
+        $this->actingAs($unauthorizedStudentUser)
+            ->get('dashboard?userId=' . $student->id)
+            ->assertForbidden();
+
+        /** @var \Illuminate\Contracts\Auth\Authenticatable */
+        $userWhoIsNotAStudent = User::where([
+            ['user_type', '<>', 'student'],
+            ['school_id', 1],
+        ])->first();
+        //a user who is not a student can view another student's dashboard
+        $this->actingAs($userWhoIsNotAStudent)
+            ->get('dashboard?userId=' . $student->id)
+            ->assertOk();
+
+        /** @var \Illuminate\Contracts\Auth\Authenticatable */
+        $unauthorizedParentUser = User::factory()->create([
+            'user_type' => 'parent',
+        ]);
+        //a parent cannot view dashboard of someone who is not its child
+        $this->actingAs($unauthorizedParentUser)
+            ->get('dashboard?userId=' . $student->id)
+            ->assertForbidden();
+
+        //a parent can view the dashboard of his child
+        $this->actingAs($student->parents()->first())
+            ->get('dashboard?userId=' . $student->id)
+            ->assertOk();
+
+        $this->actingAs($student)
             ->get('dashboard')
             ->assertInertia(
                 fn(Assert $page) => $page
@@ -92,12 +123,23 @@ class DashboardControllerTest extends TestCase
                     ),
             );
 
-        $this->assertDefaultProps($user);
+        $this->assertDefaultProps($student);
     }
 
-    public function assertTeacherDashboardProps($user)
+    /** @test */
+    public function teacher_dashboard_can_be_viewed()
     {
-        $this->actingAs($user)
+        $teacher = User::where('user_type', 'teacher')->first();
+
+        /** @var \Illuminate\Contracts\Auth\Authenticatable */
+        $unauthorizedTeacherUser = User::factory()->create(['school_id' => 1]);
+
+        //No one apart from the particluar teacher can view the dashboard
+        $this->actingAs($unauthorizedTeacherUser)
+            ->get('dashboard?userId=' . $teacher->id)
+            ->assertForbidden();
+
+        $this->actingAs($teacher)
             ->get('dashboard')
             ->assertInertia(
                 fn(Assert $page) => $page
@@ -112,23 +154,37 @@ class DashboardControllerTest extends TestCase
                     ),
             );
 
-        $this->assertDefaultProps($user);
+        $this->assertDefaultProps($teacher);
     }
 
-    public function assertParentDashboardProps($user)
+    /** @test */
+    public function parent_dashboard_can_be_viewed()
     {
-        $this->actingAs($user)
+        $child = User::where('user_type', 'student')->first();
+        $parent = $child->parents()->first();
+
+        //a child can view the parent's dashboard
+        $this->actingAs($child)
+            ->get('dashboard?userId=' . $parent->id)
+            ->assertOk();
+
+        /** @var \Illuminate\Contracts\Auth\Authenticatable */
+        $unauthorizedUser = User::factory()->create(['school_id' => 1]);
+
+        //No one apart from the particluar parent can view his dashboard
+        $this->actingAs($unauthorizedUser)
+            ->get('dashboard?userId=' . $parent->id)
+            ->assertForbidden();
+
+        $this->actingAs($parent)
             ->get('dashboard')
             ->assertInertia(
                 fn(Assert $page) => $page
                     ->component('Dashboard/Parent')
-                    ->hasAll(
-                        'showTerm',
-                        'children',
-                    ),
+                    ->hasAll('showTerm', 'children'),
             );
 
-        $this->assertDefaultProps($user);
+        $this->assertDefaultProps($parent);
     }
 
     public function assertDefaultProps($user)

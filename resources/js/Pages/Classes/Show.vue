@@ -7,7 +7,7 @@
 </template>
 
 <script setup>
-import ClassPanel from '@/Components/Class/Panel.vue';
+import ClassPanel from '@/Components/Classes/Panel.vue';
 
 defineProps({
   classModel: Object,

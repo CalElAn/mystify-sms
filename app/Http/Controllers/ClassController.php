@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ClassModel;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
@@ -17,6 +18,8 @@ class ClassController extends Controller
      */
     public function index(Request $request)
     {
+        $this->authorize('viewClasses', User::class);
+
         /** @var \App\Models\School */
         $school = Auth::user()->school;
 
@@ -31,14 +34,14 @@ class ClassController extends Controller
                     'academic_year_id',
                     $term->academic_year_id,
                 ),
-                // 'teachers.subjects',
+                'teachers.subjects',
             ])
             ->get();
         $classes->each(
             fn($item) => $item->teachers->first()?->append('unique_subjects'),
         );
 
-        return Inertia::render('Class/Index', [
+        return Inertia::render('Classes/Index', [
             'school' => $school,
             'academicYearsWithTerms' => $academicYearsWithTerms,
             'showTerm' => true,
@@ -76,6 +79,8 @@ class ClassController extends Controller
      */
     public function show(ClassModel $classModel, Request $request)
     {
+        $this->authorize('viewClasses', User::class);
+        
         /** @var \App\Models\School */
         $school = Auth::user()->school;
 
@@ -95,7 +100,7 @@ class ClassController extends Controller
 
         $classModel->teachers->first()?->append('unique_subjects');
 
-        return Inertia::render('Class/Show', [
+        return Inertia::render('Classes/Show', [
             'school' => $school,
             'academicYearsWithTerms' => $academicYearsWithTerms,
             'showTerm' => true,

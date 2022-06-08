@@ -1,7 +1,10 @@
 <template>
   <!-- dashboard heading component -->
-  <section v-if="shouldShowDashboardHeading">
-    <div class="flex items-center gap-3 text-2xl font-semibold text-gray-500">
+  <section class="flex items-center">
+    <div
+      v-if="shouldShowDashboardHeading"
+      class="inline-flex items-center gap-3 text-2xl font-semibold text-gray-500"
+    >
       Student dashboard:
       <div
         class="flex items-center gap-1 text-xl tracking-wide text-fuchsia-600"
@@ -12,8 +15,21 @@
           heightClass="h-10"
         />
         {{ user.name }}
+        <a class="ml-3" :href="'tel:' + user.phone_number">
+          <PhoneIcon class="h-4 w-4 text-blue-700" />
+        </a>
+        <a class="ml-1" :href="'mailto:' + user.email">
+          <MailIcon class="h-4 w-4 text-blue-700" />
+        </a>
       </div>
     </div>
+    <button
+      @click="shouldOpenModalContainingListOfParents = true"
+      class="ml-4 inline-flex items-center justify-center gap-1 rounded-xl border border-purple-800 bg-purple-50 py-1 px-2 text-sm text-purple-800 shadow-sm hover:bg-purple-100"
+    >
+      <ViewListIcon class="h-4 w-4" />
+      Parents
+    </button>
   </section>
   <section class="flex items-center justify-evenly">
     <!-- class name and teacher -->
@@ -40,12 +56,12 @@
             widthClass="w-14"
             heightClass="h-14"
           />
-          <Link
-            :href="route('users.show', { userId: classTeacher?.id })"
+          <button
+            @click="shouldOpenTeacherCardModal = true"
             class="inline-block text-lg font-semibold text-purple-600 underline underline-offset-1"
           >
             {{ classTeacher?.name }}
-          </Link>
+          </button>
         </div>
       </div>
     </div>
@@ -202,6 +218,28 @@
     />
   </section>
   <!-- MODALS -->
+  <!-- Modal containing list of parents -->
+  <Modal
+    :show="shouldOpenModalContainingListOfParents"
+    :maxWidthClass="'max-w-md'"
+    @closeModal="shouldOpenModalContainingListOfParents = false"
+  >
+    <div class="flex flex-col gap-4">
+      <UserCard
+        v-for="(parent, parentIndex) in parents"
+        :as="'div'"
+        :key="parentIndex"
+        :user="parent"
+        class="border-purple-600"
+      />
+    </div>
+  </Modal>
+  <!-- Modal with teacher card -->
+  <TeacherCardModal
+    :teacher="classTeacher"
+    :show="shouldOpenTeacherCardModal"
+    @closeModal="shouldOpenTeacherCardModal = false"
+  />
   <!-- Modal containing list of classes -->
   <Modal
     :show="shouldOpenModalContainingListOfClasses"
@@ -296,13 +334,19 @@ import { Chart, registerables } from 'chart.js';
 import { TrendingUpIcon, ChevronDownIcon } from '@heroicons/vue/solid';
 
 import TimelineCard from '@/Components/TimelineCard.vue';
+import TeacherCardModal from '@/Components/Users/TeacherCardModal.vue';
+import UserCard from '@/Components/Users/Card.vue';
 
 import { changeTerm, defaultProps } from '@/helpers';
+import { useTeacherCardModal } from '@/Components/Users/teacherCardModal.js';
+
+const { shouldOpenTeacherCardModal } = useTeacherCardModal();
 
 Chart.register(...registerables);
 
 const props = defineProps({
   ...defaultProps,
+  parents: Array,
   classesWithTerms: Array,
   classModel: Object,
   classTeacher: Object,
@@ -317,6 +361,8 @@ const props = defineProps({
   gradeForAverageMark: String,
   subjectsAndGrades: [Array, Object],
 });
+
+const shouldOpenModalContainingListOfParents = ref(false);
 
 const shouldOpenModalContainingListOfClasses = ref(false);
 

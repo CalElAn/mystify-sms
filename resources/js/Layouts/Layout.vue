@@ -41,6 +41,7 @@
           Dashboard
         </Link>
         <Link
+          v-if="authUser.can.viewStudents"
           :href="route('users.index', 'students')"
           :class="[
             $page.url.startsWith('/users/students')
@@ -53,9 +54,10 @@
           Students
         </Link>
         <Link
+          v-if="authUser.can.viewClasses"
           :href="route('classes.index')"
           :class="[
-            $page.url.startsWith('/classes')
+            $page.url.startsWith('/class')
               ? 'bg-purple-600 text-white'
               : 'hover:text-purple-600 hover:underline',
           ]"
@@ -74,6 +76,7 @@
           Classes
         </Link>
         <Link
+          v-if="authUser.can.viewParents"
           :href="route('users.index', 'parents')"
           :class="[
             $page.url.startsWith('/users/parents')
@@ -86,6 +89,7 @@
           Parents
         </Link>
         <Link
+          v-if="authUser.can.viewTeachers"
           :href="route('users.index', 'teachers')"
           :class="[
             $page.url.startsWith('/users/teachers')
@@ -98,6 +102,7 @@
           Teachers
         </Link>
         <Link
+          v-if="authUser.can.viewAdministrators"
           :href="route('users.index', 'administrators')"
           :class="[
             $page.url.startsWith('/users/administrators')
@@ -352,4 +357,5 @@ defineProps({ ...defaultProps });
 const shouldOpenModalContainingListOfAcademicYearsWithTerms = ref(false);
 
 const authUser = computed(() => usePage().props.value.auth.user);
+// in the tempalate you can access inertia page props directly by $page.props.auth.user
 </script>

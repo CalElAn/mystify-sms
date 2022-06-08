@@ -47,6 +47,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'email_verified_at' => 'datetime',
     ];
 
+    public array $can;
+
     public ClassModel $classModel;
     public int $termId;
     //so as to cache the results in a variable and not re-compute them every time its called
@@ -107,9 +109,12 @@ class User extends Authenticatable implements MustVerifyEmail
         $averageMark = $this->getAverageMarkOfStudentInClass();
 
         return [
+            'parents' => $this->parents,
             'classesWithTerms' => $classesWithTerms,
             'classModel' => $classModel,
-            'classTeacher' => $classModel->teachers->first(),
+            'classTeacher' => $classModel->teachers
+                ->first()
+                ?->append('unique_subjects'),
             'gradesDataForLineChart' => $this->getOverallGradesDataForLineChart(),
             'gradesDataPerSubjectForLineChart' => $this->getOverallGradesDataPerSubjectForLineChart(),
             'totalSchoolFees' => round(
@@ -494,7 +499,9 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function scopeAdministratorScope($query)
     {
-        return $query->where('default_user_type', 'administrator');
+        return $query
+            ->where('default_user_type', 'administrator')
+            ->orWhere('default_user_type', 'headteacher');
     }
 
     public function parents()

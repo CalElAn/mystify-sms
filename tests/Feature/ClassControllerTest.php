@@ -20,11 +20,17 @@ class ClassControllerTest extends TestCase
 
         $academicYearId = 6;
 
+        $parent = User::where('user_type', 'parent')->first();
+        //a parent cannot view classes
+        $this->actingAs($parent)
+            ->get('classes?academicYearId=' . $academicYearId)
+            ->assertForbidden();
+
         $this->actingAs(User::first())
             ->get('classes?academicYearId=' . $academicYearId)
             ->assertInertia(
                 fn(Assert $page) => $page
-                    ->component('Class/Index')
+                    ->component('Classes/Index')
                     ->where('classes', function ($classes) use (
                         $academicYearId,
                     ) {
@@ -65,11 +71,17 @@ class ClassControllerTest extends TestCase
 
         $academicYearId = 6;
 
+        $parent = User::where('user_type', 'parent')->first();
+        //a parent cannot view a class
+        $this->actingAs($parent)
+            ->get('class/11?academicYearId=' . $academicYearId)
+            ->assertForbidden();
+
         $this->actingAs(User::first())
             ->get('class/11?academicYearId=' . $academicYearId)
             ->assertInertia(
                 fn(Assert $page) => $page
-                    ->component('Class/Show')
+                    ->component('Classes/Show')
                     ->where('classModel', function ($classModel) use (
                         $academicYearId,
                     ) {

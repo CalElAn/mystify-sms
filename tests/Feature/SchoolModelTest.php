@@ -420,7 +420,11 @@ class SchoolModelTest extends TestCase
     {
         $user = User::factory(10)->create([
             'school_id' => $this->school->id,
-            'default_user_type' => 'school administrator',
+            'default_user_type' => 'administrator',
+        ]);
+        User::factory(1)->create([
+            'school_id' => $this->school->id,
+            'default_user_type' => 'headteacher',
         ]);
 
         $this->assertTrue(
@@ -430,6 +434,6 @@ class SchoolModelTest extends TestCase
             'App\Models\User',
             $this->school->getAdministrators()[0],
         );
-        $this->assertEquals(10, $this->school->getAdministrators()->count());
+        $this->assertEquals(11, $this->school->getAdministrators()->count());
     }
 }

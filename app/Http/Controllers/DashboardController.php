@@ -67,21 +67,25 @@ class DashboardController extends Controller
 
         switch ($user->user_type) {
             case 'headteacher':
+                $this->authorize('viewHeadteacherDashboard', $user);
                 $component = 'Headteacher';
                 $props = $user->getPropsForHeadteacherDashboard($term);
                 break;
 
             case 'student':
+                $this->authorize('viewStudentDashboard', $user);
                 $component = 'Student';
                 $props = $user->getPropsForStudentDashboard($term);
                 break;
 
             case 'teacher':
+                $this->authorize('viewTeacherDashboard', $user);
                 $component = 'Teacher';
                 $props = $user->getPropsForTeacherDashboard($term);
                 break;
 
             case 'parent':
+                $this->authorize('viewParentDashboard', $user);
                 $component = 'Parent';
                 $props = $user->getPropsForParentDashboard();
                 break;

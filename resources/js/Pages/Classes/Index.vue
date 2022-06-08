@@ -15,7 +15,14 @@
         <tbody>
           <tr v-for="(classItem, index) in classes" :key="index" class="tbody">
             <td class="p-2">
-              <Link class="tda" :href="route('classes.show', classItem.id)"
+              <Link
+                class="tda"
+                :href="
+                  route('classes.show', {
+                    classModel: classItem.id,
+                    termId: term.id,
+                  })
+                "
                 >{{ classItem.name }} {{ classItem.suffix }}</Link
               >
             </td>
@@ -50,16 +57,12 @@
 </template>
 
 <script setup>
-import TeacherCardModal from '@/Components/User/TeacherCardModal.vue';
-import { ref } from 'vue';
+import TeacherCardModal from '@/Components/Users/TeacherCardModal.vue';
 
-const shouldOpenTeacherCardModal = ref(false);
-const teacherRef = ref({});
+import { useTeacherCardModal } from '@/Components/Users/teacherCardModal.js';
 
-function showTeacherCardModal(teacher) {
-  teacherRef.value = teacher
-  shouldOpenTeacherCardModal.value = true;
-}
+const { shouldOpenTeacherCardModal, teacherRef, showTeacherCardModal } =
+  useTeacherCardModal();
 
 defineProps({
   term: Object,

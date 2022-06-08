@@ -343,7 +343,7 @@ import { usePage } from '@inertiajs/inertia-vue3';
 
 import { defaultProps, changeAcademicYear } from '@/helpers';
 import TimelineCard from '@/Components/TimelineCard.vue';
-import ClassPanel from '@/Components/Class/Panel.vue';
+import ClassPanel from '@/Components/Classes/Panel.vue';
 
 defineProps({
   ...defaultProps,

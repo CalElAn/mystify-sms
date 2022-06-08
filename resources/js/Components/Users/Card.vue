@@ -1,5 +1,6 @@
 <template>
-  <Link
+  <component
+    :is="as"
     :href="route('dashboard', {userId: user.id})"
     class="base-card flex gap-6 border border-white p-4 hover:border-purple-600"
   >
@@ -30,14 +31,18 @@
         </a>
       </div>
     </div>
-  </Link>
+  </component>
 </template>
 
 <script setup>
-import { PhoneIcon, MailIcon } from '@heroicons/vue/solid';
+import { Link } from '@inertiajs/inertia-vue3';
 
 defineProps({
-  user: Object
+  user: Object,
+  as: {
+    type: String,
+    default: Link,
+  }
 });
 </script>
 

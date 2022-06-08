@@ -26,7 +26,7 @@ class UserFactory extends Factory
             'teacher', 
             // 'school administrator', 
             // 'headteacher', 
-            'administrator',
+            // 'administrator',
         ];
         $defaultUserType = $this->faker->randomElement($userTypes);
 

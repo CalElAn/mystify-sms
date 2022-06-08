@@ -1,7 +1,7 @@
 <template>
   <!-- dashboard heading component -->
   <section v-if="shouldShowDashboardHeading">
-    <div class="flex items-center gap-3 text-2xl text-gray-500 font-semibold">
+    <div class="flex items-center gap-3 text-2xl font-semibold text-gray-500">
       Parent dashboard:
       <div
         class="flex items-center gap-1 text-xl tracking-wide text-fuchsia-600"
@@ -12,6 +12,12 @@
           heightClass="h-10"
         />
         {{ user.name }}
+        <a class="ml-3" :href="'tel:' + user.phone_number">
+          <PhoneIcon class="h-4 w-4 text-blue-700" />
+        </a>
+        <a class="ml-1" :href="'mailto:' + user.email">
+          <MailIcon class="h-4 w-4 text-blue-700" />
+        </a>
       </div>
     </div>
   </section>

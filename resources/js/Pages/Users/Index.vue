@@ -47,7 +47,7 @@ import { ref, watch } from 'vue';
 import { SearchIcon } from '@heroicons/vue/solid';
 import { Inertia } from '@inertiajs/inertia';
 
-import UserTable from '@/Components/User/Table.vue';
+import UserTable from '@/Components/Users/Table.vue';
 import Pagination from '@/Components/Pagination.vue';
 
 const name = ref(props.nameFilter);

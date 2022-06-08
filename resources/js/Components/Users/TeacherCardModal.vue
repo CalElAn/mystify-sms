@@ -31,7 +31,7 @@
           </div>
         </div>
         <div>
-          <p class="text-gray-600">Subjects:</p>
+          <p class="text-gray-600 font-semibold">Subjects:</p>
           <ul
             class="grid h-24 list-inside list-disc grid-cols-2 overflow-y-auto rounded-md border p-2 text-sm"
           >
@@ -50,8 +50,6 @@
 </template>
 
 <script setup>
-import { PhoneIcon, MailIcon } from '@heroicons/vue/solid';
-
 defineProps({ show: Boolean, teacher: Object });
 
 defineEmits(['closeModal']);
