@@ -14,6 +14,8 @@ class NoticeBoard extends Model
     protected $table = 'notice_board';
 
     protected $with = ['user'];
+    
+    protected $guarded = [];
 
     protected $appends = ['time_string'];
 

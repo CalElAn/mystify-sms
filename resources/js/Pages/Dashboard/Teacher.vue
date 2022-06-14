@@ -1,7 +1,7 @@
 <template>
   <!-- Navbar -->
   <nav
-    class="ml-12 border-b border-gray-300 text-gray-500 dark:border-gray-700 dark:text-gray-400"
+    class="ml-12 border-b border-gray-300 text-gray-500"
   >
     <ul class="flex flex-wrap gap-6">
       <li>
@@ -228,7 +228,7 @@
               </td>
               <td class="px-3">
                 <input
-                  class="custom-input w-full text-center"
+                  class="custom-input shadow-sm w-full text-center"
                   type="number"
                   min="0"
                   :max="school.class_mark_percentage * 100"
@@ -237,7 +237,7 @@
               </td>
               <td class="px-3">
                 <input
-                  class="custom-input w-full text-center"
+                  class="custom-input shadow-sm w-full text-center"
                   type="number"
                   min="0"
                   :max="school.exam_mark_percentage * 100"
@@ -341,12 +341,13 @@ import {
 } from '@heroicons/vue/outline';
 import { usePage } from '@inertiajs/inertia-vue3';
 
-import { defaultProps, changeAcademicYear } from '@/helpers';
+import { changeAcademicYear } from '@/helpers';
+import { defaultDashboardProps} from '@/defaultDashboardProps';
 import TimelineCard from '@/Components/TimelineCard.vue';
 import ClassPanel from '@/Components/Classes/Panel.vue';
 
 defineProps({
-  ...defaultProps,
+  ...defaultDashboardProps,
   classes: Object,
   classModel: Object,
   studentsInClass: Array,

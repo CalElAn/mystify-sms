@@ -27,12 +27,7 @@ export function changeAcademicYear(academicYearId) {
   Inertia.get(route('dashboard', { academicYearId: academicYearId }));
 }
 
-export const defaultProps = {
-  user: Object,
-  shouldShowDashboardHeading: Boolean,
-  school: Object,
-  term: Object,
-  showTerm: Boolean,
-  academicYearsWithTerms: Array,
-  noticeBoardMessages: Object,
-};
+export function autoGrowTextarea(element) {
+  element.target.style.height = '';
+  element.target.style.height = element.target.scrollHeight + 'px';
+}

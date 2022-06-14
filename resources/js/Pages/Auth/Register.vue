@@ -47,7 +47,7 @@ const submit = () => {
         <BreezeLabel for="sex" value="Sex" />
         <select
           id="sex"
-          class="custom-select mt-1 block w-full"
+          class="custom-select shadow-sm mt-1 block w-full"
           v-model="form.sex"
           required
         >
@@ -82,7 +82,7 @@ const submit = () => {
         <BreezeLabel for="default_user_type" value="Account type" />
         <select
           id="default_user_type"
-          class="custom-select mt-1 block w-full"
+          class="custom-select shadow-sm mt-1 block w-full"
           v-model="form.default_user_type"
           required
         >

@@ -13,7 +13,7 @@
       </div>
       <!-- school name and logo -->
       <div
-        v-if="$page.component !== 'School/Dashboard/Parent'"
+        v-if="school"
         class="flex flex-col gap-2"
       >
         <div
@@ -126,7 +126,7 @@
       >
         <!-- Current term -->
         <button
-          v-if="showTerm"
+          v-if="term"
           @click="shouldOpenModalContainingListOfAcademicYearsWithTerms = true"
           class="group mx-auto flex items-center justify-center gap-2 rounded-md border border-gray-500 py-2 px-3 shadow-sm"
         >
@@ -364,7 +364,7 @@
           v-for="(item, index) in authUser.user_types"
           :key="index"
           @click="shouldOpenModalContainingListOfUserTypes = false;$inertia.post('/users/change-user-type', {user_type: item})"
-          class="relative inline-block rounded-full border p-2 font-medium tracking-wide odd:border-gray-300 odd:bg-white even:bg-gray-100 hover:text-purple-500 hover:underline"
+          class="relative inline-block list-of-buttons-in-modal p-2 font-semibold tracking-wide hover:text-purple-500 hover:underline"
         >
           {{ item }}
         </button>
@@ -386,9 +386,10 @@ import {
 } from '@heroicons/vue/outline';
 import { ChevronDownIcon } from '@heroicons/vue/solid';
 import { LightningBoltIcon } from '@heroicons/vue/outline';
-import { changeTerm, defaultProps } from '@/helpers';
+import { changeTerm } from '@/helpers';
+import { defaultDashboardProps } from '@/defaultDashboardProps';
 
-defineProps({ ...defaultProps });
+defineProps({ ...defaultDashboardProps });
 
 const shouldOpenModalContainingListOfAcademicYearsWithTerms = ref(false);
 const shouldOpenModalContainingListOfUserTypes = ref(false);

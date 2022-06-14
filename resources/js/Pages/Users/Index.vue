@@ -7,7 +7,7 @@
       <SearchIcon class="h-6 w-6 text-gray-500" />
       <input
         v-model="name"
-        class="custom-input w-1/3"
+        class="custom-input shadow-sm w-1/3"
         placeholder="Search..."
         type="text"
       />

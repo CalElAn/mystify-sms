@@ -61,8 +61,8 @@ class UserController extends Controller
         }
 
         return Inertia::render('Users/Index', [
-            'school' => $school,
-            'showTerm' => false,
+            // 'school' => $school,
+            // 'showTerm' => false,
             'users' => $query
                 ->orderBy('name')
                 ->paginate(10)

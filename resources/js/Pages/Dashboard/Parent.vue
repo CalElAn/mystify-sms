@@ -47,10 +47,10 @@
 </template>
 
 <script setup>
-import { defaultProps } from '@/helpers';
+import { defaultDashboardProps } from '@/defaultDashboardProps';
 
 defineProps({
-  ...defaultProps,
+  ...defaultDashboardProps,
   children: Object,
 });
 </script>

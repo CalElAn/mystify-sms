@@ -4,7 +4,10 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\ClassController;
+use App\Http\Controllers\AcademicYearController;
+use App\Http\Controllers\TermController;
+use App\Http\Controllers\ClassModelController;
+use App\Http\Controllers\NoticeBoardController;
 use App\Http\Controllers\DashboardController;
 
 /*
@@ -29,8 +32,28 @@ Route::get('/', function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    Route::get('/classes', [ClassController::class, 'index'])->name('classes.index');
-    Route::get('/class/{classModel}', [ClassController::class, 'show'])->name('classes.show');
+
+    Route::get('/dashboard/academic-years/form', [AcademicYearController::class, 'form'])->name('academic_years.form');
+    Route::post('/academic-years', [AcademicYearController::class, 'store'])->name('academic_years.store');
+    Route::patch('/academic-years/{academicYear}', [AcademicYearController::class, 'update'])->name('academic_years.update');
+    Route::delete('/academic-years/{academicYear}', [AcademicYearController::class, 'destroy'])->name('academic_years.destroy');
+
+    Route::get('/dashboard/terms/form', [TermController::class, 'form'])->name('terms.form');
+    Route::get('/academic-years/{academicYear}/terms', [TermController::class, 'terms'])->name('academic_years.terms');
+    Route::post('/academic-years/{academicYear}/terms', [TermController::class, 'store'])->name('academic_years.terms.store');
+    Route::patch('/terms/{term}', [TermController::class, 'update'])->name('terms.update');
+    Route::delete('/terms/{term}', [TermController::class, 'destroy'])->name('terms.destroy');
+
+    Route::get('/classes', [ClassModelController::class, 'index'])->name('classes.index');
+    Route::get('/classes/{classModel}', [ClassModelController::class, 'show'])->name('classes.show');
+    Route::get('/dashboard/classes/form', [ClassModelController::class, 'form'])->name('classes.form');
+    Route::post('/classes', [ClassModelController::class, 'store'])->name('classes.store');
+    Route::patch('/classes/{classModel}', [ClassModelController::class, 'update'])->name('classes.update');
+    Route::delete('/classes/{classModel}', [ClassModelController::class, 'destroy'])->name('classes.destroy');
+
+    Route::get('/dashboard/notice-board/create', [NoticeBoardController::class, 'create'])->name('notice_board.create');
+    Route::post('/notice-board', [NoticeBoardController::class, 'store'])->name('notice_board.store');
+
     Route::get('/users/{userType}', [UserController::class, 'index'])->name('users.index');
     Route::post('/users/change-user-type', [UserController::class, 'changeUserType']);
 

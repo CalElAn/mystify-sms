@@ -74,11 +74,11 @@ class ClassControllerTest extends TestCase
         $parent = User::where('user_type', 'parent')->first();
         //a parent cannot view a class
         $this->actingAs($parent)
-            ->get('class/11?academicYearId=' . $academicYearId)
+            ->get('classes/11?academicYearId=' . $academicYearId)
             ->assertForbidden();
 
         $this->actingAs(User::first())
-            ->get('class/11?academicYearId=' . $academicYearId)
+            ->get('classes/11?academicYearId=' . $academicYearId)
             ->assertInertia(
                 fn(Assert $page) => $page
                     ->component('Classes/Show')

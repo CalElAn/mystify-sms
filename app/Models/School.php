@@ -54,10 +54,21 @@ class School extends Model
 
     public function getAcademicYearsWithTerms(): Collection
     {
+        //TODO update test
         return $this->academicYears()
+            ->has('terms')
             ->with('terms')
             ->latest('end_date')
             ->get();
+    }
+
+    public function getDefaultTerm(): Term
+    {
+        return $this->getAcademicYearsWithTerms()
+            ->first()
+            ->terms->sortByDesc('end_date')
+            ->values()
+            ->first();
     }
 
     public function getTerm(Request $request): Term
@@ -75,11 +86,7 @@ class School extends Model
                 break;
 
             default:
-                $term = $this->getAcademicYearsWithTerms()
-                    ->first()
-                    ->terms->sortByDesc('end_date')
-                    ->values()
-                    ->first();
+                $term = $this->getDefaultTerm();
                 break;
         }
 
@@ -104,8 +111,9 @@ class School extends Model
         });
     }
 
-    public function getSchoolFeesDataForLineChart($academicYearId): \Illuminate\Support\Collection
-    {
+    public function getSchoolFeesDataForLineChart(
+        $academicYearId,
+    ): \Illuminate\Support\Collection {
         $chartData = collect();
         $weekNumber = 1;
 

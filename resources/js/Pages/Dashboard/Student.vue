@@ -25,7 +25,7 @@
     </div>
     <button
       @click="shouldOpenModalContainingListOfParents = true"
-      class="ml-4 inline-flex items-center justify-center gap-1 rounded-xl border border-purple-800 bg-purple-50 py-1 px-2 text-sm text-purple-800 shadow-sm hover:bg-purple-100"
+      class="ml-4 inline-flex items-center justify-center gap-1 rounded-lg border border-purple-800 bg-purple-50 py-1 px-2 text-sm text-purple-800 shadow-sm hover:bg-purple-100"
     >
       <ViewListIcon class="h-4 w-4" />
       Parents
@@ -337,7 +337,8 @@ import TimelineCard from '@/Components/TimelineCard.vue';
 import TeacherCardModal from '@/Components/Users/TeacherCardModal.vue';
 import UserCard from '@/Components/Users/Card.vue';
 
-import { changeTerm, defaultProps } from '@/helpers';
+import { changeTerm } from '@/helpers';
+import { defaultDashboardProps } from '@/defaultDashboardProps';
 import { useTeacherCardModal } from '@/Components/Users/teacherCardModal.js';
 
 const { shouldOpenTeacherCardModal } = useTeacherCardModal();
@@ -345,7 +346,7 @@ const { shouldOpenTeacherCardModal } = useTeacherCardModal();
 Chart.register(...registerables);
 
 const props = defineProps({
-  ...defaultProps,
+  ...defaultDashboardProps,
   parents: Array,
   classesWithTerms: Array,
   classModel: Object,

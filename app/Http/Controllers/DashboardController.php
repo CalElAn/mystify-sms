@@ -2,18 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\AcademicYear;
-use App\Models\ClassModel;
-use App\Models\ClassStudentPivot;
-use App\Models\School;
-use App\Models\SubjectTeacherPivot;
-use App\Models\Term;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
 
 class DashboardController extends Controller
 {
@@ -49,10 +41,10 @@ class DashboardController extends Controller
         $defaultProps = [
             'user' => $user,
             'shouldShowDashboardHeading' => $shouldShowDashboardHeading,
-            'school' => $school,
+            // 'school' => $school,
             'academicYearsWithTerms' => $academicYearsWithTerms,
             'term' => $term,
-            'showTerm' => true,
+            // 'showTerm' => true,
             'noticeBoardMessages' => $school
                 ->noticeBoard()
                 ->where('term_id', $term->id)

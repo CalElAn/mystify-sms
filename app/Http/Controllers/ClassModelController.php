@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\ClassModel;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use App\Models\User;
+use App\Http\Requests\StoreOrUpdateClassModelRequest;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
-class ClassController extends Controller
+class ClassModelController extends Controller
 {
     /**
      * Show all classes and associated class teacher in the school.
@@ -42,33 +42,10 @@ class ClassController extends Controller
         );
 
         return Inertia::render('Classes/Index', [
-            'school' => $school,
             'academicYearsWithTerms' => $academicYearsWithTerms,
-            'showTerm' => true,
             'term' => $term,
             'classes' => $classes,
         ]);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
     }
 
     /**
@@ -80,7 +57,7 @@ class ClassController extends Controller
     public function show(ClassModel $classModel, Request $request)
     {
         $this->authorize('viewClasses', User::class);
-        
+
         /** @var \App\Models\School */
         $school = Auth::user()->school;
 
@@ -101,23 +78,49 @@ class ClassController extends Controller
         $classModel->teachers->first()?->append('unique_subjects');
 
         return Inertia::render('Classes/Show', [
-            'school' => $school,
             'academicYearsWithTerms' => $academicYearsWithTerms,
-            'showTerm' => true,
             'term' => $school->getTerm($request),
             'classModel' => $classModel,
         ]);
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Show the form for creating or editing a new resource.
      *
-     * @param  \App\Models\ClassModel  $classModel
      * @return \Illuminate\Http\Response
      */
-    public function edit(ClassModel $classModel)
+    public function form(Request $request)
     {
-        //
+        //TODO authorize
+        //TODO test
+
+        return Inertia::render('Classes/Form', [
+            'classes' => $request
+                ->user()
+                ->school->classes->sortBy([['name', 'asc'], ['suffix', 'asc']])
+                ->values(),
+        ]);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(StoreOrUpdateClassModelRequest $request)
+    {
+        //TODO test
+        //TODO authorize
+
+        $request
+            ->user()
+            ->school->classes()
+            ->create(
+                $request->validated(),
+            );
+
+        return back();
     }
 
     /**
@@ -127,9 +130,16 @@ class ClassController extends Controller
      * @param  \App\Models\ClassModel  $classModel
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, ClassModel $classModel)
+    public function update(StoreOrUpdateClassModelRequest $request, ClassModel $classModel)
     {
-        //
+        //TODO test
+        //TODO authorize
+
+        $classModel->update(
+            $request->validated(),
+        );
+
+        return back();
     }
 
     /**
@@ -140,6 +150,10 @@ class ClassController extends Controller
      */
     public function destroy(ClassModel $classModel)
     {
-        //
+        //TODO authorize
+        //TODO test
+        $classModel->delete();
+
+        return back();
     }
 }

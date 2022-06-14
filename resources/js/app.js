@@ -3,7 +3,12 @@ require('./bootstrap');
 import { createApp, h } from 'vue';
 import { createInertiaApp, Link } from '@inertiajs/inertia-vue3';
 import { InertiaProgress } from '@inertiajs/progress';
-import { DotsVerticalIcon, ViewListIcon, PhoneIcon, MailIcon } from '@heroicons/vue/solid';
+import {
+  DotsVerticalIcon,
+  ViewListIcon,
+  PhoneIcon,
+  MailIcon,
+} from '@heroicons/vue/solid';
 // import { CogIcon } from '@heroicons/vue/outline';
 import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue';
 

@@ -1,6 +1,15 @@
 <template>
+  <section>
+    <button
+      @click="shouldOpenModalContainingListOfActions = true"
+      class="ml-4 inline-flex items-center justify-center gap-2 tracking-wide font-semibold rounded-lg border border-purple-800 bg-purple-50 p-2 text-purple-800 shadow-sm hover:bg-purple-100"
+    >
+      <ViewListIcon class="h-5 w-5" />
+      Actions
+    </button>
+  </section>
   <!-- Summary statistics -->
-  <section class="grid grid-cols-4 gap-3 pt-2 font-semibold text-white">
+  <section class="grid grid-cols-4 gap-3 font-semibold text-white">
     <Link
       :href="route('users.index', 'students')"
       class="flex flex-col gap-2 rounded-lg bg-purple-400 py-4 px-6 shadow hover:cursor-pointer hover:shadow-md"
@@ -107,6 +116,24 @@
     />
   </section>
   <!-- MODALS -->
+    <!-- Modal containing list of user types -->
+  <Modal
+    :show="shouldOpenModalContainingListOfActions"
+    :maxWidthClass="'max-w-xs'"
+    @closeModal="shouldOpenModalContainingListOfActions = false"
+  >
+    <div class="flex flex-col gap-3 text-purple-600">
+      <Link
+        v-for="(item, index) in headteacherActions"
+        :key="index"
+        :href="item.href"
+        @click="shouldOpenModalContainingListOfUserTypes = false"
+        class="relative inline-block text-center list-of-buttons-in-modal p-2 font-semibold tracking-wide hover:text-purple-500 hover:underline"
+      >
+        {{ item.label }}
+      </Link>
+    </div>
+  </Modal>
   <!-- Modal containing list of students who owe school fees -->
   <Modal
     :show="shouldOpenModalContainingListOfStudentsWhoOweSchoolFees"
@@ -119,14 +146,14 @@
       <thead class="thead">
         <tr>
           <th class="p-2"></th>
-          <th class="p-2">Name</th>
+          <th class="p-2 text-left">Name</th>
           <th class="p-2">Amount owed</th>
         </tr>
       </thead>
       <tbody>
         <tr
-          v-for="(student, index) in studentsWhoOweSchoolFees"
-          :key="index"
+          v-for="(student, studentIndex) in studentsWhoOweSchoolFees"
+          :key="studentIndex"
           class="tbody"
         >
           <td class="flex justify-center p-1.5">
@@ -148,7 +175,7 @@
             {{ student.amountOwed }}
           </td>
         </tr>
-        <tr v-if="studentsWhoOweSchoolFees.length === 0">
+        <tr v-if="!studentsWhoOweSchoolFees || studentsWhoOweSchoolFees.length === 0">
           <td class="border-t px-6 py-4" colspan="3">
             No students found owing school fees.
           </td>
@@ -170,12 +197,13 @@ import {
   ArchiveIcon,
 } from '@heroicons/vue/outline';
 import TimelineCard from '@/Components/TimelineCard.vue';
-import { defaultProps } from '@/helpers';
+import { headteacherActions } from '@/headteacherActions';
+import { defaultDashboardProps } from '@/defaultDashboardProps';
 
 Chart.register(...registerables);
 
 const props = defineProps({
-  ...defaultProps,
+  ...defaultDashboardProps,
   numberOfStudents: Number,
   numberOfParents: Number,
   numberOfTeachers: Number,
@@ -189,6 +217,7 @@ const props = defineProps({
 const user = computed(() => usePage().props.value.auth.user);
 
 const shouldOpenModalContainingListOfStudentsWhoOweSchoolFees = ref(false);
+const shouldOpenModalContainingListOfActions = ref(false);
 
 const lineChartData = {
   datasets: [
