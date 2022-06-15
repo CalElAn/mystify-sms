@@ -55,7 +55,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/notice-board', [NoticeBoardController::class, 'store'])->name('notice_board.store');
 
     Route::get('/users/{userType}', [UserController::class, 'index'])->name('users.index');
-    Route::post('/users/change-user-type', [UserController::class, 'changeUserType']);
+    Route::patch('/users/change-user-type', [UserController::class, 'changeUserType']);
 
     Route::get('/profile', function() {return;})->name('users.show');
 });

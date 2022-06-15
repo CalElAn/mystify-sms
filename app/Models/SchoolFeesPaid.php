@@ -13,7 +13,6 @@ class SchoolFeesPaid extends Model
 
     public function student()
     {
-        //TODO test
         return $this->belongsTo(User::class);
     }
 }

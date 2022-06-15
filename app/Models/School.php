@@ -54,7 +54,6 @@ class School extends Model
 
     public function getAcademicYearsWithTerms(): Collection
     {
-        //TODO update test
         return $this->academicYears()
             ->has('terms')
             ->with('terms')

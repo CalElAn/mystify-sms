@@ -34,7 +34,7 @@ class DashboardControllerTest extends TestCase
     public function headteacher_dashboard_can_be_viewed()
     {
         /** @var \Illuminate\Contracts\Auth\Authenticatable */
-        $user1 = User::factory()->create(['school_id' => 1]);
+        $user1 = User::factory()->create(['school_id' => 1, 'default_user_type' => 'headteacher']);
 
         //No one apart from the particluar headmaster can view his dashboard
         $this->actingAs($user1)
@@ -181,7 +181,7 @@ class DashboardControllerTest extends TestCase
             ->assertInertia(
                 fn(Assert $page) => $page
                     ->component('Dashboard/Parent')
-                    ->hasAll('showTerm', 'children'),
+                    ->hasAll('children'),
             );
 
         $this->assertDefaultProps($parent);
@@ -195,10 +195,8 @@ class DashboardControllerTest extends TestCase
                 fn(Assert $page) => $page->hasAll(
                     'user',
                     'shouldShowDashboardHeading',
-                    'school',
                     'academicYearsWithTerms',
                     'term',
-                    'showTerm',
                     'noticeBoardMessages',
                 ),
             );

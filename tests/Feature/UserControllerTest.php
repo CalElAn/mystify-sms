@@ -12,11 +12,11 @@ class UserControllerTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected $seed = true;
+
     /** @test */
     public function the_users_index_can_be_viewed()
     {
-        $this->seed();
-
         $parentUser = User::factory()->create([
             'user_type' => 'parent',
         ]);
@@ -74,8 +74,6 @@ class UserControllerTest extends TestCase
                         })
                         ->hasAll(
                             'school',
-                            'showTerm',
-                            // 'users',
                             'userType',
                             'nameFilter',
                         ),
@@ -88,5 +86,31 @@ class UserControllerTest extends TestCase
         ) {
             $assertProps($value);
         }
+    }
+
+    /** @test */
+    public function a_user_can_change_his_user_type()
+    {
+        //a parent cannot change his user type
+        $this->actingAs(
+            User::where('default_user_type', 'parent')->first(),
+        )
+            ->patch('/users/change-user-type')
+            ->assertForbidden();
+
+        //a student cannot change his user type
+        $this->actingAs(
+            User::where('default_user_type', 'student')->first(),
+        )
+            ->patch('/users/change-user-type')
+            ->assertForbidden();
+
+        $headteacher = User::where('default_user_type', 'headteacher')->first();
+
+        $this->actingAs($headteacher)
+            ->patch('/users/change-user-type', ['user_type' => 'parent'])
+            ->assertRedirect();
+
+        $this->assertEquals($headteacher->fresh()->user_type, 'parent');
     }
 }

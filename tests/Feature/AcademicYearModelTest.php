@@ -20,4 +20,19 @@ class AcademicYearModelTest extends TestCase
 
         $this->assertInstanceOf('App\Models\Term', $academicYear->terms->first());
     }
+
+    /** @test */
+    public function an_academic_year_has_a_formatted_name()
+    {
+        $academicYear = AcademicYear::factory()->create([
+            'name' => '2021/2022',
+            'start_date' => '2021-2-3',
+            'end_date' => '2022-6-3'
+        ]);
+
+        $this->assertEquals(
+            '2021/2022 (3rd Feb - 3rd Jun)',
+            $academicYear->formatted_name,
+        );
+    }
 }

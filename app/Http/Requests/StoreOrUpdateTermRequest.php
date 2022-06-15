@@ -2,10 +2,10 @@
 
 namespace App\Http\Requests;
 
-use App\Models\ClassModel;
+use App\Models\Term;
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreOrUpdateClassModelRequest extends FormRequest
+class StoreOrUpdateTermRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -14,13 +14,13 @@ class StoreOrUpdateClassModelRequest extends FormRequest
      */
     public function authorize()
     {
-        if ($this->classModel) {
+        if ($this->term) {
             //to authorize the update method
-            return $this->user()->can('update', $this->classModel);
+            return $this->user()->can('update', $this->term);
         }
 
         //to authorize the create method
-        return $this->user()->can('create', ClassModel::class);
+        return $this->user()->can('create', Term::class);
     }
 
     /**
@@ -32,19 +32,8 @@ class StoreOrUpdateClassModelRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'suffix' => 'required',
-        ];
-    }
-
-    /**
-     * Get the error messages for the defined validation rules.
-     *
-     * @return array
-     */
-    public function messages()
-    {
-        return [
-            'suffix.required' => 'A group is required',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date',
         ];
     }
 }

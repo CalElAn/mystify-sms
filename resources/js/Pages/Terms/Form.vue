@@ -76,7 +76,7 @@ function getTerms() {
   axios
     .get(route('academic_years.terms', academicYearId.value))
     .then((response) => {
-      terms.value = response.data;
+      terms.value = response.data.terms;
     });
 }
 

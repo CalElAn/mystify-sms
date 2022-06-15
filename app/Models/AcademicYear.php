@@ -20,7 +20,6 @@ class AcademicYear extends Model
 
     public function formattedName(): Attribute
     {
-        //TODO test
         $startDate = Carbon::parse($this->start_date);
         $endDate = Carbon::parse($this->end_date);
 

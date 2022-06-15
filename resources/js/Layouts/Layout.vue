@@ -363,7 +363,7 @@
         <button
           v-for="(item, index) in authUser.user_types"
           :key="index"
-          @click="shouldOpenModalContainingListOfUserTypes = false;$inertia.post('/users/change-user-type', {user_type: item})"
+          @click="shouldOpenModalContainingListOfUserTypes = false;$inertia.patch('/users/change-user-type', {user_type: item})"
           class="relative inline-block list-of-buttons-in-modal p-2 font-semibold tracking-wide hover:text-purple-500 hover:underline"
         >
           {{ item }}

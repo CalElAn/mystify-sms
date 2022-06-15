@@ -65,11 +65,10 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function permissions(): Attribute
     {
-        //TODO test
         return Attribute::make(
             get: fn() => [
                 'viewStudents' => $this->can('viewStudents', $this),
-                'viewClasses' => $this->can('viewClasses', $this),
+                'viewClasses' => $this->can('viewAny', ClassModel::class),
                 'viewParents' => $this->can('viewParents', $this),
                 'viewTeachers' => $this->can('viewTeachers', $this),
                 'viewAdministrators' => $this->can('viewAdministrators', $this),
@@ -80,7 +79,6 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function userTypes(): Attribute
     {
-        //TODO test
         return Attribute::make(
             get: function () {
                 return array_unique([
@@ -94,7 +92,6 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function getPropsForHeadteacherDashboard(Term $term): array
     {
-        //TODO update test
         $academicYearId = $term->academic_year_id;
 
         /** @var \App\Models\School */
@@ -488,7 +485,7 @@ class User extends Authenticatable implements MustVerifyEmail
                 ->withPivot('academic_year_id')
                 ->withTimestamps();
         } elseif ($this->user_type === 'teacher') {
-            //using user_type instead of default_user_type cos for eg a headmaster can log in as a
+            //we use user_type instead of default_user_type cos for eg a headmaster can log in as a
             //teacher and this returns null when classes is accessed
             return $this->belongsToMany(
                 ClassModel::class,
@@ -519,20 +516,12 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function schoolFeesPaid()
     {
-        // if ($this->default_user_type === 'student') {
         return $this->hasMany(SchoolFeesPaid::class, 'student_id');
-        // }
-
-        // return null;
     }
 
     public function schoolFees()
     {
-        // if ($this->default_user_type === 'student') {
         return $this->hasMany(SchoolFees::class, 'student_id');
-        // }
-
-        // return null;
     }
 
     /**

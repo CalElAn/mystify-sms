@@ -41,10 +41,8 @@ class DashboardController extends Controller
         $defaultProps = [
             'user' => $user,
             'shouldShowDashboardHeading' => $shouldShowDashboardHeading,
-            // 'school' => $school,
             'academicYearsWithTerms' => $academicYearsWithTerms,
             'term' => $term,
-            // 'showTerm' => true,
             'noticeBoardMessages' => $school
                 ->noticeBoard()
                 ->where('term_id', $term->id)

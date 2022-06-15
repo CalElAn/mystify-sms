@@ -61,15 +61,6 @@ class UserPolicy
         return true;
     }
 
-    public function viewClasses(User $authUser)
-    {
-        if ($authUser->user_type === 'parent') {
-            return false;
-        }
-
-        return true;
-    }
-
     public function viewParents(User $authUser)
     {
         if (
@@ -100,7 +91,7 @@ class UserPolicy
         return true;
     }
 
-    public function changeUserType(User $authUser) //TODO test
+    public function changeUserType(User $authUser)
     {
         if (
             $authUser->default_user_type === 'student' ||

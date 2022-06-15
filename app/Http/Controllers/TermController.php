@@ -6,7 +6,7 @@ use App\Models\AcademicYear;
 use App\Models\Term;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use App\Http\Requests\StoreOrUpdateAcademicYearRequest;
+use App\Http\Requests\StoreOrUpdateTermRequest;
 
 class TermController extends Controller
 {
@@ -17,8 +17,7 @@ class TermController extends Controller
      */
     public function form(Request $request)
     {
-        //TODO authorize
-        //TODO test
+        $this->authorize('viewForm', Term::class);
 
         return Inertia::render('Terms/Form', [
             'academicYears' => $request
@@ -26,16 +25,17 @@ class TermController extends Controller
                 ->school->academicYears->append('formatted_name')
                 ->sortByDesc('end_date')
                 ->values(),
-            // ->get(),
         ]);
     }
 
     public function terms(AcademicYear $academicYear)
     {
-        return $academicYear
-            ->terms()
-            ->latest('end_date')
-            ->get();
+        return [
+            'terms' => $academicYear
+                ->terms()
+                ->latest('end_date')
+                ->get(),
+        ];
     }
 
     /**
@@ -45,11 +45,9 @@ class TermController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(
-        StoreOrUpdateAcademicYearRequest $request,
+        StoreOrUpdateTermRequest $request,
         AcademicYear $academicYear,
     ) {
-        //TODO test
-
         $academicYear->terms()->create($request->validated());
 
         return back();
@@ -63,10 +61,9 @@ class TermController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(
-        StoreOrUpdateAcademicYearRequest $request,
+        StoreOrUpdateTermRequest $request,
         Term $term,
     ) {
-        //TODO test
         $term->update($request->validated());
 
         return back();
@@ -80,8 +77,8 @@ class TermController extends Controller
      */
     public function destroy(Term $term)
     {
-        //TODO authorize
-        //TODO test
+        $this->authorize('delete', $term);
+        
         $term->delete();
 
         return back();

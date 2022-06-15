@@ -17,8 +17,7 @@ class AcademicYearController extends Controller
      */
     public function form(Request $request)
     {
-        //TODO authorize
-        //TODO test
+        $this->authorize('viewForm', AcademicYear::class);
 
         return Inertia::render('AcademicYears/Form', [
             'academicYears' => $request
@@ -37,8 +36,6 @@ class AcademicYearController extends Controller
      */
     public function store(StoreOrUpdateAcademicYearRequest $request)
     {
-        //TODO test
-
         $request
             ->user()
             ->school->academicYears()
@@ -58,7 +55,6 @@ class AcademicYearController extends Controller
         StoreOrUpdateAcademicYearRequest $request,
         AcademicYear $academicYear,
     ) {
-        //TODO test
         $academicYear->update($request->validated());
 
         return back();
@@ -72,8 +68,8 @@ class AcademicYearController extends Controller
      */
     public function destroy(AcademicYear $academicYear)
     {
-        //TODO authorize
-        //TODO test
+        $this->authorize('delete', $academicYear);
+
         $academicYear->delete();
 
         return back();

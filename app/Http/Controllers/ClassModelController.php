@@ -18,7 +18,7 @@ class ClassModelController extends Controller
      */
     public function index(Request $request)
     {
-        $this->authorize('viewClasses', User::class);
+        $this->authorize('viewAny', ClassModel::class);
 
         /** @var \App\Models\School */
         $school = Auth::user()->school;
@@ -56,7 +56,7 @@ class ClassModelController extends Controller
      */
     public function show(ClassModel $classModel, Request $request)
     {
-        $this->authorize('viewClasses', User::class);
+        $this->authorize('viewAny', ClassModel::class);
 
         /** @var \App\Models\School */
         $school = Auth::user()->school;
@@ -91,8 +91,7 @@ class ClassModelController extends Controller
      */
     public function form(Request $request)
     {
-        //TODO authorize
-        //TODO test
+        $this->authorize('viewForm', ClassModel::class);
 
         return Inertia::render('Classes/Form', [
             'classes' => $request
@@ -110,15 +109,10 @@ class ClassModelController extends Controller
      */
     public function store(StoreOrUpdateClassModelRequest $request)
     {
-        //TODO test
-        //TODO authorize
-
         $request
             ->user()
             ->school->classes()
-            ->create(
-                $request->validated(),
-            );
+            ->create($request->validated());
 
         return back();
     }
@@ -130,14 +124,11 @@ class ClassModelController extends Controller
      * @param  \App\Models\ClassModel  $classModel
      * @return \Illuminate\Http\Response
      */
-    public function update(StoreOrUpdateClassModelRequest $request, ClassModel $classModel)
-    {
-        //TODO test
-        //TODO authorize
-
-        $classModel->update(
-            $request->validated(),
-        );
+    public function update(
+        StoreOrUpdateClassModelRequest $request,
+        ClassModel $classModel,
+    ) {
+        $classModel->update($request->validated());
 
         return back();
     }
@@ -150,8 +141,8 @@ class ClassModelController extends Controller
      */
     public function destroy(ClassModel $classModel)
     {
-        //TODO authorize
-        //TODO test
+        $this->authorize('delete', $classModel);
+
         $classModel->delete();
 
         return back();

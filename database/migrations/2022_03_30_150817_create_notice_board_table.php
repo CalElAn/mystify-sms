@@ -19,10 +19,9 @@ return new class extends Migration
             $table->unsignedBigInteger('term_id');
             $table->unsignedBigInteger('user_id');
             $table->text('message');
-            $table->string('send_via', 25)->nullable();
-            $table->json('send_to')->nullable();
-            $table->string('filter_applied', 50)->nullable();
-            //TODO remove send_via, send_to and filter_applied and move to own table (test messages sent table?)
+            // $table->string('send_via', 25)->nullable();
+            // $table->json('send_to')->nullable();
+            // $table->string('filter_applied', 50)->nullable();
             $table->timestamps();
 
             $table->foreign('school_id')

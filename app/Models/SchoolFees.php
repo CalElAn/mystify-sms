@@ -11,7 +11,7 @@ class SchoolFees extends Model
     
     protected $table = 'school_fees';
 
-    public function student()//TODO test
+    public function student()
     {
         return $this->belongsTo(User::class);
     }

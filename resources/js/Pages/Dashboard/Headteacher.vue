@@ -224,8 +224,8 @@ const lineChartData = {
     {
       label: 'Fees collected',
       data: props.schoolFeesDataForLineChart,
-      borderColor: 'rgb(255, 99, 132)',
-      backgroundColor: 'rgb(255, 99, 132, 0.5)',
+      borderColor: 'rgb(54, 162, 235)',
+      backgroundColor: 'rgb(54, 162, 235, 0.5)',
       pointStyle: 'circle',
       pointRadius: 8,
       pointHoverRadius: 13,

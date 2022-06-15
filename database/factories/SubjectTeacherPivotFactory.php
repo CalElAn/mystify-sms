@@ -24,7 +24,7 @@ class SubjectTeacherPivotFactory extends Factory
         return [
             'teacher_id' => User::factory(),
             'term_id' => Term::factory(),
-            'subject_name' => Subject::factory()->create()->name,
+            'subject_name' => fn() => Subject::factory()->create()->name,
             'class_id' => ClassModel::factory(),
         ];
     }

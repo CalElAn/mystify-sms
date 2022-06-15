@@ -61,8 +61,6 @@ class UserController extends Controller
         }
 
         return Inertia::render('Users/Index', [
-            // 'school' => $school,
-            // 'showTerm' => false,
             'users' => $query
                 ->orderBy('name')
                 ->paginate(10)
@@ -79,14 +77,13 @@ class UserController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * change a user's "user_type" field
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Inertia\Response
      */
     public function changeUserType(Request $request)
     {
-        //TODO test
         $this->authorize('changeUserType', User::class);
 
         /** @var \App\Models\User */

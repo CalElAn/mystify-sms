@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\AcademicYear;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreOrUpdateAcademicYearRequest extends FormRequest
@@ -13,8 +14,13 @@ class StoreOrUpdateAcademicYearRequest extends FormRequest
      */
     public function authorize()
     {
-        //TODO authorize
-        return true;
+        if ($this->academicYear) {
+            //to authorize the update method
+            return $this->user()->can('update', $this->academicYear);
+        }
+
+        //to authorize the create method
+        return $this->user()->can('create', AcademicYear::class);
     }
 
     /**
@@ -24,7 +30,6 @@ class StoreOrUpdateAcademicYearRequest extends FormRequest
      */
     public function rules()
     {
-        //TODO test?
         return [
             'name' => 'required',
             'start_date' => 'required|date',
