@@ -197,8 +197,8 @@ import {
   ArchiveIcon,
 } from '@heroicons/vue/outline';
 import TimelineCard from '@/Components/TimelineCard.vue';
-import { headteacherActions } from '@/headteacherActions';
-import { defaultDashboardProps } from '@/defaultDashboardProps';
+import { headteacherActions } from '@/headteacher_actions.js';
+import { defaultDashboardProps } from '@/default_dashboard_props.js';
 
 Chart.register(...registerables);
 

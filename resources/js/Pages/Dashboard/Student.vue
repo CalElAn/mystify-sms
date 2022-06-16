@@ -338,8 +338,8 @@ import TeacherCardModal from '@/Components/Users/TeacherCardModal.vue';
 import UserCard from '@/Components/Users/Card.vue';
 
 import { changeTerm } from '@/helpers';
-import { defaultDashboardProps } from '@/defaultDashboardProps';
-import { useTeacherCardModal } from '@/Components/Users/teacherCardModal.js';
+import { defaultDashboardProps } from '@/default_dashboard_props.js';
+import { useTeacherCardModal } from '@/Components/Users/teacher_card_modal.js';
 
 const { shouldOpenTeacherCardModal } = useTeacherCardModal();
 

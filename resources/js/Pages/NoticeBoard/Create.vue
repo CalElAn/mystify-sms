@@ -9,12 +9,12 @@
       </p>
       <div class="mt-12">
         <label class="ml-4 font-semibold tracking-wide text-gray-600"
-          >Term:</label
+          >Current term:</label
         >
         <input
           readonly
           class="custom-input ml-4 w-1/3 bg-slate-100"
-          :value="term.formatted_name"
+          :value="currentTerm.formatted_name"
           type="text"
         />
       </div>
@@ -28,16 +28,7 @@
           rows="2"
           class="sm mt-1 ml-4 block w-11/12 rounded-md border border-gray-300 text-xs shadow-sm focus:border-indigo-400 focus:ring-indigo-400 sm:text-sm"
         ></textarea>
-        <div
-          v-if="Object.keys(form.errors).length"
-          class="col-span-2 my-2 rounded-md border border-red-500 p-2 text-sm text-red-500"
-        >
-          <ul class="list-inside list-disc">
-            <li class="" v-for="(item, index) in form.errors" :key="index">
-              {{ item }}
-            </li>
-          </ul>
-        </div>
+        <FormValidationErrors :errors="form.errors" />
         <div class="mt-4 flex justify-center">
           <button
             @click="store()"
@@ -59,14 +50,15 @@ import { PlusCircleIcon } from '@heroicons/vue/outline';
 
 import { autoGrowTextarea } from '@/helpers';
 import NavBar from '@/Components/HeadteaherActionsNavBar.vue';
+import FormValidationErrors from '@/Components/FormValidationErrors.vue';
 
 const props = defineProps({
-  term: Object,
+  currentTerm: Object,
 });
 
 const form = useForm({
   message: '',
-  term_id: props.term.id 
+  term_id: props.currentTerm.id,
 });
 
 function store() {
@@ -76,6 +68,4 @@ function store() {
     },
   });
 }
-
-
 </script>

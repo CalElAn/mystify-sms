@@ -18,7 +18,7 @@ class NoticeBoardController extends Controller
         $this->authorize('create', NoticeBoard::class);
 
         return Inertia::render('NoticeBoard/Create', [
-            'term' => $request
+            'currentTerm' => $request
                 ->user()
                 ->school->getDefaultTerm()
                 ->append('formatted_name'),

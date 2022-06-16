@@ -29,6 +29,6 @@
 </template>
 
 <script setup>
-import { headteacherActions } from '@/headteacherActions';
+import { headteacherActions } from '@/headteacher_actions.js';
 import { first, last } from 'lodash';
 </script>

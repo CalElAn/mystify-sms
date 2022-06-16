@@ -342,7 +342,7 @@ import {
 import { usePage } from '@inertiajs/inertia-vue3';
 
 import { changeAcademicYear } from '@/helpers';
-import { defaultDashboardProps} from '@/defaultDashboardProps';
+import { defaultDashboardProps} from '@/default_dashboard_props.js';
 import TimelineCard from '@/Components/TimelineCard.vue';
 import ClassPanel from '@/Components/Classes/Panel.vue';
 

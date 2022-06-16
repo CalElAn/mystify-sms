@@ -2,20 +2,11 @@
   <NavBar />
   <section class="flex items-center justify-center">
     <div class="base-card w-11/12 p-4">
-      <p
-        class="mt-2 text-center text-xl font-semibold tracking-wide text-gray-600"
-      >
-        Add class
-      </p>
+      <p class="form-title mt-2 text-center">Add class</p>
       <div class="mb-2 flex justify-end">
-        <button
-          @click="add()"
-          :disabled="!shouldAllowAdd"
-          class="mr-4 inline-flex items-center justify-center gap-1 rounded-lg border border-purple-600 px-2 py-1 font-semibold tracking-wide text-purple-600 shadow-sm hover:bg-purple-100 disabled:opacity-50"
+        <AddButton @click="add()" :disabled="!shouldAllowAdd" class="mr-4"
+          >Add</AddButton
         >
-          <PlusCircleIcon class="h-5 w-5" />
-          Add
-        </button>
       </div>
 
       <div class="flex flex-col">
@@ -41,10 +32,9 @@
 <script setup>
 import { ref } from 'vue';
 
-import { PlusCircleIcon } from '@heroicons/vue/outline';
-
 import NavBar from '@/Components/HeadteaherActionsNavBar.vue';
 import Subform from '@/Pages/Classes/Subform.vue';
+import AddButton from '@/Components/AddButton.vue';
 
 const props = defineProps({
   classes: Array,

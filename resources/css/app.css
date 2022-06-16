@@ -7,27 +7,30 @@
     @apply rounded-md border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50;
   }
   .custom-input {
-      @apply rounded-md border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50
+    @apply rounded-md border-gray-300 read-only:bg-slate-100 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50;
   }
   .base-card {
-      @apply shadow rounded-lg bg-white
+    @apply rounded-lg bg-white shadow;
   }
   .thead {
-      @apply bg-purple-100 text-gray-500
+    @apply bg-purple-100 text-gray-500;
   }
   .tbody {
-      @apply odd:bg-white even:bg-gray-50 hover:bg-gray-200
+    @apply odd:bg-white even:bg-gray-50 hover:bg-gray-200;
   }
   .tda {
-      @apply decoration-purple-600 hover:underline
+    @apply decoration-purple-600 hover:underline;
   }
   .h1-title {
-      @apply text-3xl font-semibold tracking-wide
+    @apply text-3xl font-semibold tracking-wide;
+  }
+  .form-title {
+    @apply text-xl font-semibold tracking-wide text-gray-600;
   }
   .menu-items {
-      @apply divide-y divide-gray-200 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none absolute
+    @apply absolute divide-y divide-gray-200 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none;
   }
   .list-of-buttons-in-modal {
-      @apply rounded-full border odd:border-gray-300 odd:bg-white even:bg-gray-100
+    @apply rounded-full border odd:border-gray-300 odd:bg-white even:bg-gray-100;
   }
 }

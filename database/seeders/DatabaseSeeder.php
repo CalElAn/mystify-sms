@@ -41,6 +41,7 @@ class DatabaseSeeder extends Seeder
             'school_id' => $school->id,
         ]);
         $teacher = User::factory()->create([
+            'email' => 'te@example.com',
             'default_user_type' => 'teacher',
             'user_type' => 'teacher',
             'school_id' => $school->id,

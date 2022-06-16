@@ -3,11 +3,7 @@
 
   <section class="flex items-center justify-center">
     <div class="base-card w-11/12 p-4">
-      <p
-        class="mt-2 text-center text-xl font-semibold tracking-wide text-gray-600"
-      >
-        Add term
-      </p>
+      <p class="form-title mt-2 text-center">Add term</p>
       <label class="ml-4 font-semibold tracking-wide text-gray-600"
         >Academic year:</label
       >
@@ -22,14 +18,12 @@
         </option>
       </select>
       <div class="mb-2 flex justify-end">
-        <button
+        <AddButton
           @click="add()"
+          class="mr-4"
           :disabled="!(shouldAllowAdd && academicYearId)"
-          class="mr-4 inline-flex items-center justify-center gap-1 rounded-lg border border-purple-600 px-2 py-1 font-semibold tracking-wide text-purple-600 shadow-sm hover:bg-purple-100 disabled:opacity-50"
+          >Add</AddButton
         >
-          <PlusCircleIcon class="h-5 w-5" />
-          Add
-        </button>
       </div>
 
       <div class="flex flex-col">
@@ -60,10 +54,9 @@
 <script setup>
 import { ref, computed } from 'vue';
 
-import { PlusCircleIcon } from '@heroicons/vue/outline';
-
 import NavBar from '@/Components/HeadteaherActionsNavBar.vue';
 import Subform from '@/Pages/Terms/Subform.vue';
+import AddButton from '@/Components/AddButton.vue';
 
 defineProps({
   academicYears: Object,

@@ -10,75 +10,38 @@
     <input
       :readonly="!editing && !adding"
       placeholder="name, example '2021/2022'"
-      class="custom-input w-full read-only:bg-slate-100"
+      class="custom-input w-full"
       type="text"
       v-model="form.name"
     />
     <input
       :readonly="!editing && !adding"
-      class="custom-input w-full read-only:bg-slate-100"
+      class="custom-input w-full"
       type="date"
       v-model="form.start_date"
     />
     <input
       :readonly="!editing && !adding"
-      class="custom-input w-full read-only:bg-slate-100"
+      class="custom-input w-full"
       type="date"
       v-model="form.end_date"
     />
-    <div
-      v-if="Object.keys(form.errors).length"
-      class="col-span-3 my-2 rounded-md border border-red-500 p-2 text-sm text-red-500"
-    >
-      <ul class="list-inside list-disc">
-        <li class="" v-for="(item, index) in form.errors" :key="index">
-          {{ item }}
-        </li>
-      </ul>
-    </div>
+    <FormValidationErrors :errors="form.errors" />
     <div class="col-span-3 mr-4 flex justify-end gap-3">
       <template v-if="adding">
-        <button
-          @click="store()"
-          :disabled="form.processing"
-          class="rounded-lg border border-fuchsia-600 text-sm px-2 py-1 font-medium tracking-wide text-fuchsia-600 shadow-sm hover:border-transparent hover:bg-fuchsia-400 hover:text-white disabled:opacity-50 disabled:hover:cursor-text"
-        >
+        <SubformButton @click="store()" :disabled="form.processing">
           {{ form.processing ? 'Adding...' : 'Add' }}
-        </button>
-        <button
-          @click="$emit('cancelAdd')"
-          class="rounded-lg border border-fuchsia-600 text-sm px-2 py-1 font-medium tracking-wide text-fuchsia-600 shadow-sm hover:border-transparent hover:bg-fuchsia-400 hover:text-white"
-        >
-          Cancel
-        </button>
+        </SubformButton>
+        <SubformButton @click="$emit('cancelAdd')"> Cancel </SubformButton>
       </template>
       <template v-if="editing">
-        <button
-          @click="update()"
-          class="rounded-lg border border-fuchsia-600 text-sm px-2 py-1 font-medium tracking-wide text-fuchsia-600 shadow-sm hover:border-transparent hover:bg-fuchsia-400 hover:text-white"
-        >
-          Save
-        </button>
-        <button
-          @click="destroy()"
-          class="rounded-lg border border-fuchsia-600 text-sm px-2 py-1 font-medium tracking-wide text-fuchsia-600 shadow-sm hover:border-transparent hover:bg-fuchsia-400 hover:text-white"
-        >
-          Delete
-        </button>
-        <button
-          @click="editing = false"
-          class="rounded-lg border border-fuchsia-600 text-sm px-2 py-1 font-medium tracking-wide text-fuchsia-600 shadow-sm hover:border-transparent hover:bg-fuchsia-400 hover:text-white"
-        >
-          Cancel
-        </button>
+        <SubformButton @click="update()"> Save </SubformButton>
+        <SubformButton @click="destroy()"> Delete </SubformButton>
+        <SubformButton @click="editing = false"> Cancel </SubformButton>
       </template>
-      <button
-        v-if="!editing && !adding"
-        @click="editing = true"
-        class="rounded-lg border border-fuchsia-600 text-sm px-2 py-1 font-medium tracking-wide text-fuchsia-600 shadow-sm hover:border-transparent hover:bg-fuchsia-400 hover:text-white"
-      >
+      <SubformButton v-if="!editing && !adding" @click="editing = true">
         Edit
-      </button>
+      </SubformButton>
     </div>
   </div>
 </template>
@@ -87,6 +50,9 @@
 import { ref } from 'vue';
 import { useForm } from '@inertiajs/inertia-vue3';
 import { Inertia } from '@inertiajs/inertia';
+
+import FormValidationErrors from '@/Components/FormValidationErrors.vue';
+import SubformButton from '@/Components/SubformButton.vue';
 
 const props = defineProps({
   academicYear: Object,

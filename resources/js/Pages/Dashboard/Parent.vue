@@ -47,7 +47,7 @@
 </template>
 
 <script setup>
-import { defaultDashboardProps } from '@/defaultDashboardProps';
+import { defaultDashboardProps } from '@/default_dashboard_props.js';
 
 defineProps({
   ...defaultDashboardProps,

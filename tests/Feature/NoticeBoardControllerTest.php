@@ -32,7 +32,7 @@ class NoticeBoardControllerTest extends TestCase
             ->assertInertia(
                 fn(Assert $page) => $page
                     ->component('NoticeBoard/Create')
-                    ->hasAll('term'),
+                    ->hasAll('currentTerm'),
             );
     }
 

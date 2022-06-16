@@ -65,7 +65,7 @@
 
 <script setup>
 import TeacherCardModal from '@/Components/Users/TeacherCardModal.vue';
-import { useTeacherCardModal } from '@/Components/Users/teacherCardModal.js';
+import { useTeacherCardModal } from '@/Components/Users/teacher_card_modal.js';
 
 const { shouldOpenTeacherCardModal, teacherRef, showTeacherCardModal } =
   useTeacherCardModal();

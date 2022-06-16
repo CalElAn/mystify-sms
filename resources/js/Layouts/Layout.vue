@@ -387,7 +387,7 @@ import {
 import { ChevronDownIcon } from '@heroicons/vue/solid';
 import { LightningBoltIcon } from '@heroicons/vue/outline';
 import { changeTerm } from '@/helpers';
-import { defaultDashboardProps } from '@/defaultDashboardProps';
+import { defaultDashboardProps } from '@/default_dashboard_props.js';
 
 defineProps({ ...defaultDashboardProps });
 
