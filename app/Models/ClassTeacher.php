@@ -5,9 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ClassTeacherPivot extends Model
+class ClassTeacher extends Model
 {
     use HasFactory;
-    protected $table = 'class_teacher_pivot';
+    protected $table = 'class_teacher';
     public $incrementing = true;
 }

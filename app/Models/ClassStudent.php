@@ -6,10 +6,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Database\Eloquent\Model;
 
-class ClassStudentPivot extends Model
+class ClassStudent extends Model
 {
     use HasFactory;
-    protected $table = 'class_student_pivot';
+    protected $table = 'class_student';
     public $incrementing = true;
 
     public function classModel()

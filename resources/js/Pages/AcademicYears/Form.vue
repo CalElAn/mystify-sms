@@ -1,14 +1,13 @@
 <template>
-  <NavBar />
+  <NavBar :actions="headteacherActions" />
   <section class="flex items-center justify-center">
     <div class="base-card w-11/12 p-4">
       <p class="form-title mt-2 text-center">Add academic year</p>
       <div class="mb-2 flex justify-end">
-        <AddButton @click="add()" :disabled="!shouldAllowAdd" class="mr-4"
-          >Add</AddButton
-        >
+        <AddButton @click="add()" :disabled="!shouldAllowAdd" class="mr-4">
+          Add
+        </AddButton>
       </div>
-
       <div class="flex flex-col">
         <!-- TODO title should be sticky -->
         <div class="thead grid grid-cols-3 gap-12 p-2 font-bold">
@@ -33,9 +32,10 @@
 <script setup>
 import { ref } from 'vue';
 
-import NavBar from '@/Components/HeadteaherActionsNavBar.vue';
+import NavBar from '@/Components/ActionsNavBar.vue';
 import Subform from '@/Pages/AcademicYears/Subform.vue';
 import AddButton from '@/Components/AddButton.vue';
+import { headteacherActions } from '@/headteacher_actions.js';
 
 const props = defineProps({
   academicYears: Array,

@@ -20,7 +20,7 @@ class ClassModelTest extends TestCase
         $class = ClassModel::factory()->create();
         $student = User::factory()->create(); 
 
-        DB::table('class_student_pivot')->insert([
+        DB::table('class_student')->insert([
             'class_id' => $class->id,
             'student_id' => $student->id,
             'academic_year_id' => AcademicYear::factory()->create()->id,
@@ -35,7 +35,7 @@ class ClassModelTest extends TestCase
         $class = ClassModel::factory()->create();
         $teacher = User::factory()->create(); 
 
-        DB::table('class_teacher_pivot')->insert([
+        DB::table('class_teacher')->insert([
             'class_id' => $class->id,
             'teacher_id' => $teacher->id,
             'academic_year_id' => AcademicYear::factory()->create()->id,

@@ -4,7 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\ClassModel;
 use App\Models\User;
-use App\Models\ClassTeacherPivot;
+use App\Models\ClassTeacher;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;

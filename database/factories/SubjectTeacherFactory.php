@@ -10,9 +10,9 @@ use App\Models\ClassModel;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\SubjectTeacherPivot>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\SubjectTeacher>
  */
-class SubjectTeacherPivotFactory extends Factory
+class SubjectTeacherFactory extends Factory
 {
     /**
      * Define the model's default state.

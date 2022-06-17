@@ -1,5 +1,5 @@
 <template>
-  <NavBar />
+  <NavBar :actions="headteacherActions" />
   <section class="flex items-center justify-center">
     <div class="base-card w-11/12 py-4 px-6">
       <p
@@ -49,8 +49,9 @@ import { useForm } from '@inertiajs/inertia-vue3';
 import { PlusCircleIcon } from '@heroicons/vue/outline';
 
 import { autoGrowTextarea } from '@/helpers';
-import NavBar from '@/Components/HeadteaherActionsNavBar.vue';
+import NavBar from '@/Components/ActionsNavBar.vue';
 import FormValidationErrors from '@/Components/FormValidationErrors.vue';
+import { headteacherActions } from '@/headteacher_actions.js';
 
 const props = defineProps({
   currentTerm: Object,

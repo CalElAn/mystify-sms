@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('parent_student_pivot', function (Blueprint $table) {
+        Schema::create('parent_student', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('parent_id');
             $table->unsignedBigInteger('student_id');
@@ -35,7 +35,7 @@ return new class extends Migration
         });
 
         // if (config('app.env') !== 'testing') {
-        //     DB::statement('ALTER TABLE parent_student_pivot ADD CONSTRAINT CHECK (parent_id <> student_id);');
+        //     DB::statement('ALTER TABLE parent_student ADD CONSTRAINT CHECK (parent_id <> student_id);');
         // }
     }
 
@@ -46,6 +46,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('parent_student_pivot');
+        Schema::dropIfExists('parent_student');
     }
 };

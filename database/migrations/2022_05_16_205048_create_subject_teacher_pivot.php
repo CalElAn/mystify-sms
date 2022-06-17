@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('subject_teacher_pivot', function (Blueprint $table) {
+        Schema::create('subject_teacher', function (Blueprint $table) {
             $table->id();
             $table->string('subject_name', 50);
             $table->unsignedBigInteger('teacher_id');
@@ -46,7 +46,7 @@ return new class extends Migration
                 ->onDelete('cascade');
 
             //teacher_id added in case of scenario where more than one teacher can add marks
-            $table->unique(['teacher_id', 'term_id', 'class_id', 'subject_name'], 'subject_teacher_pivot_unique');
+            $table->unique(['teacher_id', 'term_id', 'class_id', 'subject_name'], 'subject_teacher_unique');
         });
     }
 
@@ -57,6 +57,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('subject_teacher_pivot');
+        Schema::dropIfExists('subject_teacher');
     }
 };

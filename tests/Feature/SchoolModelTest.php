@@ -388,7 +388,7 @@ class SchoolModelTest extends TestCase
             'default_user_type' => 'parent',
         ]);
 
-        DB::table('parent_student_pivot')->insert([
+        DB::table('parent_student')->insert([
             ['student_id' => $student1->id, 'parent_id' => $parent1->id],
             ['student_id' => $student1->id, 'parent_id' => $parent2->id],
             ['student_id' => $student2->id, 'parent_id' => $parent1->id],

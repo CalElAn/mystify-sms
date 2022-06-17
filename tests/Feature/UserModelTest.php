@@ -13,7 +13,7 @@ use App\Models\SchoolFees;
 use App\Models\ClassModel;
 use App\Models\AcademicYear;
 use App\Models\Subject;
-use App\Models\SubjectTeacherPivot;
+use App\Models\SubjectTeacher;
 use App\Models\Term;
 use Illuminate\Support\Facades\DB;
 
@@ -39,7 +39,7 @@ class UserModelTest extends TestCase
         $parent2 = User::factory()->create(['default_user_type' => 'parent']);
         $parent3 = User::factory()->create(['default_user_type' => 'parent']);
 
-        DB::table('parent_student_pivot')->insert([
+        DB::table('parent_student')->insert([
             ['student_id' => $student->id, 'parent_id' => $parent1->id],
             ['student_id' => $student->id, 'parent_id' => $parent2->id],
         ]);
@@ -58,7 +58,7 @@ class UserModelTest extends TestCase
         $student2 = User::factory()->create(['default_user_type' => 'parent']);
         $student3 = User::factory()->create(['default_user_type' => 'parent']);
 
-        DB::table('parent_student_pivot')->insert([
+        DB::table('parent_student')->insert([
             ['student_id' => $student1->id, 'parent_id' => $parent->id],
             ['student_id' => $student2->id, 'parent_id' => $parent->id],
         ]);
@@ -74,14 +74,14 @@ class UserModelTest extends TestCase
     {
         $teacher = User::factory()->create(['default_user_type' => 'teacher']);
 
-        SubjectTeacherPivot::factory()->create(['teacher_id' => $teacher->id]);
+        SubjectTeacher::factory()->create(['teacher_id' => $teacher->id]);
 
         $this->assertTrue(
-            $teacher->subjects->contains(SubjectTeacherPivot::find(1)),
+            $teacher->subjects->contains(SubjectTeacher::find(1)),
         );
         $this->assertEquals(1, $teacher->subjects->count());
         $this->assertInstanceOf(
-            'App\Models\SubjectTeacherPivot',
+            'App\Models\SubjectTeacher',
             $teacher->subjects->first(),
         );
     }
@@ -95,15 +95,15 @@ class UserModelTest extends TestCase
         Subject::factory()->create(['name' => 'B']);
         Subject::factory()->create(['name' => 'C']);
 
-        SubjectTeacherPivot::factory()->create([
+        SubjectTeacher::factory()->create([
             'teacher_id' => $teacher->id,
             'subject_name' => 'A',
         ]);
-        SubjectTeacherPivot::factory()->create([
+        SubjectTeacher::factory()->create([
             'teacher_id' => $teacher->id,
             'subject_name' => 'A',
         ]);
-        SubjectTeacherPivot::factory()->create([
+        SubjectTeacher::factory()->create([
             'teacher_id' => $teacher->id,
             'subject_name' => 'B',
         ]);
@@ -515,7 +515,7 @@ class UserModelTest extends TestCase
             'user_type' => 'teacher',
         ]);
 
-        DB::table('class_teacher_pivot')->insert([
+        DB::table('class_teacher')->insert([
             'class_id' => $class->id,
             'teacher_id' => $teacher->id,
             'academic_year_id' => AcademicYear::factory()->create()->id,

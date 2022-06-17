@@ -4,10 +4,10 @@
       class="flex max-w-fit divide-x divide-gray-300 rounded-lg bg-white text-center font-semibold tracking-wide text-gray-500 shadow"
     >
       <li
-        v-for="(item, index) in headteacherActions"
+        v-for="(item, index) in actions"
         :class="[
-          { 'rounded-l-lg pl-1.5': first(headteacherActions) === item },
-          { 'rounded-r-lg pr-1.5': last(headteacherActions) === item },
+          { 'rounded-l-lg pl-1.5': first(actions) === item },
+          { 'rounded-r-lg pr-1.5': last(actions) === item },
         ]"
       >
         <a
@@ -29,6 +29,9 @@
 </template>
 
 <script setup>
-import { headteacherActions } from '@/headteacher_actions.js';
 import { first, last } from 'lodash';
+
+defineProps({
+  actions: Array
+})
 </script>

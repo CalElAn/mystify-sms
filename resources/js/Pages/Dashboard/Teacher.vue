@@ -1,8 +1,10 @@
 <template>
+  <!-- action button -->
+  <section>
+    <ActionButtonAndModal class="ml-14" :actions="teacherActions" />
+  </section>
   <!-- Navbar -->
-  <nav
-    class="ml-12 border-b border-gray-300 text-gray-500"
-  >
+  <nav class="ml-12 border-b border-gray-300 text-gray-500">
     <ul class="flex flex-wrap gap-6">
       <li>
         <button
@@ -38,10 +40,11 @@
     :studentsInClass="studentsInClass"
     :academicYearName="term.academic_year.name"
   />
-  <div v-if="!classModel && selectedTab === 1" class="flex justify-center items-center">
-    <div
-      class="rounded-lg bg-red-300 px-10 py-4 text-lg text-white shadow"
-    >
+  <div
+    v-if="!classModel && selectedTab === 1"
+    class="flex items-center justify-center"
+  >
+    <div class="rounded-lg bg-red-300 px-10 py-4 text-lg text-white shadow">
       <p>
         You have no classes associated with your account for this academic year
         ({{ term.academic_year.name }})
@@ -228,7 +231,7 @@
               </td>
               <td class="px-3">
                 <input
-                  class="custom-input shadow-sm w-full text-center"
+                  class="custom-input w-full text-center shadow-sm"
                   type="number"
                   min="0"
                   :max="school.class_mark_percentage * 100"
@@ -237,7 +240,7 @@
               </td>
               <td class="px-3">
                 <input
-                  class="custom-input shadow-sm w-full text-center"
+                  class="custom-input w-full text-center shadow-sm"
                   type="number"
                   min="0"
                   :max="school.exam_mark_percentage * 100"
@@ -342,7 +345,9 @@ import {
 import { usePage } from '@inertiajs/inertia-vue3';
 
 import { changeAcademicYear } from '@/helpers';
-import { defaultDashboardProps} from '@/default_dashboard_props.js';
+import { defaultDashboardProps } from '@/default_dashboard_props.js';
+import { teacherActions } from '@/teacher_actions.js';
+import ActionButtonAndModal from '@/Components/ActionButtonAndModal.vue';
 import TimelineCard from '@/Components/TimelineCard.vue';
 import ClassPanel from '@/Components/Classes/Panel.vue';
 

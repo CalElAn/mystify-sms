@@ -1,5 +1,5 @@
 <template>
-  <NavBar />
+  <NavBar :actions="headteacherActions" />
   <section class="flex items-center justify-center">
     <div class="base-card w-11/12 p-4">
       <p class="form-title mt-2 text-center">Add class</p>
@@ -32,9 +32,10 @@
 <script setup>
 import { ref } from 'vue';
 
-import NavBar from '@/Components/HeadteaherActionsNavBar.vue';
+import NavBar from '@/Components/ActionsNavBar.vue';
 import Subform from '@/Pages/Classes/Subform.vue';
 import AddButton from '@/Components/AddButton.vue';
+import { headteacherActions } from '@/headteacher_actions.js';
 
 const props = defineProps({
   classes: Array,

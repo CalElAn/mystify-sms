@@ -5,10 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class SubjectTeacherPivot extends Model
+class SubjectTeacher extends Model
 {
     use HasFactory;
-    protected $table = 'subject_teacher_pivot';
+    protected $table = 'subject_teacher';
     protected $with = ['classModel', 'term.academicYear'];
 
 

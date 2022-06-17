@@ -152,7 +152,7 @@ class User extends Authenticatable implements MustVerifyEmail
     public function getPropsForStudentDashboard(Term $term): array
     {
         $academicYearId = $term->academic_year_id;
-        $classesWithTerms = ClassStudentPivot::where('student_id', $this->id)
+        $classesWithTerms = ClassStudent::where('student_id', $this->id)
             ->with(['terms', 'classModel'])
             ->get();
         $classModel = $classesWithTerms
@@ -478,7 +478,7 @@ class User extends Authenticatable implements MustVerifyEmail
         if ($this->default_user_type === 'student') {
             return $this->belongsToMany(
                 ClassModel::class,
-                'class_student_pivot',
+                'class_student',
                 'student_id',
                 'class_id',
             )
@@ -489,7 +489,7 @@ class User extends Authenticatable implements MustVerifyEmail
             //teacher and this returns null when classes is accessed
             return $this->belongsToMany(
                 ClassModel::class,
-                'class_teacher_pivot',
+                'class_teacher',
                 'teacher_id',
                 'class_id',
             )
@@ -501,7 +501,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function subjects()
     {
-        return $this->hasMany(SubjectTeacherPivot::class, 'teacher_id', 'id');
+        return $this->hasMany(SubjectTeacher::class, 'teacher_id', 'id');
     }
 
     public function grades()
@@ -556,7 +556,7 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->belongsToMany(
             User::class,
-            'parent_student_pivot',
+            'parent_student',
             'student_id',
             'parent_id',
         )->withTimestamps();
@@ -566,7 +566,7 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->belongsToMany(
             User::class,
-            'parent_student_pivot',
+            'parent_student',
             'parent_id',
             'student_id',
         )->withTimestamps();

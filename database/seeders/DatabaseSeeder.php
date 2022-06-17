@@ -3,11 +3,11 @@
 namespace Database\Seeders;
 
 use App\Models\AcademicYear;
-use App\Models\ClassTeacherPivot;
+use App\Models\ClassTeacher;
 use App\Models\GradingScale;
 use App\Models\NoticeBoard;
 use App\Models\School;
-use App\Models\SubjectTeacherPivot;
+use App\Models\SubjectTeacher;
 use App\Models\Term;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -67,7 +67,7 @@ class DatabaseSeeder extends Seeder
                 'parent_id' => $randomParents[1]->id,
             ];
         }
-        DB::table('parent_student_pivot')->insert($parentRecordsToInsert);
+        DB::table('parent_student')->insert($parentRecordsToInsert);
 
         //*create an array that maps each student id to a random class suffix
         $studentsAndClassSuffixesArray = [];
@@ -143,13 +143,13 @@ class DatabaseSeeder extends Seeder
             ]);
 
             //*for each academic year, insert a class teacher for Class A and B
-            //TODO there should be a class_teacher_pivot entry for all years for all classes
-            ClassTeacherPivot::factory()->create([
+            //TODO there should be a class_teacher entry for all years for all classes
+            ClassTeacher::factory()->create([
                 'teacher_id' => $allTeachers[0]->id,
                 'class_id' => $classIds['A'],
                 'academic_year_id' => $academicYear->id,
             ]);
-            ClassTeacherPivot::factory()->create([
+            ClassTeacher::factory()->create([
                 'teacher_id' => $allTeachers[1]->id,
                 'class_id' => $classIds['B'],
                 'academic_year_id' => $academicYear->id,
@@ -158,7 +158,7 @@ class DatabaseSeeder extends Seeder
             foreach ([$firstTerm, $secondTerm] as $termItem) {
                 foreach ($subjectsArray as $subject) {
                     //*for each term, for create subject teachers for class A and B
-                    DB::table('subject_teacher_pivot')->insert(
+                    DB::table('subject_teacher')->insert(
                         [
                             'subject_name' => $subject,
                             'teacher_id' => $allTeachers[0]->id,
@@ -177,7 +177,7 @@ class DatabaseSeeder extends Seeder
 
             $schoolFeesRecordsToInsert = [];
             $schoolFeesPaidRecordsToInsert = [];
-            $classStudentPivotRecordsToInsert = [];
+            $classStudentRecordsToInsert = [];
             $gradesRecordsToInsert = [];
 
             foreach ($allStudents as $student) {
@@ -203,9 +203,9 @@ class DatabaseSeeder extends Seeder
                     ];
                 }
 
-                //*for each academic year and class, insert a "class_student_pivot" record for each student
+                //*for each academic year and class, insert a "class_student" record for each student
                 //*for example: in 2001 put all students in either Class 1A or B, in 2002 put all students in either Class 2A or B, and so on
-                $classStudentPivotRecordsToInsert[] = [
+                $classStudentRecordsToInsert[] = [
                     'class_id' =>
                         $classIds[$studentsAndClassSuffixesArray[$student->id]],
                     'student_id' => $student->id,
@@ -234,8 +234,8 @@ class DatabaseSeeder extends Seeder
             DB::table('school_fees_paid')->insert(
                 $schoolFeesPaidRecordsToInsert,
             );
-            DB::table('class_student_pivot')->insert(
-                $classStudentPivotRecordsToInsert,
+            DB::table('class_student')->insert(
+                $classStudentRecordsToInsert,
             );
             DB::table('grades')->insert($gradesRecordsToInsert);
 

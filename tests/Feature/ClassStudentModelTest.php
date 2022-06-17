@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Models\ClassStudentPivot;
+use App\Models\ClassStudent;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -12,7 +12,7 @@ use App\Models\AcademicYear;
 use App\Models\Term;
 use Illuminate\Support\Facades\DB;
 
-class ClassStudentPivotModelTest extends TestCase
+class ClassStudentModelTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -22,13 +22,13 @@ class ClassStudentPivotModelTest extends TestCase
         $class = ClassModel::factory()->create();
         $student = User::factory()->create(); 
 
-        $classStudentPivotId = DB::table('class_student_pivot')->insertGetId([
+        $classStudentId = DB::table('class_student')->insertGetId([
             'class_id' => $class->id,
             'student_id' => $student->id,
             'academic_year_id' => AcademicYear::factory()->create()->id,
         ]);
 
-        $this->assertInstanceOf('App\Models\ClassModel', ClassStudentPivot::find($classStudentPivotId)->classModel);
+        $this->assertInstanceOf('App\Models\ClassModel', ClassStudent::find($classStudentId)->classModel);
     }
 
     /** @test */
@@ -37,7 +37,7 @@ class ClassStudentPivotModelTest extends TestCase
         $class = ClassModel::factory()->create();
         $student = User::factory()->create(); 
 
-        $classStudentPivotId = DB::table('class_student_pivot')->insertGetId([
+        $classStudentId = DB::table('class_student')->insertGetId([
             'class_id' => $class->id,
             'student_id' => $student->id,
             'academic_year_id' => $academicYearId = AcademicYear::factory()->create()->id,
@@ -45,6 +45,6 @@ class ClassStudentPivotModelTest extends TestCase
 
         Term::factory()->create(['academic_year_id' => $academicYearId]);
 
-        $this->assertInstanceOf('App\Models\Term', ClassStudentPivot::find($classStudentPivotId)->terms->first());
+        $this->assertInstanceOf('App\Models\Term', ClassStudent::find($classStudentId)->terms->first());
     }
 }

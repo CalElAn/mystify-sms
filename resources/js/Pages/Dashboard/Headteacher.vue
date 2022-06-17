@@ -1,12 +1,6 @@
 <template>
   <section>
-    <button
-      @click="shouldOpenModalContainingListOfActions = true"
-      class="ml-4 inline-flex items-center justify-center gap-2 tracking-wide font-semibold rounded-lg border border-purple-800 bg-purple-50 p-2 text-purple-800 shadow-sm hover:bg-purple-100"
-    >
-      <ViewListIcon class="h-5 w-5" />
-      Actions
-    </button>
+    <ActionButtonAndModal class="ml-4" :actions="headteacherActions" />
   </section>
   <!-- Summary statistics -->
   <section class="grid grid-cols-4 gap-3 font-semibold text-white">
@@ -116,24 +110,6 @@
     />
   </section>
   <!-- MODALS -->
-    <!-- Modal containing list of user types -->
-  <Modal
-    :show="shouldOpenModalContainingListOfActions"
-    :maxWidthClass="'max-w-xs'"
-    @closeModal="shouldOpenModalContainingListOfActions = false"
-  >
-    <div class="flex flex-col gap-3 text-purple-600">
-      <Link
-        v-for="(item, index) in headteacherActions"
-        :key="index"
-        :href="item.href"
-        @click="shouldOpenModalContainingListOfUserTypes = false"
-        class="relative inline-block text-center list-of-buttons-in-modal p-2 font-semibold tracking-wide hover:text-purple-500 hover:underline"
-      >
-        {{ item.label }}
-      </Link>
-    </div>
-  </Modal>
   <!-- Modal containing list of students who owe school fees -->
   <Modal
     :show="shouldOpenModalContainingListOfStudentsWhoOweSchoolFees"
@@ -142,7 +118,7 @@
       shouldOpenModalContainingListOfStudentsWhoOweSchoolFees = false
     "
   >
-    <table class="w-full text-sm table-auto text-center">
+    <table class="w-full table-auto text-center text-sm">
       <thead class="thead">
         <tr>
           <th class="p-2"></th>
@@ -171,11 +147,15 @@
               {{ student.name }}
             </Link>
           </td>
-          <td class="p-2 text-[#FF6384] font-semibold">
+          <td class="p-2 font-semibold text-[#FF6384]">
             {{ student.amountOwed }}
           </td>
         </tr>
-        <tr v-if="!studentsWhoOweSchoolFees || studentsWhoOweSchoolFees.length === 0">
+        <tr
+          v-if="
+            !studentsWhoOweSchoolFees || studentsWhoOweSchoolFees.length === 0
+          "
+        >
           <td class="border-t px-6 py-4" colspan="3">
             No students found owing school fees.
           </td>
@@ -197,6 +177,7 @@ import {
   ArchiveIcon,
 } from '@heroicons/vue/outline';
 import TimelineCard from '@/Components/TimelineCard.vue';
+import ActionButtonAndModal from '@/Components/ActionButtonAndModal.vue';
 import { headteacherActions } from '@/headteacher_actions.js';
 import { defaultDashboardProps } from '@/default_dashboard_props.js';
 
@@ -217,7 +198,6 @@ const props = defineProps({
 const user = computed(() => usePage().props.value.auth.user);
 
 const shouldOpenModalContainingListOfStudentsWhoOweSchoolFees = ref(false);
-const shouldOpenModalContainingListOfActions = ref(false);
 
 const lineChartData = {
   datasets: [

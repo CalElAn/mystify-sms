@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('class_teacher_pivot', function (Blueprint $table) {
+        Schema::create('class_teacher', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('class_id');
             $table->unsignedBigInteger('teacher_id')->index();
@@ -40,6 +40,8 @@ return new class extends Migration
 
             //one class should have only one class teacher for each academic year
             $table->unique(['class_id', 'academic_year_id']);
+            //one teacher should have only one class for each academic year
+            $table->unique(['teacher_id', 'academic_year_id']);
         });
     }
 
@@ -50,6 +52,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('class_teacher_pivot');     
+        Schema::dropIfExists('class_teacher');     
     }
 };

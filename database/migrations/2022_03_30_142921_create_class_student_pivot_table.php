@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('class_student_pivot', function (Blueprint $table) {
+        Schema::create('class_student', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('class_id');
             $table->unsignedBigInteger('student_id');
@@ -49,6 +49,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('class_user_pivot');
+        Schema::dropIfExists('class_user');
     }
 };

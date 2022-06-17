@@ -15,11 +15,11 @@ class ClassModel extends Model
 
     public function students()
     {
-        return $this->belongsToMany(User::class, 'class_student_pivot', 'class_id', 'student_id')->withPivot('academic_year_id')->withTimestamps();
+        return $this->belongsToMany(User::class, 'class_student', 'class_id', 'student_id')->withPivot('academic_year_id')->withTimestamps();
     }
 
     public function teachers()
     {
-        return $this->belongsToMany(User::class, 'class_teacher_pivot', 'class_id', 'teacher_id')->withPivot('academic_year_id')->withTimestamps();
+        return $this->belongsToMany(User::class, 'class_teacher', 'class_id', 'teacher_id')->withPivot('academic_year_id')->withTimestamps();
     }
 }
