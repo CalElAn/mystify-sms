@@ -1,17 +1,17 @@
 export const teacherActions = [
   {
     label: 'Classes',
-    name: '',
-    href: '',
+    name: 'class_teacher.form',
+    href: route('class_teacher.form'),
   },
   {
     label: 'Students',
-    name: '',
-    href: '',
+    name: 'class_student.form',
+    href: route('class_student.form'),
   },
   {
     label: 'Grades',
-    name: '',
-    href: '',
+    name: 'grades.form',
+    href: route('grades.form'),
   },
 ]

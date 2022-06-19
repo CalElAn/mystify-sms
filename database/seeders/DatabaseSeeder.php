@@ -7,7 +7,6 @@ use App\Models\ClassTeacher;
 use App\Models\GradingScale;
 use App\Models\NoticeBoard;
 use App\Models\School;
-use App\Models\SubjectTeacher;
 use App\Models\Term;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -154,26 +153,6 @@ class DatabaseSeeder extends Seeder
                 'class_id' => $classIds['B'],
                 'academic_year_id' => $academicYear->id,
             ]);
-
-            foreach ([$firstTerm, $secondTerm] as $termItem) {
-                foreach ($subjectsArray as $subject) {
-                    //*for each term, for create subject teachers for class A and B
-                    DB::table('subject_teacher')->insert(
-                        [
-                            'subject_name' => $subject,
-                            'teacher_id' => $allTeachers[0]->id,
-                            'term_id' => $termItem->id,
-                            'class_id' => $classIds['A'],
-                        ],
-                        [
-                            'subject_name' => $subject,
-                            'teacher_id' => $allTeachers[1]->id,
-                            'term_id' => $termItem->id,
-                            'class_id' => $classIds['B'],
-                        ],
-                    );
-                }
-            }
 
             $schoolFeesRecordsToInsert = [];
             $schoolFeesPaidRecordsToInsert = [];

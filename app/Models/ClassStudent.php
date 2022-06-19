@@ -12,13 +12,28 @@ class ClassStudent extends Model
     protected $table = 'class_student';
     public $incrementing = true;
 
+    protected $guarded = [];
+
     public function classModel()
     {
-        return $this->hasOne(ClassModel::class, 'id', 'class_id');
+        return $this->belongsTo(ClassModel::class, 'class_id', 'id');
     }
 
-    public function terms()
+    public function student()
     {
-        return $this->hasMany(Term::class, 'academic_year_id', 'academic_year_id');
+        //TODO test
+        return $this->belongsTo(User::class, 'student_id', 'id');
     }
+
+    public function academicYear()
+    {
+        //TODO test
+        return $this->belongsTo(AcademicYear::class, 'academic_year_id', 'id');
+    }
+
+    // public function terms()
+    // {
+    //     // return $this->hasManyThrough(Term::class, AcademicYear::class, 'id', 'academic_year_id', 'id', 'id');
+    //     return $this->hasMany(Term::class, 'academic_year_id', 'academic_year_id');
+    // }
 }

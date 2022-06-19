@@ -13,7 +13,6 @@ use App\Models\SchoolFees;
 use App\Models\ClassModel;
 use App\Models\AcademicYear;
 use App\Models\Subject;
-use App\Models\SubjectTeacher;
 use App\Models\Term;
 use Illuminate\Support\Facades\DB;
 
@@ -67,48 +66,6 @@ class UserModelTest extends TestCase
         $this->assertTrue($parent->children->contains($student2));
         $this->assertTrue($parent->children->doesntContain($student3));
         $this->assertInstanceOf('App\Models\User', $parent->children[0]);
-    }
-
-    /** @test */
-    public function a_teacher_has_many_subjects()
-    {
-        $teacher = User::factory()->create(['default_user_type' => 'teacher']);
-
-        SubjectTeacher::factory()->create(['teacher_id' => $teacher->id]);
-
-        $this->assertTrue(
-            $teacher->subjects->contains(SubjectTeacher::find(1)),
-        );
-        $this->assertEquals(1, $teacher->subjects->count());
-        $this->assertInstanceOf(
-            'App\Models\SubjectTeacher',
-            $teacher->subjects->first(),
-        );
-    }
-
-    /** @test */
-    public function a_teacher_can_access_unique_subjects()
-    {
-        $teacher = User::factory()->create(['default_user_type' => 'teacher']);
-
-        Subject::factory()->create(['name' => 'A']);
-        Subject::factory()->create(['name' => 'B']);
-        Subject::factory()->create(['name' => 'C']);
-
-        SubjectTeacher::factory()->create([
-            'teacher_id' => $teacher->id,
-            'subject_name' => 'A',
-        ]);
-        SubjectTeacher::factory()->create([
-            'teacher_id' => $teacher->id,
-            'subject_name' => 'A',
-        ]);
-        SubjectTeacher::factory()->create([
-            'teacher_id' => $teacher->id,
-            'subject_name' => 'B',
-        ]);
-
-        $this->assertEquals($teacher->unique_subjects->toArray(), ['A', 'B']);
     }
 
     /** @test */

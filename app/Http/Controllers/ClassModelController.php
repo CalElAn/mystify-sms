@@ -69,10 +69,9 @@ class ClassModelController extends Controller
                 'academic_year_id',
                 $term->academic_year_id,
             ),
-            'students' => fn($query) => $query->where(
-                'academic_year_id',
-                $term->academic_year_id,
-            ),
+            'students' => fn($query) => $query
+                ->where('academic_year_id', $term->academic_year_id)
+                ->orderBy('name'),
         ]);
 
         $classModel->teachers->first()?->append('unique_subjects');

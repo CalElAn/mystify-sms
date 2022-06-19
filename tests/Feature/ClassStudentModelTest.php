@@ -17,7 +17,7 @@ class ClassStudentModelTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-    public function a_class_student_pivot_has_one_class()
+    public function a_class_student_has_one_class()
     {
         $class = ClassModel::factory()->create();
         $student = User::factory()->create(); 
@@ -32,19 +32,19 @@ class ClassStudentModelTest extends TestCase
     }
 
     /** @test */
-    public function a_class_student_pivot_has_many_terms()
-    {
-        $class = ClassModel::factory()->create();
-        $student = User::factory()->create(); 
+    // public function a_class_student_has_many_terms()
+    // {
+    //     $class = ClassModel::factory()->create();
+    //     $student = User::factory()->create(); 
 
-        $classStudentId = DB::table('class_student')->insertGetId([
-            'class_id' => $class->id,
-            'student_id' => $student->id,
-            'academic_year_id' => $academicYearId = AcademicYear::factory()->create()->id,
-        ]);
+    //     $classStudentId = DB::table('class_student')->insertGetId([
+    //         'class_id' => $class->id,
+    //         'student_id' => $student->id,
+    //         'academic_year_id' => $academicYearId = AcademicYear::factory()->create()->id,
+    //     ]);
 
-        Term::factory()->create(['academic_year_id' => $academicYearId]);
+    //     Term::factory()->create(['academic_year_id' => $academicYearId]);
 
-        $this->assertInstanceOf('App\Models\Term', ClassStudent::find($classStudentId)->terms->first());
-    }
+    //     $this->assertInstanceOf('App\Models\Term', ClassStudent::find($classStudentId)->terms->first());
+    // }
 }

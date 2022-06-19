@@ -7,7 +7,7 @@
       <SearchIcon class="h-6 w-6 text-gray-500" />
       <input
         v-model="name"
-        class="custom-input shadow-sm w-1/3"
+        class="custom-input w-1/3 shadow-sm"
         placeholder="Search..."
         type="text"
       />
@@ -36,7 +36,12 @@
     <div
       class="flex w-full basis-full flex-col items-center justify-start gap-4"
     >
-      <UserTable :title="''" :users="users.data" :userType="userType" />
+      <UserTable
+        class="base-card w-11/12"
+        :title="''"
+        :users="users.data"
+        :userType="userType"
+      />
       <Pagination class="flex w-11/12 justify-start" :links="users.links" />
     </div>
   </section>

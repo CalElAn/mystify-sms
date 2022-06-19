@@ -16,8 +16,8 @@ return new class extends Migration
         Schema::create('class_student', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('class_id');
-            $table->unsignedBigInteger('student_id');
             $table->unsignedBigInteger('academic_year_id');
+            $table->unsignedBigInteger('student_id');
             $table->timestamps();
 
             $table->foreign('class_id')
@@ -25,7 +25,7 @@ return new class extends Migration
                 ->on('classes')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
-
+                
             $table->foreign('student_id')
                 ->references('id')
                 ->on('users')
@@ -38,7 +38,8 @@ return new class extends Migration
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
 
-            $table->unique(['class_id', 'student_id']);
+            //a student cannot be in the same class twice for the same academic year
+            $table->unique(['class_id', 'student_id', 'academic_year_id']);
         });
     }
 

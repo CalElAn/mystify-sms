@@ -4,7 +4,7 @@
 
 @layer components {
   .custom-select {
-    @apply rounded-md border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50;
+    @apply rounded-md border-gray-300 disabled:bg-slate-100 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50;
   }
   .custom-input {
     @apply rounded-md border-gray-300 read-only:bg-slate-100 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50;
@@ -25,7 +25,10 @@
     @apply text-3xl font-semibold tracking-wide;
   }
   .form-title {
-    @apply text-xl font-semibold tracking-wide text-gray-600;
+    @apply text-2xl font-semibold tracking-wide text-gray-600;
+  }
+  .label {
+    @apply font-semibold tracking-wide text-gray-600;
   }
   .menu-items {
     @apply absolute divide-y divide-gray-200 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none;

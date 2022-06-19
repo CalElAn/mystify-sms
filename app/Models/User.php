@@ -54,14 +54,14 @@ class User extends Authenticatable implements MustVerifyEmail
     public ?Collection $allStudentsAndTheirGradesInClass = null;
     public ?Collection $gradesDataForOtherStudents = null;
 
-    public function uniqueSubjects(): Attribute
-    {
-        return Attribute::make(
-            get: fn() => $this->subjects
-                ->unique('subject_name')
-                ->pluck('subject_name'),
-        );
-    }
+    // public function uniqueSubjects(): Attribute
+    // {
+    //     return Attribute::make(
+    //         get: fn() => $this->subjects
+    //             ->unique('subject_name')
+    //             ->pluck('subject_name'),
+    //     );
+    // }
 
     public function permissions(): Attribute
     {
@@ -153,7 +153,7 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         $academicYearId = $term->academic_year_id;
         $classesWithTerms = ClassStudent::where('student_id', $this->id)
-            ->with(['terms', 'classModel'])
+            ->with(['academicYear.terms', 'classModel'])
             ->get();
         $classModel = $classesWithTerms
             ->where('academic_year_id', $academicYearId)
@@ -196,9 +196,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function getPropsForTeacherDashboard(Term $term): array
     {
-        $termId = $term->id;
         $academicYearId = $term->academic_year_id;
-        $school = $this->school;
 
         $classes = $this->classes()
             ->with('teachers')
@@ -207,16 +205,7 @@ class User extends Authenticatable implements MustVerifyEmail
             ->where('pivot.academic_year_id', $academicYearId)
             ->first();
 
-        $subjects = $this->subjects;
-        $subjects->each(
-            fn($subjectItem) => $subjectItem->term->append(
-                'formatted_short_name',
-            ),
-        );
-
         $studentsInClass = null;
-        $currentSubject = null;
-        $gradesForCurrentSubjectWithStudent = null;
 
         if ($classModel) {
             $classModel->teachers->first()?->append('unique_subjects');
@@ -225,34 +214,12 @@ class User extends Authenticatable implements MustVerifyEmail
                 ->where('pivot.academic_year_id', $academicYearId)
                 ->sortBy('name')
                 ->values();
-            $currentSubject = $subjects
-                ->where('class_id', $classModel->id)
-                ->where('term_id', $termId)
-                ->sortByDesc('created_at')
-                ->values()
-                ->first();
-
-            if ($currentSubject) {
-                $gradesForCurrentSubjectWithStudent = $school
-                    ->grades()
-                    ->where([
-                        ['term_id', $termId],
-                        ['class_name', $classModel->name],
-                        ['class_suffix', $classModel->suffix],
-                        ['subject_name', $currentSubject->subject_name],
-                    ])
-                    ->with('student')
-                    ->get();
-            }
         }
 
         return [
             'classes' => $classes,
             'classModel' => $classModel,
             'studentsInClass' => $studentsInClass,
-            'subjects' => $subjects,
-            'currentSubject' => $currentSubject,
-            'gradesForCurrentSubjectWithStudent' => $gradesForCurrentSubjectWithStudent,
         ];
     }
 
@@ -482,7 +449,7 @@ class User extends Authenticatable implements MustVerifyEmail
                 'student_id',
                 'class_id',
             )
-                ->withPivot('academic_year_id')
+                ->withPivot('academic_year_id', 'student_id')
                 ->withTimestamps();
         } elseif ($this->user_type === 'teacher') {
             //we use user_type instead of default_user_type cos for eg a headmaster can log in as a
@@ -499,9 +466,16 @@ class User extends Authenticatable implements MustVerifyEmail
         return null;
     }
 
-    public function subjects()
+    public function classTeacherPivot()
     {
-        return $this->hasMany(SubjectTeacher::class, 'teacher_id', 'id');
+        //TODO test
+        return $this->hasMany(ClassTeacher::class, 'teacher_id', 'id');
+    }
+
+    public function classStudentPivot()
+    {
+        //TODO test
+        return $this->hasMany(ClassStudent::class, 'student_id', 'id');
     }
 
     public function grades()

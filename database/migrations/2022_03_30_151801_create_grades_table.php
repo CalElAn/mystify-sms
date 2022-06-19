@@ -22,8 +22,8 @@ return new class extends Migration
             $table->string('class_name', 25);
             $table->string('class_suffix', 25);
             $table->string('subject_name', 50);
-            $table->decimal('class_mark', 4);
-            $table->decimal('exam_mark', 4);
+            $table->decimal('class_mark', 4)->nullable();
+            $table->decimal('exam_mark', 4)->nullable();
             $table->timestamps();
 
             $table->foreign('school_id')
@@ -62,7 +62,7 @@ return new class extends Migration
                 ->onUpdate('cascade')
                 ->onDelete('no action');
 
-            $table->unique(['student_id', 'term_id', 'class_name', 'subject_name'], 'grades_unique');
+            $table->unique(['student_id', 'term_id', 'class_name', 'class_suffix', 'subject_name'], 'grades_unique');
         });   
     }
 

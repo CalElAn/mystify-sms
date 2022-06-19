@@ -39,9 +39,12 @@ return new class extends Migration
                 ->onDelete('cascade');
 
             //one class should have only one class teacher for each academic year
-            $table->unique(['class_id', 'academic_year_id']);
+            // $table->unique(['class_id', 'academic_year_id']);
             //one teacher should have only one class for each academic year
-            $table->unique(['teacher_id', 'academic_year_id']);
+            // $table->unique(['teacher_id', 'academic_year_id']);
+
+            //currently the unique indexes are commented out because creating form validation for them would be a pain 
+            //currently only the fisrt class teacher is displayed when a class is showed so it shouldnt be a problem 
         });
     }
 

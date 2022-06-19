@@ -33,11 +33,11 @@
   </section>
   <section class="flex items-center justify-evenly">
     <!-- class name and teacher -->
-    <div class="base-card flex w-[30rem] items-center justify-evenly p-2">
+    <div class="base-card flex w-max items-center justify-evenly py-2 px-4">
       <div
         class="flex items-center justify-center gap-1.5 text-xl font-semibold tracking-tight text-purple-600"
       >
-        {{ classModel.name }} {{ classModel.suffix }}
+        {{ classModel.name_and_suffix }}
         <button
           @click="shouldOpenModalContainingListOfClasses = true"
           class="text-gray-700 hover:text-purple-600"
@@ -46,6 +46,7 @@
         </button>
       </div>
       <div
+        class="mx-4"
         style="height: 36px; width: 2px; background: #ddd; display: inline"
       ></div>
       <div class="flex items-center gap-2">
@@ -256,7 +257,7 @@
         <MenuButton
           class="align-center inline-flex w-full items-center justify-center rounded-full border p-2 text-purple-600 hover:text-purple-400 hover:underline"
         >
-          {{ classItem.class_model.name }} {{ classItem.class_model.suffix }}
+          {{ classItem.class_model.name_and_suffix }}
           <ChevronDownIcon
             class="ml-1 -mr-1 h-5 w-5 text-purple-600 hover:text-purple-400"
             aria-hidden="true"
@@ -267,7 +268,7 @@
             <div class="px-1 py-1">
               <MenuItem
                 as="div"
-                v-for="(termItem, termIndex) in classItem.terms"
+                v-for="(termItem, termIndex) in classItem.academic_year?.terms"
                 :key="termIndex"
                 v-slot="{ active }"
               >

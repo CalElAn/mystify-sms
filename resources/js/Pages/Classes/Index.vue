@@ -23,7 +23,7 @@
                     termId: term.id,
                   })
                 "
-                >{{ classItem.name }} {{ classItem.suffix }}</Link
+                >{{ classItem.name_and_suffix }}</Link
               >
             </td>
             <td class="ml-2 flex items-center justify-start gap-2 p-2">

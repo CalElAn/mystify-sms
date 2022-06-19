@@ -12,6 +12,8 @@ class Grade extends Model
 
     protected $appends = ['overall_mark', 'class_name_and_suffix'];
 
+    protected $guarded = [];
+
     protected function overallMark(): Attribute
     {
         return Attribute::make(

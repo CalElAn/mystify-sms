@@ -4,7 +4,7 @@
   <section class="flex items-center justify-center">
     <div class="base-card w-11/12 p-4">
       <p class="form-title mt-2 text-center">Add term</p>
-      <label class="ml-4 font-semibold tracking-wide text-gray-600"
+      <label class="ml-4 label"
         >Academic year:</label
       >
       <select

@@ -1,6 +1,6 @@
 <template>
-  <div class="base-card w-11/12 p-2">
-    <p class="mb-1 text-center text-xl font-semibold tracking-wide">
+  <div class="p-2">
+    <p class="my-1 text-center text-xl font-semibold tracking-wide">
       {{ title }}
     </p>
     <table class="w-full table-auto text-left">

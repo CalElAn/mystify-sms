@@ -3,19 +3,20 @@
     <!-- class name and teacher -->
     <div
       v-if="classModel"
-      class="base-card flex items-center justify-evenly gap-2 py-2 px-4"
+      class="base-card flex items-center justify-center gap-4 py-2 px-4"
     >
       <div
         class="flex items-center justify-center gap-2 text-xl font-semibold text-purple-600"
       >
-        {{ classModel.name }} {{ classModel.suffix }}
+        {{ classModel.name_and_suffix }}
         <button
-          @click="shouldOpenModalContainingListOfClasses = true"
+          v-if="$page.url.startsWith('/dashboard')"
+          @click="$emit('openModalContainingListOfClasses')"
           class="text-gray-700 hover:text-purple-600"
         >
           <ViewListIcon class="h-5 w-5" />
         </button>
-        <Menu as="div" class="relative">
+         <!-- <Menu as="div" class="relative">
           <MenuButton class="flex h-full w-full items-center justify-center">
             <DotsVerticalIcon
               class="h-5 w-5 text-gray-700 hover:text-purple-600"
@@ -39,7 +40,7 @@
               </div>
             </MenuItems>
           </MenuItemsTransition>
-        </Menu>
+        </Menu> -->
       </div>
       <div
         style="height: 36px; width: 2px; background: #ddd; display: inline"
@@ -62,53 +63,12 @@
       </div>
     </div>
   </section>
-  <section class="flex flex-col items-center justify-center gap-2">
-    <div class="flex w-11/12 justify-end pr-6">
-      <!-- cog icon button -->
-      <Menu as="div" class="base-card relative">
-        <MenuButton class="w-full p-2">
-          <DotsVerticalIcon
-            class="h-6 w-6 text-purple-600 transition-transform hover:scale-110"
-          />
-        </MenuButton>
-        <MenuItemsTransition>
-          <MenuItems
-            class="menu-items right-0 z-10 mt-2 w-max origin-top-right"
-          >
-            <div class="px-1 py-1">
-              <MenuItem as="div" v-slot="{ active }">
-                <MenuItemButton :active="active">
-                  Add student(s) to {{ classModel.name }}
-                  {{ classModel.suffix }}
-                </MenuItemButton>
-              </MenuItem>
-              <MenuItem as="div" v-slot="{ active }">
-                <MenuItemButton :active="active">
-                  Remove student(s) from {{ classModel.name }}
-                  {{ classModel.suffix }}
-                </MenuItemButton>
-              </MenuItem>
-            </div>
-            <div class="px-1 py-1">
-              <MenuItem as="div" v-slot="{ active }">
-                <MenuItemButton :active="active">
-                  Send text message to student(s)
-                </MenuItemButton>
-              </MenuItem>
-              <MenuItem as="div" v-slot="{ active }">
-                <MenuItemButton :active="active">
-                  Send text message to parent(s)
-                </MenuItemButton>
-              </MenuItem>
-            </div>
-          </MenuItems>
-        </MenuItemsTransition>
-      </Menu>
-    </div>
+  <section class="flex items-center justify-center gap-2">
     <!-- list of students in class -->
     <UserTable
-      :title="`Students in ${classModel.name} ${classModel.suffix} (${academicYearName})`"
+      :title="`Students in ${classModel.name_and_suffix} (${academicYearName})`"
       :users="studentsInClass"
+      class="base-card w-11/12"
     />
   </section>
   <!-- modal with teacher's information  -->
@@ -131,6 +91,8 @@ defineProps({
   studentsInClass: Array,
   academicYearName: String,
 });
+
+defineEmits(['openModalContainingListOfClasses'])
 </script>
 
 <style lang="scss" scoped></style>

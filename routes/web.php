@@ -7,6 +7,9 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\AcademicYearController;
 use App\Http\Controllers\TermController;
 use App\Http\Controllers\ClassModelController;
+use App\Http\Controllers\ClassTeacherController;
+use App\Http\Controllers\ClassStudentController;
+use App\Http\Controllers\GradeController;
 use App\Http\Controllers\NoticeBoardController;
 use App\Http\Controllers\DashboardController;
 
@@ -54,8 +57,20 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard/notice-board/create', [NoticeBoardController::class, 'create'])->name('notice_board.create');
     Route::post('/notice-board', [NoticeBoardController::class, 'store'])->name('notice_board.store');
 
+    Route::get('/dashboard/class-teacher/form', [ClassTeacherController::class, 'form'])->name('class_teacher.form');
+    Route::post('/class-teacher', [ClassTeacherController::class, 'store'])->name('class_teacher.store');
+    Route::delete('/class-teacher/{classTeacher}', [ClassTeacherController::class, 'destroy'])->name('class_teacher.destroy');
+
     Route::get('/users/{userType}', [UserController::class, 'index'])->name('users.index');
     Route::patch('/users/change-user-type', [UserController::class, 'changeUserType']);
+
+    Route::get('/dashboard/class-student/form', [ClassStudentController::class, 'form'])->name('class_student.form');
+    Route::get('/class-student/{classModel}/{academicYear}/students', [ClassStudentController::class, 'students'])->name('class_student.students');
+    Route::delete('/class-student/{classStudent}', [ClassStudentController::class, 'destroy'])->name('class_student.destroy');
+
+    Route::get('/dashboard/grades/form', [GradeController::class, 'form'])->name('grades.form');
+    Route::get('/grades/{classModel}/{term}/{subjectName}', [GradeController::class, 'getStudentsWithGrades'])->name('grades.students_with_grades');
+    Route::patch('/grades/upsert', [GradeController::class, 'upsert'])->name('grades.upsert');
 
     Route::get('/profile', function() {return;})->name('users.show');
 });
