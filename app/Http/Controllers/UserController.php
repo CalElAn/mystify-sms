@@ -40,10 +40,7 @@ class UserController extends Controller
 
             case 'teachers':
                 $this->authorize('viewTeachers', User::class);
-                $query = $school
-                    ->users()
-                    ->teacherScope()
-                    ->with('subjects');
+                $query = $school->users()->teacherScope();
                 break;
 
             case 'administrators':
@@ -66,7 +63,7 @@ class UserController extends Controller
                 ->paginate(10)
                 ->through(function ($user) use ($userType) {
                     if ($userType === 'teachers') {
-                        $user->append('unique_subjects');
+                        // $user->append('unique_subjects');
                     }
                     return $user;
                 })
@@ -88,9 +85,9 @@ class UserController extends Controller
 
         /** @var \App\Models\User */
         $user = Auth::user();
-        
+
         $user->update([
-            'user_type' => $request->user_type
+            'user_type' => $request->user_type,
         ]);
 
         return \Redirect::route('dashboard');

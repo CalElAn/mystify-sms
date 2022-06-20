@@ -16,13 +16,12 @@ class ClassTeacherController extends Controller
      */
     public function form(Request $request)
     {
-        //TODO authorize
-        //TODO test
+        $this->authorize('viewForm', ClassTeacher::class);
 
         $user = $request->user();
 
         return Inertia::render('ClassTeacher/Form', [
-            'classTeacher' => $user
+            'classTeacherPivotData' => $user
                 ->classTeacherPivot()
                 ->with(['classModel', 'academicYear'])
                 ->get()
@@ -31,7 +30,6 @@ class ClassTeacherController extends Controller
                     ['classModel.name', 'desc'],
                 ])
                 ->values(),
-            'user' => $user,
             'classes' => $user->school->classes,
             'academicYears' => $user->school
                 ->academicYears()
@@ -48,8 +46,8 @@ class ClassTeacherController extends Controller
      */
     public function store(Request $request)
     {
-        //TODO test
-        //TODO authorize
+        $this->authorize('create', ClassTeacher::class);
+
         $validator = Validator::make(
             $request->all(),
             [
@@ -78,8 +76,8 @@ class ClassTeacherController extends Controller
      */
     public function destroy(ClassTeacher $classTeacher)
     {
-        //TODO test
-        //TODO authorize
+        $this->authorize('delete', ClassTeacher::class);
+
         $classTeacher->delete();
 
         return back();

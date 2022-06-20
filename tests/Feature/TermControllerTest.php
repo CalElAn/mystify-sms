@@ -40,7 +40,7 @@ class TermControllerTest extends TestCase
     /** @test */
     public function terms_can_be_gotten_from_an_academic_year()
     {
-        $response = $this->actingAs(
+        $this->actingAs(
             User::where('default_user_type', 'headteacher')->first(),
         )
             ->getJson(route('academic_years.terms', ['academicYear' => 6]))
@@ -176,7 +176,7 @@ class TermControllerTest extends TestCase
             )
             ->assertForbidden();
 
-        // a user who is a headteacher but from another school cannot store an academic year
+        // a user who is a headteacher but from another school cannot delete a term
         $this->actingAs(
             User::factory()->create(['default_user_type' => 'headteacher']),
         )

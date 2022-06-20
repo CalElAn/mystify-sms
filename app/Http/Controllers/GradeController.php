@@ -18,8 +18,7 @@ class GradeController extends Controller
      */
     public function form(Request $request)
     {
-        //TODO authorize
-        //TODO test
+        $this->authorize('viewForm', Grade::class);
 
         $user = $request->user();
 
@@ -38,9 +37,6 @@ class GradeController extends Controller
         Term $term,
         Request $request,
     ) {
-        //TODO test
-        //TODO authorize
-
         $subjectName = $request->subjectName;
 
         return [
@@ -87,15 +83,14 @@ class GradeController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * upsert or delete grade records
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function upsert(Request $request)
     {
-        //TODO test
-        //TODO authorize
+        $this->authorize('upsert', Grade::class);
 
         $grades = $request->grades;
 
@@ -118,7 +113,6 @@ class GradeController extends Controller
             $grades,
             [
                 'student_id',
-                'school_id',
                 'subject_name',
                 'class_name',
                 'class_suffix',

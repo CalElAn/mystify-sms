@@ -147,7 +147,7 @@
 </template>
 
 <script setup>
-import { ref, computed, toRaw } from 'vue';
+import { ref, computed } from 'vue';
 import { TrashIcon, CheckCircleIcon } from '@heroicons/vue/outline';
 import { Inertia } from '@inertiajs/inertia';
 import { usePage } from '@inertiajs/inertia-vue3';

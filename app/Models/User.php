@@ -167,8 +167,7 @@ class User extends Authenticatable implements MustVerifyEmail
             'classesWithTerms' => $classesWithTerms,
             'classModel' => $classModel,
             'classTeacher' => $classModel->teachers
-                ->first()
-                ?->append('unique_subjects'),
+                ->first(),
             'gradesDataForLineChart' => $this->getOverallGradesDataForLineChart(),
             'gradesDataPerSubjectForLineChart' => $this->getOverallGradesDataPerSubjectForLineChart(),
             'totalSchoolFees' => round(
@@ -208,8 +207,6 @@ class User extends Authenticatable implements MustVerifyEmail
         $studentsInClass = null;
 
         if ($classModel) {
-            $classModel->teachers->first()?->append('unique_subjects');
-
             $studentsInClass = $classModel->students
                 ->where('pivot.academic_year_id', $academicYearId)
                 ->sortBy('name')
@@ -468,13 +465,11 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function classTeacherPivot()
     {
-        //TODO test
         return $this->hasMany(ClassTeacher::class, 'teacher_id', 'id');
     }
 
     public function classStudentPivot()
     {
-        //TODO test
         return $this->hasMany(ClassStudent::class, 'student_id', 'id');
     }
 

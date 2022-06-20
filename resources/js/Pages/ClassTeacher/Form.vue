@@ -19,7 +19,6 @@
             v-for="item in classTeacherData"
             :key="item"
             :classTeacherData="item"
-            :user="user"
             :academicYears="academicYears"
             :classes="classes"
             @cancelAdd="onCancelAdd()"
@@ -40,17 +39,15 @@ import AddButton from '@/Components/AddButton.vue';
 import { teacherActions } from '@/teacher_actions.js';
 
 const props = defineProps({
-  classTeacher: Array,
-  user: Object,
+  classTeacherPivotData: Array,
   classes: Array,
   academicYears: Array,
 });
-const classTeacherData = props.classTeacher;
+const classTeacherData = props.classTeacherPivotData;
 const newClassTeacher = {
   adding: true,
   class_id: '',
   academic_year_id: '',
-  user_id: props.user.id,
 };
 const shouldAllowAdd = ref(true);
 

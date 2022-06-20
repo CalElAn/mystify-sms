@@ -31,18 +31,6 @@ class ClassModelPolicy
     }
 
     /**
-     * Determine whether the user can view the model.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\ClassModel  $classModel
-     * @return \Illuminate\Auth\Access\Response|bool
-     */
-    public function view(User $user, ClassModel $classModel)
-    {
-        //
-    }
-
-    /**
      * Determine whether the user can create models.
      *
      * @param  \App\Models\User  $user
@@ -77,29 +65,5 @@ class ClassModelPolicy
     {
         return $authUser->default_user_type === 'headteacher' &&
             $authUser->school_id === $classModel->school_id;
-    }
-
-    /**
-     * Determine whether the user can restore the model.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\ClassModel  $classModel
-     * @return \Illuminate\Auth\Access\Response|bool
-     */
-    public function restore(User $user, ClassModel $classModel)
-    {
-        //
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\ClassModel  $classModel
-     * @return \Illuminate\Auth\Access\Response|bool
-     */
-    public function forceDelete(User $user, ClassModel $classModel)
-    {
-        //
     }
 }

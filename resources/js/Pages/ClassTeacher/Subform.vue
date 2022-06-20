@@ -46,23 +46,23 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import { useForm } from '@inertiajs/inertia-vue3';
+import { ref, computed } from 'vue';
+import { useForm, usePage } from '@inertiajs/inertia-vue3';
 import { Inertia } from '@inertiajs/inertia';
 
 import FormValidationErrors from '@/Components/FormValidationErrors.vue';
 import SubformButton from '@/Components/SubformButton.vue';
 
+const user = computed(() => usePage().props.value.auth.user);
+
 const props = defineProps({
   classTeacherData: Object,
   classes: Array,
   academicYears: Array,
-  user: Object,
 });
 const form = useForm({
   class_id: props.classTeacherData.class_id,
   academic_year_id: props.classTeacherData.academic_year_id,
-  user_id: props.user.id,
 });
 const adding = ref(props.classTeacherData.adding ?? false);
 

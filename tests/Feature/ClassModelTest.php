@@ -43,4 +43,18 @@ class ClassModelTest extends TestCase
 
         $this->assertInstanceOf('App\Models\User', $class->teachers[0]);
     }
+
+    /** @test */
+    public function a_class_has_a_name_and_suffix()
+    {
+        $class = ClassModel::factory()->create([
+            'name' => 'Class X',
+            'suffix' => 'Y',
+        ]);
+
+        $this->assertEquals(
+            'Class X Y',
+            $class->nameAndSuffix,
+        );
+    }
 }

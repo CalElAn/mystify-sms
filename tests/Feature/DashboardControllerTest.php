@@ -148,9 +148,6 @@ class DashboardControllerTest extends TestCase
                         'classes',
                         'classModel',
                         'studentsInClass',
-                        'subjects',
-                        'currentSubject',
-                        'gradesForCurrentSubjectWithStudent',
                     ),
             );
 

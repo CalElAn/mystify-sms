@@ -29,7 +29,7 @@ class TermController extends Controller
     }
 
     public function terms(AcademicYear $academicYear)
-    {//TODO update test? (the call to appends)
+    {
         return [
             'terms' => $academicYear
                 ->terms()

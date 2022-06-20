@@ -12,6 +12,8 @@ use App\Models\SchoolFeesPaid;
 use App\Models\SchoolFees;
 use App\Models\ClassModel;
 use App\Models\AcademicYear;
+use App\Models\ClassStudent;
+use App\Models\ClassTeacher;
 use App\Models\Subject;
 use App\Models\Term;
 use Illuminate\Support\Facades\DB;
@@ -66,6 +68,26 @@ class UserModelTest extends TestCase
         $this->assertTrue($parent->children->contains($student2));
         $this->assertTrue($parent->children->doesntContain($student3));
         $this->assertInstanceOf('App\Models\User', $parent->children[0]);
+    }
+
+    /** @test */
+    public function a_teacher_has_many_class_teacher_pivot_models()
+    {
+        $teacher = User::factory()->create(['default_user_type' => 'teacher']);
+        $classTeacher = ClassTeacher::factory()->create(['teacher_id' => $teacher->id]);
+
+        $this->assertInstanceOf('App\Models\ClassTeacher', $teacher->classTeacherPivot->first());
+        $this->assertEquals($classTeacher->fresh(), $teacher->classTeacherPivot->first());
+    }
+
+    /** @test */
+    public function a_student_has_many_class_student_pivot_models()
+    {
+        $student = User::factory()->create(['default_user_type' => 'student']);
+        $classStudent = ClassStudent::factory()->create(['student_id' => $student->id]);
+
+        $this->assertInstanceOf('App\Models\ClassStudent', $student->classStudentPivot->first());
+        $this->assertEquals($classStudent->fresh(), $student->classStudentPivot->first());
     }
 
     /** @test */
@@ -170,9 +192,6 @@ class UserModelTest extends TestCase
         $this->assertArrayHasKey('classes', $props);
         $this->assertArrayHasKey('classModel', $props);
         $this->assertArrayHasKey('studentsInClass', $props);
-        $this->assertArrayHasKey('subjects', $props);
-        $this->assertArrayHasKey('currentSubject', $props);
-        $this->assertArrayHasKey('gradesForCurrentSubjectWithStudent', $props);
     }
 
     /** @test */

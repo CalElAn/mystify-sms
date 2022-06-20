@@ -18,7 +18,6 @@ class ClassModel extends Model
 
     protected function nameAndSuffix(): Attribute
     {
-        //TODO test
         return Attribute::make(
             get: fn() => "{$this->name} {$this->suffix}"
         );

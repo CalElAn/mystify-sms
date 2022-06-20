@@ -34,12 +34,8 @@ class ClassModelController extends Controller
                     'academic_year_id',
                     $term->academic_year_id,
                 ),
-                'teachers.subjects',
             ])
             ->get();
-        $classes->each(
-            fn($item) => $item->teachers->first()?->append('unique_subjects'),
-        );
 
         return Inertia::render('Classes/Index', [
             'academicYearsWithTerms' => $academicYearsWithTerms,
@@ -73,8 +69,6 @@ class ClassModelController extends Controller
                 ->where('academic_year_id', $term->academic_year_id)
                 ->orderBy('name'),
         ]);
-
-        $classModel->teachers->first()?->append('unique_subjects');
 
         return Inertia::render('Classes/Show', [
             'academicYearsWithTerms' => $academicYearsWithTerms,

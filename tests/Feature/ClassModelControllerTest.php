@@ -48,10 +48,6 @@ class ClassModelControllerTest extends TestCase
                                     $academicYearId,
                                     $teacher['pivot']['academic_year_id'],
                                 );
-                                $this->assertArrayHasKey(
-                                    'unique_subjects',
-                                    $teacher,
-                                );
                             });
                         });
                         return true; //this is to make the assertions continue after this function call
@@ -93,10 +89,6 @@ class ClassModelControllerTest extends TestCase
                             $this->assertEquals(
                                 $academicYearId,
                                 $teacher['pivot']['academic_year_id'],
-                            );
-                            $this->assertArrayHasKey(
-                                'unique_subjects',
-                                $teacher,
                             );
                         });
                         collect($classModel['students'])?->each(function (

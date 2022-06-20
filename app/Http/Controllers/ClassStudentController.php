@@ -7,8 +7,6 @@ use App\Models\ClassModel;
 use App\Models\ClassStudent;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Database\Eloquent\Builder;
 
 class ClassStudentController extends Controller
 {
@@ -19,8 +17,7 @@ class ClassStudentController extends Controller
      */
     public function form(Request $request)
     {
-        //TODO authorize
-        //TODO test
+        $this->authorize('viewForm', ClassStudent::class);
 
         $user = $request->user();
 
@@ -35,29 +32,12 @@ class ClassStudentController extends Controller
 
     public function students(ClassModel $classModel, AcademicYear $academicYear)
     {
-        //TODO authorize
-        //TODO test
-
         return [
             'students' => $classModel->load([
                 'students' => fn($query) => $query
                     ->where('academic_year_id', $academicYear->id)
                     ->orderBy('name'),
             ])->students,
-            // 'students' => $request
-            //     ->user()
-            //     ->school->users()
-            //     ->studentScope()
-            //     ->orderBy('name')
-            //     ->whereHas(
-            //         'classStudentPivot',
-            //         fn(Builder $query) => $query
-            //             ->where([
-            //                 ['academic_year_id', $academicYear->id],
-            //                 ['class_id', $classModel->id],
-            //             ]),
-            //     )
-            //     ->get(),
         ];
     }
 
@@ -80,8 +60,8 @@ class ClassStudentController extends Controller
      */
     public function destroy(ClassStudent $classStudent)
     {
-        //TODO test
-        //TODO authorize
+        $this->authorize('delete', ClassStudent::class);
+
         $classStudent->delete();
 
         return back();

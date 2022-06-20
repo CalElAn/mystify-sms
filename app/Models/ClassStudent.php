@@ -21,13 +21,11 @@ class ClassStudent extends Model
 
     public function student()
     {
-        //TODO test
         return $this->belongsTo(User::class, 'student_id', 'id');
     }
 
     public function academicYear()
     {
-        //TODO test
         return $this->belongsTo(AcademicYear::class, 'academic_year_id', 'id');
     }
 
