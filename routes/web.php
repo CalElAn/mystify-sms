@@ -13,6 +13,7 @@ use App\Http\Controllers\GradeController;
 use App\Http\Controllers\NoticeBoardController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AddAsChildRequestController;
+use App\Http\Controllers\AddAsParentRequestController;
 use App\Http\Controllers\NotificationController;
 
 /*
@@ -49,9 +50,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::patch('/terms/{term}', [TermController::class, 'update'])->name('terms.update');
     Route::delete('/terms/{term}', [TermController::class, 'destroy'])->name('terms.destroy');
 
+    Route::get('/dashboard/classes/form', [ClassModelController::class, 'form'])->name('classes.form');
     Route::get('/classes', [ClassModelController::class, 'index'])->name('classes.index');
     Route::get('/classes/{classModel}', [ClassModelController::class, 'show'])->name('classes.show');
-    Route::get('/dashboard/classes/form', [ClassModelController::class, 'form'])->name('classes.form');
     Route::post('/classes', [ClassModelController::class, 'store'])->name('classes.store');
     Route::patch('/classes/{classModel}', [ClassModelController::class, 'update'])->name('classes.update');
     Route::delete('/classes/{classModel}', [ClassModelController::class, 'destroy'])->name('classes.destroy');
@@ -67,7 +68,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/users/{userType}', [UserController::class, 'index'])->name('users.index');
     Route::patch('/users/change-user-type', [UserController::class, 'changeUserType']);
 
+    Route::get('/dashboard/remove-children/form', [UserController::class, 'removeChildrenForm'])->name('remove_children.form');
+    Route::delete('/parent-student/{parentStudent}', [UserController::class, 'deleteChild'])->name('parent_student.destroy');
+
     Route::get('/dashboard/class-student/form', [ClassStudentController::class, 'form'])->name('class_student.form');
+    Route::get('/dashboard/class-student/join-class/form', [ClassStudentController::class, 'joinClassForm'])->name('class_student.join_class.form');
+    Route::post('/class-student', [ClassStudentController::class, 'store'])->name('class_student.store');
     Route::get('/class-student/{classModel}/{academicYear}/students', [ClassStudentController::class, 'students'])->name('class_student.students');
     Route::delete('/class-student/{classStudent}', [ClassStudentController::class, 'destroy'])->name('class_student.destroy');
 
@@ -79,6 +85,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/add-as-child-request/send-request', [AddAsChildRequestController::class, 'sendRequest'])->name('add_as_child_request.send_request');
     Route::post('/add-as-child-request/accept-request', [AddAsChildRequestController::class, 'acceptRequest'])->name('add_as_child_request.accept_request');
     Route::post('/add-as-child-request/decline-request', [AddAsChildRequestController::class, 'declineRequest'])->name('add_as_child_request.decline_request');
+
+    Route::get('/dashboard/add-as-parent-request/form', [AddAsParentRequestController::class, 'form'])->name('add_as_parent_request.form');
+    Route::post('/add-as-parent-request/send-request', [AddAsParentRequestController::class, 'sendRequest'])->name('add_as_parent_request.send_request');
+    Route::post('/add-as-parent-request/accept-request', [AddAsParentRequestController::class, 'acceptRequest'])->name('add_as_parent_request.accept_request');
+    Route::post('/add-as-parent-request/decline-request', [AddAsParentRequestController::class, 'declineRequest'])->name('add_as_parent_request.decline_request');
 
     Route::get('/dashboard/notifications', [NotificationController::class, 'index'])->name('notifications.index');
 

@@ -35,13 +35,11 @@
 </template>
 
 <script setup>
-import { Link } from '@inertiajs/inertia-vue3';
-
 defineProps({
   user: Object,
   as: {
     type: String,
-    default: Link,
+    default: 'Link',
   }
 });
 </script>

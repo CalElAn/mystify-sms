@@ -551,6 +551,8 @@ class User extends Authenticatable implements MustVerifyEmail
             'parent_student',
             'parent_id',
             'student_id',
-        )->withTimestamps();
+        )
+        ->withPivot('id')
+        ->withTimestamps();
     }
 }

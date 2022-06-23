@@ -11,7 +11,7 @@
         placeholder="Search..."
         type="text"
       />
-      <Menu as="div" class="base-card relative ml-4 text-base">
+      <!-- <Menu as="div" class="base-card relative ml-4 text-base">
         <MenuButton class="flex w-full items-center justify-center p-2">
           <DotsVerticalIcon class="h-5 w-5 text-purple-600" />
         </MenuButton>
@@ -31,7 +31,7 @@
             </div>
           </MenuItems>
         </MenuItemsTransition>
-      </Menu>
+      </Menu> -->
     </div>
     <div
       class="flex w-full basis-full flex-col items-center justify-start gap-4"

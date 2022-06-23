@@ -1,8 +1,7 @@
 <template>
   <!-- dashboard heading component -->
-  <section class="flex items-center">
+  <section v-if="!user.is_this_user_the_auth_user" class="flex items-center">
     <div
-      v-if="!user.is_this_user_the_auth_user"
       class="inline-flex items-center gap-3 text-2xl font-semibold text-gray-500"
     >
       Student dashboard:
@@ -23,11 +22,17 @@
         </a>
       </div>
     </div>
+  </section>
+  <section class="flex items-center gap-4">
+    <ActionButtonAndModal
+      v-if="user.is_this_user_the_auth_user"
+      :actions="studentActions"
+    />
     <button
       @click="shouldOpenModalContainingListOfParents = true"
-      class="ml-4 inline-flex items-center justify-center gap-1 rounded-lg border border-purple-800 bg-purple-50 py-1 px-2 text-sm text-purple-800 shadow-sm hover:bg-purple-100"
+      class="inline-flex items-center justify-center gap-2 rounded-lg border border-fuchsia-800 bg-fuchsia-50 p-2 font-semibold text-fuchsia-800 shadow-sm hover:bg-fuchsia-100"
     >
-      <ViewListIcon class="h-4 w-4" />
+      <ViewListIcon class="h-5 w-5" />
       Parents
     </button>
   </section>
@@ -198,7 +203,8 @@
       </table>
     </div>
   </section>
-  <section class="flex gap-6">
+  <hr class="my-2" />
+  <section v-if="user.is_this_user_the_auth_user" class="flex gap-6">
     <!-- Notice board -->
     <TimelineCard
       :title="'Notice board'"
@@ -328,10 +334,12 @@ import TimelineCard from '@/Components/TimelineCard.vue';
 import NotificationsCard from '@/Components/NotificationsCard.vue';
 import TeacherCardModal from '@/Components/Users/TeacherCardModal.vue';
 import UserCard from '@/Components/Users/Card.vue';
+import ActionButtonAndModal from '@/Components/ActionButtonAndModal.vue';
 
 import { changeTerm } from '@/helpers';
 import { defaultDashboardProps } from '@/default_dashboard_props.js';
 import { useTeacherCardModal } from '@/Components/Users/teacher_card_modal.js';
+import { studentActions } from '@/student_actions.js';
 
 const { shouldOpenTeacherCardModal } = useTeacherCardModal();
 

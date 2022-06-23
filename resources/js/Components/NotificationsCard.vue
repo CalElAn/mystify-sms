@@ -64,8 +64,6 @@ import { usePage } from '@inertiajs/inertia-vue3';
 import DotIndicator from '@/Components/DotIndicator.vue';
 import { useNotifications } from '@/notifications.js';
 
-const { isThereANewNotification, notifications } = useNotifications();
-
 function acceptRequest(item) {
   Inertia.visit(
     route('add_as_child_request.accept_request', {
@@ -93,10 +91,27 @@ function declineRequest(item) {
   );
 }
 
+const { isThereANewNotification, notifications } = useNotifications();
+
+const authUser = computed(() => usePage().props.value.auth.user);
+
 onMounted(() => {
   notifications.value = computed(
     () => usePage().props.value.notifications
   ).value;
+
+  if (authUser.value.user_type === 'student') {
+    window.Echo.private(`App.Models.User.${authUser.value.id}`).notification(
+      (notification) => {
+        isThereANewNotification.value = true;
+        notifications.value.unshift({
+          ...notification,
+          data: notification,
+        });
+        console.log(notification);
+      }
+    );
+  }
 });
 </script>
 

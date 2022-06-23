@@ -38,7 +38,8 @@ return new class extends Migration
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
 
-            //a student cannot be in the same class twice for the same academic year
+            //a student cannot be in the same class twice for the same academic year 
+            //this also accounts for the edge case where a student might be repeated
             $table->unique(['class_id', 'student_id', 'academic_year_id']);
         });
     }

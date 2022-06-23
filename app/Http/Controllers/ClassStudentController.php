@@ -7,6 +7,8 @@ use App\Models\ClassModel;
 use App\Models\ClassStudent;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class ClassStudentController extends Controller
 {
@@ -41,6 +43,30 @@ class ClassStudentController extends Controller
         ];
     }
 
+    public function joinClassForm(Request $request)
+    {
+        //TODO test
+        //TODO authorize
+        $user = $request->user();
+
+        return Inertia::render('ClassStudent/JoinClass/Form', [
+            'classStudentPivotData' => $user
+                ->classStudentPivot()
+                ->with(['classModel', 'academicYear'])
+                ->get()
+                ->sortBy([
+                    ['academicYear.name', 'desc'],
+                    ['classModel.name', 'desc'],
+                ])
+                ->values(),
+            'classes' => $user->school->classes,
+            'academicYears' => $user->school
+                ->academicYears()
+                ->orderBy('name', 'desc')
+                ->get(),
+        ]);
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -49,7 +75,36 @@ class ClassStudentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        //TODO test
+        //TODO authorize
+
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'class_id' => [
+                    'required',
+                    Rule::unique('class_student')->where(
+                        fn($query) => $query->where([
+                            ['student_id', $request->user()->id],
+                            ['academic_year_id', $request->academic_year_id],
+                        ]),
+                    ),
+                ],
+                'academic_year_id' => 'required',
+            ],
+            [
+                'class_id.required' => 'A class is required',
+                'class_id.unique' => 'You cannot be in the same class twice for the same academic year',
+                'academic_year_id.required' => 'An academic year is required',
+            ],
+        );
+
+        $request
+            ->user()
+            ->classStudentPivot()
+            ->create($validator->validate());
+
+        return back();
     }
 
     /**

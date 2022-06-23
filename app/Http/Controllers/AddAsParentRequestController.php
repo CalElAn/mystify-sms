@@ -7,16 +7,16 @@ use Illuminate\Notifications\DatabaseNotification;
 use App\Models\User;
 use Inertia\Inertia;
 use Illuminate\Validation\Rule;
-use App\Notifications\AddAsChildRequest;
+use App\Notifications\AddAsParentRequest;
 
-class AddAsChildRequestController extends Controller
+class AddAsParentRequestController extends Controller
 {
     public function form()
     {
         //TODO authorize
         //TODO test
 
-        return Inertia::render('AddAsChildRequestForm');
+        return Inertia::render('AddAsParentRequestForm');
     }
 
     public function sendRequest(Request $request)
@@ -29,7 +29,6 @@ class AddAsChildRequestController extends Controller
                 'required',
                 Rule::exists('users')->where(
                     fn($query) => $query->where([
-                        ['default_user_type', 'student'],
                         ['email', $request->email],
                     ]),
                 ),
@@ -38,7 +37,7 @@ class AddAsChildRequestController extends Controller
 
         User::where('email', $request->email)
             ->first()
-            ->notify(new AddAsChildRequest($request->user()));
+            ->notify(new AddAsParentRequest($request->user()));
 
         return back();
     }
@@ -48,11 +47,11 @@ class AddAsChildRequestController extends Controller
         //TODO test
         $user = $request->user();
 
-        if ($user->parents->contains(User::find($request->parentId))) {
+        if ($user->children->contains(User::find($request->childId))) {
             return $this->declineRequest($request);
         }
 
-        $user->parents()->attach($request->parentId);
+        $user->children()->attach($request->childId);
 
         return back();
     }

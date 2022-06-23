@@ -36,63 +36,34 @@
   </nav> -->
   <ClassPanel
     v-if="classModel && selectedTab === 1"
-    @openModalContainingListOfClasses="shouldOpenModalContainingListOfClasses = true"
+    @openModalContainingListOfClasses="
+      shouldOpenModalContainingListOfClasses = true
+    "
     :classModel="classModel"
     :studentsInClass="studentsInClass"
     :academicYearName="term.academic_year.name"
   />
-  <div
+  <section
     v-if="!classModel && selectedTab === 1"
     class="flex items-center justify-center"
   >
-    <div class="rounded-lg tracking-wide bg-red-300 px-10 py-4 text-lg text-white shadow">
-      <p>
-        You have no classes associated with your account for this academic year
-        ({{ term.academic_year.name }})
-      </p>
-      <div class="mt-2 flex justify-end">
-        <Link
-          :href="route('class_teacher.form')"
-          class="rounded-lg border border-fuchsia-600 bg-red-50 p-2 text-base font-semibold tracking-wide text-fuchsia-600 shadow-sm hover:bg-red-100"
-        >
-          Add class
-        </Link>
-      </div>
-    </div>
-  </div>
-  <!-- <div class="base-card border tracking-wide border-red-500 px-10 py-4 text-lg text-red-400">
-    <p>
-      You have no subjects associated with your account for this academic year
-      ({{ term.academic_year.name }})
-    </p>
-    <div class="mt-2 flex justify-end">
-      <button
-        class="rounded-lg border border-transparent bg-purple-100 p-2 text-base font-semibold tracking-wide text-purple-600 hover:bg-purple-200"
-      >
-        Add subject
-      </button>
-    </div>
-  </div> -->
+    <InfoCard
+      :mainText="`You have no classes associated with your account for this academic year
+        (${term.academic_year.name})`"
+      linkText="Add class"
+      :linkHref="route('class_teacher.form')"
+    />
+  </section>
   <hr class="my-2" />
-  <section class="flex gap-6">
+  <section v-if="user.is_this_user_the_auth_user" class="flex gap-6">
     <!-- Notice board -->
     <TimelineCard
       :title="'Notice board'"
       :messages="noticeBoardMessages"
-      class="w-2/5"
+      class="h-96 w-1/2"
     />
     <!-- Notifications -->
-    <TimelineCard
-      :title="'Notifications'"
-      :messages="noticeBoardMessages"
-      class="w-2/5"
-    />
-    <!-- Recent activities -->
-    <TimelineCard
-      :title="'Recent activities'"
-      :messages="noticeBoardMessages"
-      class="w-1/5"
-    />
+    <NotificationsCard class="h-96 w-1/2" />
   </section>
 
   <!-- MODALS -->
@@ -117,23 +88,21 @@
 
 <script setup>
 import { ref, computed } from 'vue';
-import { usePage } from '@inertiajs/inertia-vue3';
 
 import { changeAcademicYear } from '@/helpers';
 import { defaultDashboardProps } from '@/default_dashboard_props.js';
 import { teacherActions } from '@/teacher_actions.js';
 import ActionButtonAndModal from '@/Components/ActionButtonAndModal.vue';
 import TimelineCard from '@/Components/TimelineCard.vue';
+import NotificationsCard from '@/Components/NotificationsCard.vue';
 import ClassPanel from '@/Components/Classes/Panel.vue';
+import InfoCard from '@/Components/InfoCard.vue';
 
 defineProps({
   ...defaultDashboardProps,
   classes: Object,
   classModel: Object,
   studentsInClass: Array,
-  // subjects: Array,
-  // currentSubject: Object,
-  // gradesForCurrentSubjectWithStudent: Array,
 });
 
 const selectedTab = ref(1);

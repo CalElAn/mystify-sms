@@ -30,12 +30,29 @@
   <section class="mt-6 mb-auto grid grid-cols-3 gap-6">
     <UserCard v-for="child in children" :user="child"></UserCard>
   </section>
+  <section
+    v-if="!children || Object.keys(children).length === 0"
+    class="flex items-center justify-center"
+  >
+    <InfoCard
+      mainText="You have no children associated with your account"
+      linkText="Add child"
+      :linkHref="route('add_as_child_request.form')"
+    />
+  </section>
+  <hr class="my-2" />
+  <section v-if="user.is_this_user_the_auth_user" class="flex gap-6">
+    <!-- Notifications -->
+    <NotificationsCard class="h-96 w-full" />
+  </section>
 </template>
 
 <script setup>
 import { defaultDashboardProps } from '@/default_dashboard_props.js';
 import { parentActions } from '@/parent_actions.js';
 import ActionButtonAndModal from '@/Components/ActionButtonAndModal.vue';
+import NotificationsCard from '@/Components/NotificationsCard.vue';
+import InfoCard from '@/Components/InfoCard.vue';
 
 defineProps({
   ...defaultDashboardProps,

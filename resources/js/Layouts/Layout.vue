@@ -177,7 +177,7 @@
                         v-if="isThereANewNotification"
                         class="-top-1 -right-2 h-6 w-6"
                       />
-                      <MenuItemButton :active="active">
+                      <MenuItemButton @click="$inertia.get(route('notifications.index'))" :active="active">
                         Notifications
                       </MenuItemButton>
                     </MenuItem>
@@ -408,8 +408,7 @@ import { changeTerm } from '@/helpers';
 import { defaultDashboardProps } from '@/default_dashboard_props.js';
 import { useNotifications } from '@/notifications.js';
 
-const { isThereANewNotification, notifications: notificationsData } =
-  useNotifications();
+const { isThereANewNotification } = useNotifications();
 
 defineProps({ ...defaultDashboardProps });
 
@@ -419,18 +418,5 @@ const shouldOpenModalContainingListOfUserTypes = ref(false);
 const authUser = computed(() => usePage().props.value.auth.user);
 // in the tempalate you can access inertia page props directly by $page.props.auth.user
 
-onMounted(() => {
-  if (authUser.value.user_type === 'student') {
-    window.Echo.private(`App.Models.User.${authUser.value.id}`).notification(
-      (notification) => {
-        isThereANewNotification.value = true;
-        notificationsData.value.unshift({
-          ...notification,
-          data: notification,
-        });
-        console.log(notification);
-      }
-    );
-  }
-});
+onMounted(() => {});
 </script>

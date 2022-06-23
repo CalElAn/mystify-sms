@@ -89,7 +89,8 @@
       </div>
     </div>
   </section>
-  <section class="flex gap-6">
+  <hr class="my-2" />
+  <section v-if="user.is_this_user_the_auth_user" class="flex gap-6">
     <!-- Notice board -->
     <TimelineCard
       :title="'Notice board'"
@@ -97,17 +98,7 @@
       class="w-2/5"
     />
     <!-- Notifications -->
-    <TimelineCard
-      :title="'Notifications'"
-      :messages="props.noticeBoardMessages"
-      class="w-2/5"
-    />
-    <!-- Recent activities -->
-    <TimelineCard
-      :title="'Recent activities'"
-      :messages="props.noticeBoardMessages"
-      class="w-1/5"
-    />
+    <NotificationsCard class="h-96 w-1/2" />
   </section>
   <!-- MODALS -->
   <!-- Modal containing list of students who owe school fees -->
@@ -177,6 +168,7 @@ import {
   ArchiveIcon,
 } from '@heroicons/vue/outline';
 import TimelineCard from '@/Components/TimelineCard.vue';
+import NotificationsCard from '@/Components/NotificationsCard.vue';
 import ActionButtonAndModal from '@/Components/ActionButtonAndModal.vue';
 import { headteacherActions } from '@/headteacher_actions.js';
 import { defaultDashboardProps } from '@/default_dashboard_props.js';

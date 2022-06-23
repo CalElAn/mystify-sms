@@ -6,12 +6,7 @@ export const parentActions = [
   },
   {
     label: 'Remove child',
-    name: 'add_as_child_request.send_request',
-    href: route('add_as_child_request.send_request'),
+    name: 'remove_children.form',
+    href: route('remove_children.form'),
   },
-  // {
-  //   label: 'Students',
-  //   name: 'class_student.form',
-  //   href: ,
-  // },
 ]

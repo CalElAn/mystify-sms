@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ParentStudent;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -29,7 +30,8 @@ class UserController extends Controller
 
             case 'parents':
                 $this->authorize('viewParents', User::class);
-                $query = User::parentScope()->whereHas(
+                //not using parent scope cos for eg a teacher can have a child
+                $query = User::whereHas(
                     'children',
                     fn(Builder $query) => $query->where(
                         'school_id',
@@ -91,6 +93,26 @@ class UserController extends Controller
         ]);
 
         return \Redirect::route('dashboard');
+    }
+
+    public function removeChildrenForm(Request $request)
+    {
+        //TODO authorize
+        //TODO test
+
+        return Inertia::render('RemoveChildrenForm', [
+            'children' => $request->user()->children,
+        ]);
+    }
+
+    public function deleteChild(ParentStudent $parentStudent)
+    {
+        //TODO authorize
+        //TODO test
+
+        $parentStudent->delete();
+
+        return back();
     }
 
     /**

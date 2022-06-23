@@ -1,0 +1,79 @@
+<template>
+  <div
+    class="grid grid-cols-2 gap-y-4 gap-x-12 p-2 odd:bg-white even:bg-gray-100"
+    :class="[
+      {
+        'my-4 border-purple-400 ring-4 ring-purple-300 ring-opacity-50': adding,
+      },
+    ]"
+  >
+    <select
+      :disabled="!adding"
+      class="custom-select w-full"
+      v-model="form.class_id"
+    >
+      <option v-if="adding" value="" selected disabled>
+        - select a class -
+      </option>
+      <option :value="item.id" v-for="item in classes" :key="item">
+        {{ item.name_and_suffix }}
+      </option>
+    </select>
+    <select
+      :disabled="!adding"
+      class="custom-select w-full"
+      v-model="form.academic_year_id"
+    >
+      <option v-if="adding" value="" selected disabled>
+        - select an academic year -
+      </option>
+      <option :value="item.id" v-for="item in academicYears" :key="item">
+        {{ item.name }}
+      </option>
+    </select>
+
+    <FormValidationErrors :errors="form.errors" />
+    <div class="col-span-3 mr-4 flex justify-end gap-3">
+      <template v-if="adding">
+        <SubformButton @click="store()" :disabled="form.processing">
+          {{ form.processing ? 'Adding...' : 'Add' }}
+        </SubformButton>
+        <SubformButton @click="$emit('cancelAdd')"> Cancel </SubformButton>
+      </template>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { ref, computed } from 'vue';
+import { useForm, usePage } from '@inertiajs/inertia-vue3';
+import { Inertia } from '@inertiajs/inertia';
+
+import FormValidationErrors from '@/Components/FormValidationErrors.vue';
+import SubformButton from '@/Components/SubformButton.vue';
+
+const user = computed(() => usePage().props.value.auth.user);
+
+const props = defineProps({
+  classStudentData: Object,
+  classes: Array,
+  academicYears: Array,
+});
+const form = useForm({
+  class_id: props.classStudentData.class_id,
+  academic_year_id: props.classStudentData.academic_year_id,
+});
+const adding = ref(props.classStudentData.adding ?? false);
+
+const emit = defineEmits(['cancelAdd', 'stored']);
+
+function store() {
+  form.post(route('class_student.store'), {
+    onSuccess: () => {
+      adding.value = false;
+      emit('stored');
+      //TODO notify added
+    },
+  });
+}
+</script>
