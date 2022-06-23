@@ -12,6 +12,8 @@ use App\Http\Controllers\ClassStudentController;
 use App\Http\Controllers\GradeController;
 use App\Http\Controllers\NoticeBoardController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\AddAsChildRequestController;
+use App\Http\Controllers\NotificationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -55,6 +57,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/classes/{classModel}', [ClassModelController::class, 'destroy'])->name('classes.destroy');
 
     Route::get('/dashboard/notice-board/create', [NoticeBoardController::class, 'create'])->name('notice_board.create');
+    Route::get('/dashboard/notice-board', [NoticeBoardController::class, 'index'])->name('notice_board.index');
     Route::post('/notice-board', [NoticeBoardController::class, 'store'])->name('notice_board.store');
 
     Route::get('/dashboard/class-teacher/form', [ClassTeacherController::class, 'form'])->name('class_teacher.form');
@@ -71,6 +74,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard/grades/form', [GradeController::class, 'form'])->name('grades.form');
     Route::get('/grades/{classModel}/{term}/{subjectName}', [GradeController::class, 'getStudentsWithGrades'])->name('grades.students_with_grades');
     Route::patch('/grades/upsert', [GradeController::class, 'upsert'])->name('grades.upsert');
+
+    Route::get('/dashboard/add-as-child-request/form', [AddAsChildRequestController::class, 'form'])->name('add_as_child_request.form');
+    Route::post('/add-as-child-request/send-request', [AddAsChildRequestController::class, 'sendRequest'])->name('add_as_child_request.send_request');
+    Route::post('/add-as-child-request/accept-request', [AddAsChildRequestController::class, 'acceptRequest'])->name('add_as_child_request.accept_request');
+    Route::post('/add-as-child-request/decline-request', [AddAsChildRequestController::class, 'declineRequest'])->name('add_as_child_request.decline_request');
+
+    Route::get('/dashboard/notifications', [NotificationController::class, 'index'])->name('notifications.index');
 
     Route::get('/profile', function() {return;})->name('users.show');
 });

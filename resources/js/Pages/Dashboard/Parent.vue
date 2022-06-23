@@ -1,6 +1,6 @@
 <template>
   <!-- dashboard heading component -->
-  <section v-if="shouldShowDashboardHeading">
+  <section v-if="!user.is_this_user_the_auth_user">
     <div class="flex items-center gap-3 text-2xl font-semibold text-gray-500">
       Parent dashboard:
       <div
@@ -21,25 +21,11 @@
       </div>
     </div>
   </section>
-  <section class="h1-title flex items-center justify-start gap-4">
+  <section v-if="user.is_this_user_the_auth_user">
+    <ActionButtonAndModal class="ml-4" :actions="parentActions" />
+  </section>
+  <section class="h1-title flex items-center justify-start gap-4 text-gray-600">
     Children
-    <Menu as="div" class="base-card relative text-base">
-      <MenuButton class="flex w-full items-center justify-center p-1.5">
-        <DotsVerticalIcon class="h-5 w-5 text-purple-600" />
-      </MenuButton>
-      <MenuItemsTransition>
-        <MenuItems class="menu-items left-0 z-10 mt-2 w-max origin-top-left">
-          <div class="px-1 py-1">
-            <MenuItem as="div" v-slot="{ active }">
-              <MenuItemButton :active="active"> Add child </MenuItemButton>
-            </MenuItem>
-            <MenuItem as="div" v-slot="{ active }">
-              <MenuItemButton :active="active"> Remove child </MenuItemButton>
-            </MenuItem>
-          </div>
-        </MenuItems>
-      </MenuItemsTransition>
-    </Menu>
   </section>
   <section class="mt-6 mb-auto grid grid-cols-3 gap-6">
     <UserCard v-for="child in children" :user="child"></UserCard>
@@ -48,6 +34,8 @@
 
 <script setup>
 import { defaultDashboardProps } from '@/default_dashboard_props.js';
+import { parentActions } from '@/parent_actions.js';
+import ActionButtonAndModal from '@/Components/ActionButtonAndModal.vue';
 
 defineProps({
   ...defaultDashboardProps,

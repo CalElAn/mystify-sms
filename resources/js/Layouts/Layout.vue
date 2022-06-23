@@ -12,10 +12,7 @@
         mystify-sms
       </div>
       <!-- school name and logo -->
-      <div
-        v-if="school"
-        class="flex flex-col gap-2"
-      >
+      <div v-if="school" class="flex flex-col gap-2">
         <div
           class="h-28 w-28 place-self-center rounded-full bg-[url('/images/school-crests/default.png')] bg-contain bg-center bg-no-repeat"
           alt="school crest"
@@ -32,10 +29,10 @@
           :href="route('dashboard')"
           :class="[
             $page.url.startsWith('/dashboard')
-              ? 'bg-purple-600 text-white'
-              : 'hover:text-purple-600 hover:underline',
+              ? 'bg-purple-200 font-semibold text-purple-600'
+              : 'font-medium hover:text-purple-600 hover:underline',
           ]"
-          class="flex w-full items-center justify-start gap-2 rounded-full py-2 pl-5 text-lg font-medium tracking-wide"
+          class="flex w-full items-center justify-start gap-2 rounded-lg py-2 pl-5 text-lg tracking-wide"
         >
           <DesktopComputerIcon class="h-5 w-5" />
           Dashboard
@@ -138,8 +135,12 @@
         </button>
         <!-- User's name, profile picture and menu -->
         <div
-          class="mr-12 flex gap-3 rounded-3xl border border-gray-500 px-2 shadow-sm"
+          class="relative mr-12 flex gap-3 rounded-3xl border border-gray-500 px-2 shadow-sm"
         >
+          <DotIndicator
+            v-if="isThereANewNotification"
+            class="-top-1 -right-2 h-6 w-6"
+          />
           <ProfilePicture
             :profilePicturePath="authUser.profile_picture_path"
             widthClass="w-10"
@@ -171,6 +172,15 @@
                   class="menu-items right-0 z-10 mt-2 w-max origin-top-right"
                 >
                   <div class="px-1 py-1">
+                    <MenuItem as="div" class="relative" v-slot="{ active }">
+                      <DotIndicator
+                        v-if="isThereANewNotification"
+                        class="-top-1 -right-2 h-6 w-6"
+                      />
+                      <MenuItemButton :active="active">
+                        Notifications
+                      </MenuItemButton>
+                    </MenuItem>
                     <MenuItem as="div" v-slot="{ active }">
                       <MenuItemButton :active="active">
                         Profile
@@ -191,7 +201,10 @@
                   </div>
                   <div class="px-1 py-1">
                     <MenuItem as="div" v-slot="{ active }">
-                      <MenuItemButton @click="$inertia.post(route('logout'))" :active="active">
+                      <MenuItemButton
+                        @click="$inertia.post(route('logout'))"
+                        :active="active"
+                      >
                         Log out
                       </MenuItemButton>
                     </MenuItem>
@@ -363,8 +376,11 @@
         <button
           v-for="(item, index) in authUser.user_types"
           :key="index"
-          @click="shouldOpenModalContainingListOfUserTypes = false;$inertia.patch('/users/change-user-type', {user_type: item})"
-          class="relative inline-block list-of-buttons-in-modal p-2 font-semibold tracking-wide hover:text-purple-500 hover:underline"
+          @click="
+            shouldOpenModalContainingListOfUserTypes = false;
+            $inertia.patch('/users/change-user-type', { user_type: item });
+          "
+          class="list-of-buttons-in-modal relative inline-block p-2 font-semibold tracking-wide hover:text-purple-500 hover:underline"
         >
           {{ item }}
         </button>
@@ -374,7 +390,7 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue';
+import { computed, ref, onMounted } from 'vue';
 import { usePage } from '@inertiajs/inertia-vue3';
 import {
   DesktopComputerIcon,
@@ -386,8 +402,14 @@ import {
 } from '@heroicons/vue/outline';
 import { ChevronDownIcon } from '@heroicons/vue/solid';
 import { LightningBoltIcon } from '@heroicons/vue/outline';
+
+import DotIndicator from '@/Components/DotIndicator.vue';
 import { changeTerm } from '@/helpers';
 import { defaultDashboardProps } from '@/default_dashboard_props.js';
+import { useNotifications } from '@/notifications.js';
+
+const { isThereANewNotification, notifications: notificationsData } =
+  useNotifications();
 
 defineProps({ ...defaultDashboardProps });
 
@@ -396,4 +418,19 @@ const shouldOpenModalContainingListOfUserTypes = ref(false);
 
 const authUser = computed(() => usePage().props.value.auth.user);
 // in the tempalate you can access inertia page props directly by $page.props.auth.user
+
+onMounted(() => {
+  if (authUser.value.user_type === 'student') {
+    window.Echo.private(`App.Models.User.${authUser.value.id}`).notification(
+      (notification) => {
+        isThereANewNotification.value = true;
+        notificationsData.value.unshift({
+          ...notification,
+          data: notification,
+        });
+        console.log(notification);
+      }
+    );
+  }
+});
 </script>

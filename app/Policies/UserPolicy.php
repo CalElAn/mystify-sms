@@ -45,6 +45,9 @@ class UserPolicy
 
     public function viewParentDashboard(User $authUser, User $parent)
     {
+        //TODO update test
+        if ($authUser->can('viewParents', User::class)) return true;
+
         if ($authUser->parents->contains($parent)) {
             return true;
         }

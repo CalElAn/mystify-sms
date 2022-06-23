@@ -45,6 +45,12 @@ class DatabaseSeeder extends Seeder
             'user_type' => 'teacher',
             'school_id' => $school->id,
         ]);
+        User::factory()->create([
+            'email' => 'se@example.com',
+            'default_user_type' => 'student',
+            'user_type' => 'student',
+            'school_id' => $school->id,
+        ]);
         User::factory(100)->create(['school_id' => $school->id]);
         $allUsers = User::all();
         $allStudents = $allUsers->where('default_user_type', 'student');

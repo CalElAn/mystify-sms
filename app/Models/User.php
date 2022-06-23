@@ -10,6 +10,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\DB;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Support\Facades\Auth;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -47,6 +48,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'email_verified_at' => 'datetime',
     ];
 
+    protected $appends = ['is_this_user_the_auth_user'];
+
     public ClassModel $classModel;
     public int $termId;
     //so as to cache the results in a variable and not re-compute them every time its called
@@ -80,12 +83,23 @@ class User extends Authenticatable implements MustVerifyEmail
     public function userTypes(): Attribute
     {
         return Attribute::make(
+            get: fn() => array_unique([
+                $this->default_user_type,
+                'teacher',
+                'parent',
+            ]),
+        );
+    }
+
+    public function isThisUserTheAuthUser(): Attribute
+    {
+        //TODO test
+        return Attribute::make(
             get: function () {
-                return array_unique([
-                    $this->default_user_type,
-                    'teacher',
-                    'parent',
-                ]);
+                if (Auth::check()) {
+                    return $this->id === Auth::user()->id;
+                }
+                return false;
             },
         );
     }
@@ -166,8 +180,7 @@ class User extends Authenticatable implements MustVerifyEmail
             'parents' => $this->parents,
             'classesWithTerms' => $classesWithTerms,
             'classModel' => $classModel,
-            'classTeacher' => $classModel->teachers
-                ->first(),
+            'classTeacher' => $classModel->teachers->first(),
             'gradesDataForLineChart' => $this->getOverallGradesDataForLineChart(),
             'gradesDataPerSubjectForLineChart' => $this->getOverallGradesDataPerSubjectForLineChart(),
             'totalSchoolFees' => round(

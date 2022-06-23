@@ -13,6 +13,7 @@
         "laravel/telescope": "^4.9",
         "laravel/tinker": "^2.7",
         "mbezhanov/faker-provider-collection": "^2.0",
+        "pusher/pusher-php-server": "^7.0",
         "spatie/laravel-activitylog": "^4.4",
         "tightenco/ziggy": "^1.0"
     },

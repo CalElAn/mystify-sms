@@ -1,7 +1,7 @@
 require('./bootstrap');
 
 import { createApp, h } from 'vue';
-import { createInertiaApp, Link } from '@inertiajs/inertia-vue3';
+import { createInertiaApp, Link, usePage } from '@inertiajs/inertia-vue3';
 import { InertiaProgress } from '@inertiajs/progress';
 import {
   DotsVerticalIcon,

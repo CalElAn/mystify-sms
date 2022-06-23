@@ -1,9 +1,9 @@
 <template>
-  <div class="base-card flex h-96 flex-col">
+  <div class="base-card flex flex-col">
     <div
       class="flex items-center justify-between border-b py-2 px-4 text-xl font-semibold tracking-wide text-purple-600"
     >
-      {{ props.title }}
+      <Link :href="route('notice_board.index')" class="underline">{{ props.title }}</Link>
     </div>
     <div class="flex flex-col gap-8 overflow-y-auto p-4">
       <div
@@ -27,12 +27,12 @@
               >
                 {{ secondItem.time_string }}
               </time>
-              <p
+              <button
                 @click="openTimelineMessageModal(secondItem.message)"
-                class="rounded-lg border p-2 hover:cursor-pointer"
+                class="rounded-lg border p-2 text-left"
               >
                 {{ secondItem.message.substring(0, 200) + ' ....' }}
-              </p>
+              </button>
             </div>
           </li>
         </ol>

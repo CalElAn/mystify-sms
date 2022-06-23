@@ -8,6 +8,16 @@ use Inertia\Inertia;
 
 class NoticeBoardController extends Controller
 {
+    public function index(Request $request)
+    {
+        //TODO test
+        $school = $request->user()->school;
+        $term = $school->getTerm($request);
+
+        return Inertia::render('NoticeBoard/Index', [
+            'noticeBoardMessages' => $school->getNoticeBoardMessages($term->id),
+        ]);
+    }
     /**
      * Show the form for creating a new resource.
      *

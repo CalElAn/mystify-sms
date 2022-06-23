@@ -2,7 +2,7 @@
   <component
     :is="as"
     :href="route('dashboard', {userId: user.id})"
-    class="base-card flex gap-6 border border-white p-4 hover:border-purple-600"
+    class="base-card flex gap-6 border p-4 hover:border-purple-600"
   >
     <ProfilePicture
       :profilePicturePath="user.profile_picture_path"

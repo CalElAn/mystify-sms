@@ -2,7 +2,7 @@
   <!-- dashboard heading component -->
   <section class="flex items-center">
     <div
-      v-if="shouldShowDashboardHeading"
+      v-if="!user.is_this_user_the_auth_user"
       class="inline-flex items-center gap-3 text-2xl font-semibold text-gray-500"
     >
       Student dashboard:
@@ -203,20 +203,10 @@
     <TimelineCard
       :title="'Notice board'"
       :messages="noticeBoardMessages"
-      class="w-2/5"
+      class="h-96 w-1/2"
     />
     <!-- Notifications -->
-    <TimelineCard
-      :title="'Notifications'"
-      :messages="noticeBoardMessages"
-      class="w-2/5"
-    />
-    <!-- Recent activities -->
-    <TimelineCard
-      :title="'Recent activities'"
-      :messages="noticeBoardMessages"
-      class="w-1/5"
-    />
+    <NotificationsCard class="h-96 w-1/2" />
   </section>
   <!-- MODALS -->
   <!-- Modal containing list of parents -->
@@ -335,6 +325,7 @@ import { Chart, registerables } from 'chart.js';
 import { TrendingUpIcon, ChevronDownIcon } from '@heroicons/vue/solid';
 
 import TimelineCard from '@/Components/TimelineCard.vue';
+import NotificationsCard from '@/Components/NotificationsCard.vue';
 import TeacherCardModal from '@/Components/Users/TeacherCardModal.vue';
 import UserCard from '@/Components/Users/Card.vue';
 

@@ -22,7 +22,7 @@
     @apply decoration-purple-600 hover:underline;
   }
   .h1-title {
-    @apply text-3xl font-semibold tracking-wide;
+    @apply text-2xl font-semibold tracking-wide;
   }
   .form-title {
     @apply text-2xl font-semibold tracking-wide text-gray-600;

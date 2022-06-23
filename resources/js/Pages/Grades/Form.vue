@@ -155,7 +155,7 @@ import { usePage } from '@inertiajs/inertia-vue3';
 import NavBar from '@/Components/ActionsNavBar.vue';
 import { teacherActions } from '@/teacher_actions.js';
 
-const user = computed(() => usePage().props.value.auth.user);
+const authUser = computed(() => usePage().props.value.auth.user);
 const school = computed(() => usePage().props.value.school);
 
 const props = defineProps({
@@ -223,7 +223,7 @@ function clearMarks(item) {
 function save() {
     //TODO notify
   const grades = studentsWithGrades.value.map((item) => ({
-    teacher_id: user.value.id,
+    teacher_id: authUser.value.id,
     class_mark: item.nonEmptyGrades.class_mark,
     exam_mark: item.nonEmptyGrades.exam_mark,
     student_id: item.nonEmptyGrades.student_id,

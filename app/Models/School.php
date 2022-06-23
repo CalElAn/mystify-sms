@@ -52,6 +52,20 @@ class School extends Model
         return $this->belongsTo(GradingScale::class);
     }
 
+    public function getNoticeBoardMessages(int $term_id): Collection
+    {
+        return $this->noticeBoard()
+            ->where('term_id', $term_id)
+            ->latest()
+            ->get()
+            ->groupBy(function ($item) {
+                //example of returned format: Sunday, 19th June 2022 ...(2 days ago)
+                return "{$item->created_at->format(
+                    'l\, jS F Y',
+                )} ...({$item->created_at->diffForHumans()})";
+            });
+    }
+
     public function getAcademicYearsWithTerms(): Collection
     {
         return $this->academicYears()

@@ -23,12 +23,9 @@ class DashboardController extends Controller
         // $user = User::where('user_type', 'teacher')->first();
         // $user = User::where('user_type', 'parent')->first();
 
-        $shouldShowDashboardHeading = false;
-
         if ($request->userId) {
             /** @var \App\Models\User */
             $user = User::find($request->userId);
-            $shouldShowDashboardHeading = true;
         }
 
         /** @var \App\Models\School */
@@ -40,19 +37,10 @@ class DashboardController extends Controller
 
         $defaultProps = [
             'user' => $user,
-            'shouldShowDashboardHeading' => $shouldShowDashboardHeading,
             'academicYearsWithTerms' => $academicYearsWithTerms,
             'term' => $term,
-            'noticeBoardMessages' => $school
-                ->noticeBoard()
-                ->where('term_id', $term->id)
-                ->latest()
-                ->get()
-                ->groupBy(function ($item) {
-                    return "{$item->created_at->format(
-                        'l\, jS F Y',
-                    )} ...({$item->created_at->diffForHumans()})";
-                }),
+            'noticeBoardMessages' => $school->getNoticeBoardMessages($term->id),
+            'notifications' => Auth::user()->notifications,
         ];
 
         switch ($user->user_type) {

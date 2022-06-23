@@ -191,7 +191,6 @@ class DashboardControllerTest extends TestCase
             ->assertInertia(
                 fn(Assert $page) => $page->hasAll(
                     'user',
-                    'shouldShowDashboardHeading',
                     'academicYearsWithTerms',
                     'term',
                     'noticeBoardMessages',
