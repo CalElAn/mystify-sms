@@ -39,9 +39,9 @@
         <SubformButton @click="destroy()"> Delete </SubformButton>
         <SubformButton @click="editing = false"> Cancel </SubformButton>
       </template>
-      <SubformButton v-if="!editing && !adding" @click="editing = true">
+      <!-- <SubformButton v-if="!editing && !adding" @click="editing = true">
         Edit
-      </SubformButton>
+      </SubformButton> -->
     </div>
   </div>
 </template>

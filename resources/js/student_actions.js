@@ -8,6 +8,5 @@ export const studentActions = [
     label: 'Add parent',
     name: 'add_as_parent_request.form',
     href: route('add_as_parent_request.form'),
-
   },
-]
+];

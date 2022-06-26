@@ -18,21 +18,21 @@
           type="text"
         />
       </div>
-      <div class="mt-6">
-        <label class="ml-4 block font-semibold tracking-wide text-gray-600">
+      <div class="mt-6 px-4">
+        <label class="block font-semibold tracking-wide text-gray-600">
           Message:
         </label>
         <textarea
           @input="autoGrowTextarea"
           v-model="form.message"
           rows="2"
-          class="sm mt-1 ml-4 block w-11/12 rounded-md border border-gray-300 text-xs shadow-sm focus:border-indigo-400 focus:ring-indigo-400 sm:text-sm"
+          class="sm mt-1 block w-11/12 rounded-md border border-gray-300 text-xs shadow-sm focus:border-indigo-400 focus:ring-indigo-400 sm:text-sm"
         ></textarea>
         <FormValidationErrors :errors="form.errors" />
         <div class="mt-4 flex justify-center">
           <button
             @click="store()"
-            class="flex w-2/3 items-center justify-center gap-2 rounded-md bg-purple-400 p-1 text-lg font-semibold tracking-wide text-white shadow-sm hover:bg-purple-500"
+            class="flex w-5/6 items-center justify-center gap-2 rounded-md bg-purple-400 p-1 text-lg font-semibold tracking-wide text-white shadow-sm hover:bg-purple-500"
           >
             <PlusCircleIcon class="h-6 w-6" />
             Add

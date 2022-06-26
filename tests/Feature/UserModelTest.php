@@ -17,6 +17,7 @@ use App\Models\ClassTeacher;
 use App\Models\Subject;
 use App\Models\Term;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class UserModelTest extends TestCase
 {
@@ -74,20 +75,50 @@ class UserModelTest extends TestCase
     public function a_teacher_has_many_class_teacher_pivot_models()
     {
         $teacher = User::factory()->create(['default_user_type' => 'teacher']);
-        $classTeacher = ClassTeacher::factory()->create(['teacher_id' => $teacher->id]);
+        $classTeacher = ClassTeacher::factory()->create([
+            'teacher_id' => $teacher->id,
+        ]);
 
-        $this->assertInstanceOf('App\Models\ClassTeacher', $teacher->classTeacherPivot->first());
-        $this->assertEquals($classTeacher->fresh(), $teacher->classTeacherPivot->first());
+        $this->assertInstanceOf(
+            'App\Models\ClassTeacher',
+            $teacher->classTeacherPivot->first(),
+        );
+        $this->assertEquals(
+            $classTeacher->fresh(),
+            $teacher->classTeacherPivot->first(),
+        );
     }
 
     /** @test */
     public function a_student_has_many_class_student_pivot_models()
     {
         $student = User::factory()->create(['default_user_type' => 'student']);
-        $classStudent = ClassStudent::factory()->create(['student_id' => $student->id]);
+        $classStudent = ClassStudent::factory()->create([
+            'student_id' => $student->id,
+        ]);
 
-        $this->assertInstanceOf('App\Models\ClassStudent', $student->classStudentPivot->first());
-        $this->assertEquals($classStudent->fresh(), $student->classStudentPivot->first());
+        $this->assertInstanceOf(
+            'App\Models\ClassStudent',
+            $student->classStudentPivot->first(),
+        );
+        $this->assertEquals(
+            $classStudent->fresh(),
+            $student->classStudentPivot->first(),
+        );
+    }
+
+    /** @test */
+    public function a_user_knows_if_it_is_the_authenticated_user()
+    {
+        /** @var \Illuminate\Contracts\Auth\Authenticatable */
+        $userToAuthenticate = User::factory()->create();
+
+        Auth::login($userToAuthenticate);
+
+        $otherUser = User::factory()->create();
+
+        $this->assertFalse($otherUser->is_this_user_the_auth_user);
+        $this->assertTrue($userToAuthenticate->is_this_user_the_auth_user);
     }
 
     /** @test */

@@ -93,7 +93,6 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function isThisUserTheAuthUser(): Attribute
     {
-        //TODO test
         return Attribute::make(
             get: function () {
                 if (Auth::check()) {

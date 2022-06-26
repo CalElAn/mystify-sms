@@ -22,7 +22,7 @@
       <option :value="item.id" v-for="item in classes" :key="item">{{ item.name_and_suffix }}</option>
     </select>
     <select
-      :disabled="!adding"
+      disabled
       class="custom-select w-full"
       v-model="form.academic_year_id"
     >

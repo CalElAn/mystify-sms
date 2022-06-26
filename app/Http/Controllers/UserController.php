@@ -97,8 +97,7 @@ class UserController extends Controller
 
     public function removeChildrenForm(Request $request)
     {
-        //TODO authorize
-        //TODO test
+        $this->authorize('performParentActions', User::class);
 
         return Inertia::render('RemoveChildrenForm', [
             'children' => $request->user()->children,
@@ -107,8 +106,9 @@ class UserController extends Controller
 
     public function deleteChild(ParentStudent $parentStudent)
     {
-        //TODO authorize
-        //TODO test
+        //i feel its not necessary to create a whole policy for ParentStudent just to authorize that
+        //user id is equal to parent id
+        $this->authorize('performParentActions', User::class);
 
         $parentStudent->delete();
 

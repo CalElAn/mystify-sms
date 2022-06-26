@@ -168,7 +168,7 @@ import {
   ArchiveIcon,
 } from '@heroicons/vue/outline';
 import TimelineCard from '@/Components/TimelineCard.vue';
-import NotificationsCard from '@/Components/NotificationsCard.vue';
+import NotificationsCard from '@/Components/Notifications/Card.vue';
 import ActionButtonAndModal from '@/Components/ActionButtonAndModal.vue';
 import { headteacherActions } from '@/headteacher_actions.js';
 import { defaultDashboardProps } from '@/default_dashboard_props.js';

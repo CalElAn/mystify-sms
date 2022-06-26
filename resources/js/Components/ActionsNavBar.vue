@@ -10,7 +10,7 @@
           { 'rounded-r-lg pr-1.5': last(actions) === item },
         ]"
       >
-        <a
+        <Link
           :key="index"
           :href="item.href"
           :class="[
@@ -22,7 +22,7 @@
           class="inline-block w-full py-4 px-6 hover:bg-gray-50 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-300"
         >
           {{ item.label }}
-        </a>
+        </Link>
       </li>
     </ul>
   </nav>

@@ -42,12 +42,13 @@ const props = defineProps({
   classTeacherPivotData: Array,
   classes: Array,
   academicYears: Array,
+  defaultAcademicYear: Object,
 });
 const classTeacherData = props.classTeacherPivotData;
 const newClassTeacher = {
   adding: true,
   class_id: '',
-  academic_year_id: '',
+  academic_year_id: props.defaultAcademicYear.id,
 };
 const shouldAllowAdd = ref(true);
 

@@ -23,7 +23,7 @@ class TermControllerTest extends TestCase
         $this->actingAs(
             User::where('default_user_type', '<>', 'headteacher')->first(),
         )
-            ->get(route('classes.form'))
+            ->get(route('terms.form'))
             ->assertForbidden();
 
         $this->actingAs(

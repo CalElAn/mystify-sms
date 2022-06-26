@@ -35,6 +35,47 @@ class ClassStudentControllerTest extends TestCase
     }
 
     /** @test */
+    public function the_join_class_form_can_be_viewed()
+    {
+        //a user who is not a student cannot view the form
+        $this->actingAs(User::where('user_type', '<>', 'student')->first())
+            ->get(route('class_student.form'))
+            ->assertForbidden();
+
+        $this->actingAs(User::where('user_type', 'student')->first())
+            ->get(route('class_student.join_class.form'))
+            ->assertInertia(
+                fn(Assert $page) => $page
+                    ->component('ClassStudent/JoinClass/Form')
+                    ->hasAll(
+                        'classStudentPivotData',
+                        'classes',
+                        'academicYears',
+                        'defaultAcademicYear',
+                    ),
+            );
+    }
+
+    /** @test */
+    public function a_student_can_join_a_class()
+    {
+        $student = User::where('user_type', 'student')->first();
+
+        $this->actingAs($student)->post(
+            route('class_student.store', [
+                'class_id' => 1,
+                'academic_year_id' => 1,
+            ]),
+        );
+
+        $this->assertDatabaseHas('class_student', [
+                'student_id' => $student->id,
+                'class_id' => 1,
+                'academic_year_id' => 1,
+        ]);
+    }
+
+    /** @test */
     public function students_can_be_gotten_from_class_model_and_academic_year()
     {
         $this->actingAs(User::where('default_user_type', 'teacher')->first())
@@ -76,7 +117,7 @@ class ClassStudentControllerTest extends TestCase
             ->assertRedirect();
 
         $this->assertDatabaseMissing('class_student', [
-            'id' => $classStudentId
+            'id' => $classStudentId,
         ]);
     }
 }

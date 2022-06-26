@@ -12,7 +12,7 @@ class AddAsParentRequest extends Notification
 {
     use Queueable;
 
-    private $child;
+    public $child;
 
     /**
      * Create a new notification instance.

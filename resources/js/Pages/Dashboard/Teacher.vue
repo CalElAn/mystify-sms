@@ -94,7 +94,7 @@ import { defaultDashboardProps } from '@/default_dashboard_props.js';
 import { teacherActions } from '@/teacher_actions.js';
 import ActionButtonAndModal from '@/Components/ActionButtonAndModal.vue';
 import TimelineCard from '@/Components/TimelineCard.vue';
-import NotificationsCard from '@/Components/NotificationsCard.vue';
+import NotificationsCard from '@/Components/Notifications/Card.vue';
 import ClassPanel from '@/Components/Classes/Panel.vue';
 import InfoCard from '@/Components/InfoCard.vue';
 

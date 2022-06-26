@@ -10,7 +10,6 @@ class NoticeBoardController extends Controller
 {
     public function index(Request $request)
     {
-        //TODO test
         $school = $request->user()->school;
         $term = $school->getTerm($request);
 
@@ -18,6 +17,7 @@ class NoticeBoardController extends Controller
             'noticeBoardMessages' => $school->getNoticeBoardMessages($term->id),
         ]);
     }
+    
     /**
      * Show the form for creating a new resource.
      *

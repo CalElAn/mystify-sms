@@ -20,7 +20,7 @@
       </option>
     </select>
     <select
-      :disabled="!adding"
+      disabled
       class="custom-select w-full"
       v-model="form.academic_year_id"
     >

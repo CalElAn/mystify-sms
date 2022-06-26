@@ -51,7 +51,7 @@
 import { defaultDashboardProps } from '@/default_dashboard_props.js';
 import { parentActions } from '@/parent_actions.js';
 import ActionButtonAndModal from '@/Components/ActionButtonAndModal.vue';
-import NotificationsCard from '@/Components/NotificationsCard.vue';
+import NotificationsCard from '@/Components/Notifications/Card.vue';
 import InfoCard from '@/Components/InfoCard.vue';
 
 defineProps({

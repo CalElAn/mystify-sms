@@ -8,7 +8,7 @@
     ]"
   >
     <input
-      :readonly="!editing && !adding"
+      readonly
       placeholder="name, example 'Class 1'"
       class="custom-input w-full read-only:bg-slate-100"
       type="text"
@@ -31,7 +31,7 @@
       </template>
       <template v-if="editing">
         <SubformButton @click="update()"> Save </SubformButton>
-        <SubformButton @click="destroy()"> Delete </SubformButton>
+        <!-- <SubformButton @click="destroy()"> Delete </SubformButton> -->
         <SubformButton @click="editing = false"> Cancel </SubformButton>
       </template>
       <SubformButton v-if="!editing && !adding" @click="editing = true">

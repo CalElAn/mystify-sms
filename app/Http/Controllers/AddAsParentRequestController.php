@@ -13,16 +13,14 @@ class AddAsParentRequestController extends Controller
 {
     public function form()
     {
-        //TODO authorize
-        //TODO test
+        $this->authorize('performStudentActions', User::class);
 
         return Inertia::render('AddAsParentRequestForm');
     }
 
     public function sendRequest(Request $request)
     {
-        //TODO authorize
-        //TODO test
+        $this->authorize('performStudentActions', User::class);
 
         $request->validate([
             'email' => [
@@ -30,8 +28,23 @@ class AddAsParentRequestController extends Controller
                 Rule::exists('users')->where(
                     fn($query) => $query->where([
                         ['email', $request->email],
+                        ['default_user_type', '<>', 'student'],
                     ]),
                 ),
+                function ($attribute, $value, $fail) use ($request) {
+                    if (
+                        $request
+                            ->user()
+                            ->parents->contains(
+                                User::where('email', $request->email)->first(),
+                            )
+                    ) {
+                        $fail(
+                            $value .
+                                ' has already been added as one of your parents',
+                        );
+                    }
+                },
             ],
         ]);
 
@@ -44,22 +57,25 @@ class AddAsParentRequestController extends Controller
 
     public function acceptRequest(Request $request)
     {
-        //TODO test
         $user = $request->user();
 
         if ($user->children->contains(User::find($request->childId))) {
-            return $this->declineRequest($request);
+            return $this->deleteRequest($request);
         }
 
         $user->children()->attach($request->childId);
 
-        return back();
+        return $this->deleteRequest($request);
     }
 
     public function declineRequest(Request $request)
     {
-        //TODO test
-        DatabaseNotification::find($request->notificationId)->delete();
+        return $this->deleteRequest($request);
+    }
+
+    public function deleteRequest(Request $request)
+    {
+        DatabaseNotification::find($request->notificationId)?->delete();
 
         return back();
     }

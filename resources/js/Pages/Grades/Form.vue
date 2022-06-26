@@ -114,7 +114,7 @@
                   />
                 </td>
                 <td class="p-2">
-                  <button class="p-2" @click="clearMarks(item)">
+                  <button  v-if="academicYearId === defaultAcademicYear.id" class="p-2" @click="clearMarks(item)">
                     <TrashIcon class="h-5 w-5 text-red-500" />
                   </button>
                 </td>
@@ -135,6 +135,7 @@
           </table>
         </div>
         <button
+          v-if="academicYearId === defaultAcademicYear.id"
           @click="save()"
           class="flex w-5/6 items-center justify-center gap-2 rounded-lg bg-purple-400 p-2 text-lg font-semibold tracking-wide text-white shadow-sm hover:bg-purple-500"
         >
@@ -162,6 +163,7 @@ const props = defineProps({
   subjects: Array,
   classes: Array,
   academicYears: Array,
+  defaultAcademicYear: Object,
 });
 
 const subjectName = ref('');
@@ -221,7 +223,7 @@ function clearMarks(item) {
 }
 
 function save() {
-    //TODO notify
+  //TODO notify
   const grades = studentsWithGrades.value.map((item) => ({
     teacher_id: authUser.value.id,
     class_mark: item.nonEmptyGrades.class_mark,

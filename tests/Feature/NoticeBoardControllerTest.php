@@ -16,6 +16,18 @@ class NoticeBoardControllerTest extends TestCase
     protected $seed = true;
 
     /** @test */
+    public function the_notice_board_index_can_be_viewed()
+    {
+        $this->actingAs(User::all()->random())
+            ->get(route('notice_board.index'))
+            ->assertInertia(
+                fn(Assert $page) => $page
+                    ->component('NoticeBoard/Index')
+                    ->hasAll('noticeBoardMessages'),
+            );
+    }
+
+    /** @test */
     public function the_form_can_be_viewed()
     {
         //a user who is not a headteacher cannot view the form

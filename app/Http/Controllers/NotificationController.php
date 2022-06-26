@@ -9,8 +9,6 @@ class NotificationController extends Controller
 {
     public function index(Request $request)
     {
-        //TODO test
-
         return Inertia::render('Notifications/Index', [
             'notifications' => $request->user()->notifications,
         ]);

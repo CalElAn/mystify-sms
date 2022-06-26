@@ -204,15 +204,19 @@
     </div>
   </section>
   <hr class="my-2" />
-  <section v-if="user.is_this_user_the_auth_user" class="flex gap-6">
+  <section class="flex gap-6">
     <!-- Notice board -->
     <TimelineCard
       :title="'Notice board'"
       :messages="noticeBoardMessages"
-      class="h-96 w-1/2"
+      class="h-96"
+      :class="[user.is_this_user_the_auth_user ? 'w-1/2' : 'w-full']"
     />
     <!-- Notifications -->
-    <NotificationsCard class="h-96 w-1/2" />
+    <NotificationsCard
+      v-if="user.is_this_user_the_auth_user"
+      class="h-96 w-1/2"
+    />
   </section>
   <!-- MODALS -->
   <!-- Modal containing list of parents -->
@@ -331,7 +335,7 @@ import { Chart, registerables } from 'chart.js';
 import { TrendingUpIcon, ChevronDownIcon } from '@heroicons/vue/solid';
 
 import TimelineCard from '@/Components/TimelineCard.vue';
-import NotificationsCard from '@/Components/NotificationsCard.vue';
+import NotificationsCard from '@/Components/Notifications/Card.vue';
 import TeacherCardModal from '@/Components/Users/TeacherCardModal.vue';
 import UserCard from '@/Components/Users/Card.vue';
 import ActionButtonAndModal from '@/Components/ActionButtonAndModal.vue';

@@ -29,6 +29,7 @@ class ClassStudentController extends Controller
                 ->academicYears()
                 ->orderBy('name', 'desc')
                 ->get(),
+            'defaultAcademicYear' => $user->school->getDefaultAcademicYear(),
         ]);
     }
 
@@ -45,8 +46,8 @@ class ClassStudentController extends Controller
 
     public function joinClassForm(Request $request)
     {
-        //TODO test
-        //TODO authorize
+        $this->authorize('viewJoinClassForm', ClassStudent::class);
+
         $user = $request->user();
 
         return Inertia::render('ClassStudent/JoinClass/Form', [
@@ -64,6 +65,7 @@ class ClassStudentController extends Controller
                 ->academicYears()
                 ->orderBy('name', 'desc')
                 ->get(),
+            'defaultAcademicYear' => $user->school->getDefaultAcademicYear(),
         ]);
     }
 
@@ -75,8 +77,7 @@ class ClassStudentController extends Controller
      */
     public function store(Request $request)
     {
-        //TODO test
-        //TODO authorize
+        $this->authorize('viewJoinClassForm', ClassStudent::class);
 
         $validator = Validator::make(
             $request->all(),

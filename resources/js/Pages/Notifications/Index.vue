@@ -3,5 +3,5 @@
 </template>
 
 <script setup>
-import NotificationsCard from '@/Components/NotificationsCard.vue';
+import NotificationsCard from '@/Components/Notifications/Card.vue';
 </script>

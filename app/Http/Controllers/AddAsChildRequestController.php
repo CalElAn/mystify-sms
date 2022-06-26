@@ -13,17 +13,13 @@ class AddAsChildRequestController extends Controller
 {
     public function form()
     {
-        //TODO authorize
-        //TODO test
+        $this->authorize('performParentActions', User::class);
 
         return Inertia::render('AddAsChildRequestForm');
     }
 
     public function sendRequest(Request $request)
     {
-        //TODO authorize
-        //TODO test
-
         $request->validate([
             'email' => [
                 'required',
@@ -33,6 +29,17 @@ class AddAsChildRequestController extends Controller
                         ['email', $request->email],
                     ]),
                 ),
+                function ($attribute, $value, $fail) use ($request) {
+                    if (
+                        $request
+                            ->user()
+                            ->children->contains(
+                                User::where('email', $request->email)->first(),
+                            )
+                    ) {
+                        $fail($value . ' has already been added as one of your children');
+                    }
+                },
             ],
         ]);
 
@@ -45,22 +52,25 @@ class AddAsChildRequestController extends Controller
 
     public function acceptRequest(Request $request)
     {
-        //TODO test
         $user = $request->user();
 
         if ($user->parents->contains(User::find($request->parentId))) {
-            return $this->declineRequest($request);
+            return $this->deleteRequest($request);
         }
 
         $user->parents()->attach($request->parentId);
 
-        return back();
+        return $this->deleteRequest($request);
     }
 
     public function declineRequest(Request $request)
     {
-        //TODO test
-        DatabaseNotification::find($request->notificationId)->delete();
+        return $this->deleteRequest($request);
+    }
+
+    public function deleteRequest(Request $request)
+    {
+        DatabaseNotification::find($request->notificationId)?->delete();
 
         return back();
     }

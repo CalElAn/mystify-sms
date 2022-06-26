@@ -166,7 +166,7 @@ class DashboardControllerTest extends TestCase
             ->assertOk();
 
         /** @var \Illuminate\Contracts\Auth\Authenticatable */
-        $unauthorizedUser = User::factory()->create(['school_id' => 1]);
+        $unauthorizedUser = User::factory()->create(['school_id' => 1, 'default_user_type' => 'parent']);
 
         //No one apart from the particluar parent can view his dashboard
         $this->actingAs($unauthorizedUser)

@@ -75,6 +75,11 @@ class School extends Model
             ->get();
     }
 
+    public function getDefaultAcademicYear(): AcademicYear
+    {
+        return $this->getDefaultTerm()->academicYear;
+    }
+
     public function getDefaultTerm(): Term
     {
         return $this->getAcademicYearsWithTerms()

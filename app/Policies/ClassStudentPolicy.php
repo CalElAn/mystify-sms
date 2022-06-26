@@ -15,6 +15,11 @@ class ClassStudentPolicy
         return $authUser->user_type === 'teacher';
     }
 
+    public function viewJoinClassForm(User $authUser)
+    {
+        return $authUser->default_user_type === 'student';
+    }
+
     /**
      * Determine whether the user can create models.
      *

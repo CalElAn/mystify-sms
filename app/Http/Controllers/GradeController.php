@@ -29,6 +29,7 @@ class GradeController extends Controller
                 ->academicYears()
                 ->orderBy('name', 'desc')
                 ->get(),
+            'defaultAcademicYear' => $user->school->getDefaultAcademicYear(),
         ]);
     }
 

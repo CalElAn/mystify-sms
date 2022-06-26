@@ -41,12 +41,13 @@ const props = defineProps({
   classStudentPivotData: Array,
   classes: Array,
   academicYears: Array,
+  defaultAcademicYear: Object,
 });
 const classStudentData = props.classStudentPivotData;
 const newClassStudent = {
   adding: true,
   class_id: '',
-  academic_year_id: '',
+  academic_year_id: props.defaultAcademicYear.id,
 };
 const shouldAllowAdd = ref(true);
 

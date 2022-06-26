@@ -52,17 +52,6 @@
               ]"
               class="rounded-t-xl py-2 px-4 tracking-wide"
             >
-              Requests to join class
-            </button>
-          </li>
-          <li>
-            <button
-              @click="selectedTab = 3"
-              :class="[
-                selectedTab === 3 ? activeTabClasses : 'hover:bg-gray-50',
-              ]"
-              class="rounded-t-xl py-2 px-4 tracking-wide"
-            >
               Remove students from class
             </button>
           </li>
@@ -80,7 +69,7 @@
       </section>
       <section
         class="mt-4 flex flex-col items-center justify-center gap-1"
-        v-if="selectedTab === 3 && classId && academicYearId"
+        v-if="selectedTab === 2 && classId && academicYearId"
       >
         <div
           v-for="student in students"
@@ -101,7 +90,7 @@
             </Link>
           </div>
           <button @click="destroy(student.pivot.id)" class="p-2">
-            <TrashIcon class="h-5 w-5 text-red-500" />
+            <TrashIcon v-if="academicYearId === defaultAcademicYear.id" class="h-5 w-5 text-red-500" />
           </button>
         </div>
       </section>
@@ -122,6 +111,7 @@ const props = defineProps({
   classStudentData: Array,
   classes: Array,
   academicYears: Array,
+  defaultAcademicYear: Object,
 });
 
 const activeTabClasses = ref('text-blue-600 bg-gray-100 font-semibold');

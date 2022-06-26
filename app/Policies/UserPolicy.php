@@ -45,7 +45,6 @@ class UserPolicy
 
     public function viewParentDashboard(User $authUser, User $parent)
     {
-        //TODO update test
         if ($authUser->can('viewParents', User::class)) return true;
 
         if ($authUser->parents->contains($parent)) {
@@ -67,8 +66,8 @@ class UserPolicy
     public function viewParents(User $authUser)
     {
         if (
-            $authUser->user_type === 'parent' ||
-            $authUser->user_type === 'student'
+            $authUser->default_user_type === 'parent' ||
+            $authUser->default_user_type === 'student'
         ) {
             return false;
         }
@@ -104,5 +103,23 @@ class UserPolicy
         }
 
         return true;
+    }
+
+    public function performParentActions(User $authUser)
+    {
+        if ($authUser->user_type === 'parent') {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function performStudentActions(User $authUser)
+    {
+        if ($authUser->default_user_type === 'student') {
+            return true;
+        }
+
+        return false;
     }
 }
