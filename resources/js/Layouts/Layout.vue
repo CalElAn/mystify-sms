@@ -405,6 +405,7 @@ import {
 } from '@heroicons/vue/outline';
 import { ChevronDownIcon } from '@heroicons/vue/solid';
 import { LightningBoltIcon } from '@heroicons/vue/outline';
+import { Inertia } from '@inertiajs/inertia';
 
 import DotIndicator from '@/Components/DotIndicator.vue';
 import { changeTerm } from '@/helpers';
@@ -421,18 +422,34 @@ const shouldOpenModalContainingListOfUserTypes = ref(false);
 const authUser = computed(() => usePage().props.value.auth.user);
 // in the tempalate you can access inertia page props directly by $page.props.auth.user
 
+function handleNewNotifications(notification) {
+  isThereANewNotification.value = true;
+  notifications.value.unshift({
+    ...notification,
+    data: notification,
+  });
+  // console.log(notification);
+}
+
+// notifications.value = computed(
+//   () => usePage().props.value.notifications
+// ).value;
+
 onMounted(() => {
-  if (['student', 'parent'].includes(authUser.value.user_type)) {
-    window.Echo.private(`App.Models.User.${authUser.value.id}`).notification(
-      (notification) => {
-        isThereANewNotification.value = true;
-        notifications.value.unshift({
-          ...notification,
-          data: notification,
-        });
-        console.log(notification);
-      }
-    );
+  // if (['student', 'parent'].includes(authUser.value.user_type)) {
+  window.Echo.private(`App.Models.User.${authUser.value.id}`).notification(
+    (notification) => {
+      handleNewNotifications(notification);
+    }
+  );
+  // }
+
+  if (['headteacher', 'administrator'].includes(authUser.value.user_type)) {
+    window.Echo.private(
+      `App.Models.School.${authUser.value.school_id}`
+    ).notification((notification) => {
+      handleNewNotifications(notification);
+    });
   }
 });
 </script>

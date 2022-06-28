@@ -53,7 +53,6 @@ const submit = () => {
         >
           <option value="male">male</option>
           <option value="female">female</option>
-          <option value="other">other</option>
         </select>
       </div>
       <div class="mt-4">
@@ -79,16 +78,17 @@ const submit = () => {
         />
       </div>
       <div class="mt-4">
-        <BreezeLabel for="default_user_type" value="Account type" />
+        <BreezeLabel for="default_user_type" value="You are a/an" />
         <select
           id="default_user_type"
           class="custom-select shadow-sm mt-1 block w-full"
           v-model="form.default_user_type"
           required
         >
-          <option value="student">student</option>
-          <option value="parent">parent</option>
+          <option value="administrator">administrator</option>
           <option value="teacher">teacher</option>
+          <option value="student">student</option>
+          <option value="parent">none of the above</option>
         </select>
       </div>
       <div class="mt-4">

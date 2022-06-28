@@ -14,6 +14,7 @@ use App\Http\Controllers\NoticeBoardController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AddAsChildRequestController;
 use App\Http\Controllers\AddAsParentRequestController;
+use App\Http\Controllers\JoinSchoolRequestController;
 use App\Http\Controllers\NotificationController;
 
 /*
@@ -26,19 +27,25 @@ use App\Http\Controllers\NotificationController;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
 Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
+    return redirect()->route('login');
+    // return Inertia::render('Welcome', [
+    //     'canLogin' => Route::has('login'),
+    //     'canRegister' => Route::has('register'),
+    //     'laravelVersion' => Application::VERSION,
+    //     'phpVersion' => PHP_VERSION,
+    // ]);
 });
 
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+Route::get('/join-school-request/form', [JoinSchoolRequestController::class, 'form'])->name('join_school_request.form');
+Route::post('/join-school-request/send-request', [JoinSchoolRequestController::class, 'sendRequest'])->name('join_school_request.send_request');
 
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::post('/join-school-request/accept-request', [JoinSchoolRequestController::class, 'acceptRequest'])->name('join_school_request.accept_request');
+    Route::post('/join-school-request/decline-request', [JoinSchoolRequestController::class, 'declineRequest'])->name('join_school_request.decline_request');
+
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    
     Route::get('/dashboard/academic-years/form', [AcademicYearController::class, 'form'])->name('academic_years.form');
     Route::post('/academic-years', [AcademicYearController::class, 'store'])->name('academic_years.store');
     Route::patch('/academic-years/{academicYear}', [AcademicYearController::class, 'update'])->name('academic_years.update');
@@ -92,6 +99,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/add-as-parent-request/decline-request', [AddAsParentRequestController::class, 'declineRequest'])->name('add_as_parent_request.decline_request');
 
     Route::get('/dashboard/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::get('/dashboard/view-school-notifications', [NotificationController::class, 'viewSchoolNotifications'])->name('notifications.view_school_notifications');
 
     Route::get('/profile', function() {return;})->name('users.show');
 });

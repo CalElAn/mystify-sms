@@ -15,9 +15,9 @@ export const headteacherActions = [
     href: route('classes.form'),
   },
   {
-    label: 'Review users',
-    name: '',
-    href: '#',
+    label: 'Review requests to join school',
+    name: 'notifications.view_school_notifications',
+    href: route('notifications.view_school_notifications'),
   },
   // {
   //   label: 'Add school fees',

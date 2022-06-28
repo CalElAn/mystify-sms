@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,10 +18,11 @@ class NotificationFactory extends Factory
     public function definition()
     {
         return [
-            // 'type' => 'App\Notifications\CallBackRequested', 
-            // 'notifiable_type' => 'App\Models\User',
-            // 'notifiable_id' => 2,
-            // 'data' => json_encode(['message' => $this->faker->paragraphs(5, true)]),
+            'type' => 'App\Notifications\JoinSchoolRequest', 
+            'notifiable_type' => 'App\Models\School',
+            'notifiable_id' => 1,
+            'data' => json_encode(['user' => User::all()->random()]),
         ];
+
     }
 }

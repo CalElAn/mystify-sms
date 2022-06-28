@@ -19,9 +19,6 @@ class DashboardController extends Controller
     {
         /** @var \App\Models\User */
         $user = Auth::user();
-        // $user = User::where('user_type', 'student')->first();
-        // $user = User::where('user_type', 'teacher')->first();
-        // $user = User::where('user_type', 'parent')->first();
 
         if ($request->userId) {
             /** @var \App\Models\User */
@@ -31,16 +28,20 @@ class DashboardController extends Controller
         /** @var \App\Models\School */
         $school = $user->school;
 
-        $academicYearsWithTerms = $school->getAcademicYearsWithTerms();
+        if ($request->user()->user_type !== 'parent' && is_null($school)) {
+            return redirect()->route('join_school_request.form');
+        }
 
-        $term = $school->getTerm($request);
+        $academicYearsWithTerms = $school?->getAcademicYearsWithTerms();
+
+        $term = $school?->getTerm($request);
 
         $defaultProps = [
             'user' => $user,
             'academicYearsWithTerms' => $academicYearsWithTerms,
             'term' => $term,
-            'noticeBoardMessages' => $school->getNoticeBoardMessages($term->id),
-            'notifications' => Auth::user()->notifications,
+            'noticeBoardMessages' => $school?->getNoticeBoardMessages($term->id),
+            'notifications' => $request->user()->getNotifications(),
         ];
 
         switch ($user->user_type) {

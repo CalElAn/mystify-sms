@@ -45,7 +45,9 @@ class UserPolicy
 
     public function viewParentDashboard(User $authUser, User $parent)
     {
-        if ($authUser->can('viewParents', User::class)) return true;
+        if ($authUser->can('viewParents', User::class)) {
+            return true;
+        }
 
         if ($authUser->parents->contains($parent)) {
             return true;
@@ -66,7 +68,7 @@ class UserPolicy
     public function viewParents(User $authUser)
     {
         if (
-            $authUser->default_user_type === 'parent' ||
+            $authUser->user_type === 'parent' ||
             $authUser->default_user_type === 'student'
         ) {
             return false;
@@ -117,6 +119,15 @@ class UserPolicy
     public function performStudentActions(User $authUser)
     {
         if ($authUser->default_user_type === 'student') {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function performAdministratorActions(User $authUser)
+    {
+        if (in_array($authUser->user_type, ['headteacher', 'administrator'])) {
             return true;
         }
 

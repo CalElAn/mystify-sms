@@ -22,6 +22,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var array<int, string>
      */
     protected $fillable = [
+        'school_id',
         'name',
         'email',
         'password',
@@ -101,6 +102,15 @@ class User extends Authenticatable implements MustVerifyEmail
                 return false;
             },
         );
+    }
+
+    public function getNotifications()
+    {
+        if (in_array($this->user_type, ['headteacher', 'administrator'])) {
+            return $this->notifications->concat($this->school->notifications);
+        }
+
+        return $this->notifications;
     }
 
     public function getPropsForHeadteacherDashboard(Term $term): array
@@ -551,7 +561,7 @@ class User extends Authenticatable implements MustVerifyEmail
             'parent_id',
             'student_id',
         )
-        ->withPivot('id')
-        ->withTimestamps();
+            ->withPivot('id')
+            ->withTimestamps();
     }
 }

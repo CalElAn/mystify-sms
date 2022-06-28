@@ -19,9 +19,15 @@ class DashboardControllerTest extends TestCase
     public function the_dashboard_can_be_viewed()
     {
         // $this->withoutExceptionHandling();
-        // $this->seed();
 
         $this->get('/dashboard')->assertRedirect();
+
+        $user = User::where('user_type', '<>', 'parent')->first();
+        $user->update(['school_id' => null]);
+
+        $this->actingAs($user)
+            ->get('/dashboard')
+            ->assertRedirect(route('join_school_request.form'));
 
         /** @var \Illuminate\Contracts\Auth\Authenticatable */
         $user = User::factory()->create(['email_verified_at' => null]);
@@ -166,9 +172,9 @@ class DashboardControllerTest extends TestCase
             ->assertOk();
 
         /** @var \Illuminate\Contracts\Auth\Authenticatable */
-        $unauthorizedUser = User::factory()->create(['school_id' => 1, 'default_user_type' => 'parent']);
+        $unauthorizedUser = User::factory()->create(['school_id' => 1, 'user_type' => 'parent']);
 
-        //No one apart from the particluar parent can view his dashboard
+        //No parent apart from the particluar parent can view his dashboard
         $this->actingAs($unauthorizedUser)
             ->get('dashboard?userId=' . $parent->id)
             ->assertForbidden();

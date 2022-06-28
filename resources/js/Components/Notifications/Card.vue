@@ -13,10 +13,10 @@
     </div>
     <div class="flex flex-col overflow-y-auto">
       <TransitionGroup name="list">
-        <template v-for="item in notifications" :key="item">
+        <template v-for="item in notifications" :key="item.id">
           <div
             v-if="item.type.includes('Request')"
-            class="flex flex-col justify-start p-4 odd:bg-white even:bg-gray-50"
+            class="odd:bg-white even:bg-gray-50"
           >
             <RequestNotification :notification="item" />
           </div>
@@ -30,7 +30,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted } from 'vue';
+import { computed } from 'vue';
 import { usePage } from '@inertiajs/inertia-vue3';
 
 import RequestNotification from '@/Components/Notifications/RequestNotification.vue';
@@ -39,26 +39,7 @@ import { useNotifications } from '@/notifications.js';
 
 const { isThereANewNotification, notifications } = useNotifications();
 
-const authUser = computed(() => usePage().props.value.auth.user);
-
-onMounted(() => {
-  notifications.value = computed(
-    () => usePage().props.value.notifications
-  ).value;
-
-  // if (['student', 'parent'].includes(authUser.value.user_type)) {
-  //   window.Echo.private(`App.Models.User.${authUser.value.id}`).notification(
-  //     (notification) => {
-  //       isThereANewNotification.value = true;
-  //       notifications.value.unshift({
-  //         ...notification,
-  //         data: notification,
-  //       });
-  //       console.log(notification);
-  //     }
-  //   );
-  // }
-});
+notifications.value = computed(() => usePage().props.value.notifications).value;
 </script>
 
 <style scoped>

@@ -95,7 +95,7 @@
     <TimelineCard
       :title="'Notice board'"
       :messages="props.noticeBoardMessages"
-      class="w-2/5"
+      class="h-96 w-1/2"
     />
     <!-- Notifications -->
     <NotificationsCard class="h-96 w-1/2" />

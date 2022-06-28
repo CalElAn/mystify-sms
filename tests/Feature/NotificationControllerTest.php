@@ -12,16 +12,28 @@ class NotificationControllerTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected $seed = true;
+
     /** @test */
     public function the_notification_index_can_be_viewed()
     {
-        $this->seed();
-
         $this->actingAs(User::factory()->create())
             ->get(route('notifications.index'))
             ->assertInertia(
                 fn(Assert $page) => $page
                     ->component('Notifications/Index')
+                    ->hasAll('notifications'),
+            );
+    }
+
+    /** @test */
+    public function the_school_notification_index_can_be_viewed()
+    {
+        $this->actingAs(User::where('default_user_type', 'headteacher')->first())
+            ->get(route('notifications.view_school_notifications'))
+            ->assertInertia(
+                fn(Assert $page) => $page
+                    ->component('Notifications/SchoolNotifications')
                     ->hasAll('notifications'),
             );
     }
