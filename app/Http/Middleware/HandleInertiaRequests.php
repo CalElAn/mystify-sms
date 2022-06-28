@@ -35,13 +35,12 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request)
     {
-        //TODO test?
-
         return array_merge(parent::share($request), [
             'auth' => [
                 'user' => $request->user()?->append(['permissions', 'user_types']),
             ],
             'school' => $request->user()?->school,
+            'csrf_token' => csrf_token(),
             'ziggy' => function () {
                 return (new Ziggy())->toArray();
             },

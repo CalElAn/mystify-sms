@@ -149,12 +149,7 @@
           <div class="flex gap-1.5">
             <div class="flex flex-col">
               <div class="text-lg font-semibold text-fuchsia-600">
-                <Link
-                  class="hover:underline"
-                  :href="route('users.show', { userId: authUser.id })"
-                >
-                  {{ authUser.name }}
-                </Link>
+                {{ authUser.name }}
               </div>
               <div class="text-sm">{{ authUser.user_type }}</div>
             </div>
@@ -185,7 +180,10 @@
                       </MenuItemButton>
                     </MenuItem>
                     <MenuItem as="div" v-slot="{ active }">
-                      <MenuItemButton :active="active">
+                      <MenuItemButton
+                        @click="$inertia.get(route('users.show', { user: authUser.id }))"
+                        :active="active"
+                      >
                         Profile
                       </MenuItemButton>
                     </MenuItem>
@@ -381,7 +379,7 @@
           :key="index"
           @click="
             shouldOpenModalContainingListOfUserTypes = false;
-            $inertia.patch('/users/change-user-type', { user_type: item });
+            $inertia.put(route('change_user_type', { user_type: item }));
           "
           class="list-of-buttons-in-modal relative inline-block p-2 font-semibold tracking-wide hover:text-purple-500 hover:underline"
         >

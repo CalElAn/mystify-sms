@@ -20,7 +20,7 @@ class TermFactory extends Factory
     {
         return [
             'academic_year_id' => AcademicYear::factory(),
-            'name' => $this->faker->randomNumber() . 'First term',
+            'name' => $this->faker->randomNumber() . $this->faker->randomNumber(). 'First term',
             'start_date' => '2022-2-3',
             'end_date' => '2022-6-3',
         ];

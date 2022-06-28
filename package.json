@@ -39,6 +39,16 @@
         "@headlessui/vue": "^1.5.0",
         "@heroicons/vue": "^1.0.6",
         "chart.js": "^3.7.1",
-        "vue-chart-3": "^3.1.8"
+        "filepond": "^4.30.4",
+        "filepond-plugin-file-encode": "^2.1.10",
+        "filepond-plugin-file-validate-size": "^2.2.7",
+        "filepond-plugin-file-validate-type": "^1.2.8",
+        "filepond-plugin-image-crop": "^2.0.6",
+        "filepond-plugin-image-exif-orientation": "^1.0.11",
+        "filepond-plugin-image-preview": "^4.6.11",
+        "filepond-plugin-image-resize": "^2.0.10",
+        "filepond-plugin-image-transform": "^3.8.7",
+        "vue-chart-3": "^3.1.8",
+        "vue-filepond": "^7.0.3"
     }
 }

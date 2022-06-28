@@ -2,7 +2,7 @@
   <button
     v-bind="$attrs"
     @click="shouldOpenModalContainingListOfActions = true"
-    class="inline-flex items-center justify-center gap-2 rounded-lg border border-purple-800 bg-purple-50 p-2 font-semibold tracking-wide text-purple-800 shadow-sm hover:bg-purple-100"
+    class="inline-flex items-center justify-center gap-2 rounded-lg border border-purple-800 bg-purple-50 px-2 py-1.5 font-semibold tracking-wide text-purple-800 shadow-sm hover:bg-purple-100"
   >
     <ViewListIcon class="h-5 w-5" />
     Actions

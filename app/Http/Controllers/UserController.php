@@ -8,6 +8,10 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules;
 
 class UserController extends Controller
 {
@@ -116,27 +120,6 @@ class UserController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
      * Display the specified resource.
      *
      * @param  \App\Models\User  $user
@@ -144,18 +127,9 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(User $user)
-    {
-        //
+        return Inertia::render('Users/Show', [
+            'user' => $user,
+        ]);
     }
 
     /**
@@ -167,17 +141,67 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        //
+        $this->authorize('update', $user);
+
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => [
+                'required',
+                'string',
+                'email',
+                'max:255',
+                Rule::unique('users')->ignore($user->id),
+            ],
+            'phone_number' => 'required',
+        ]);
+
+        if ($request->filepond) {
+            //input name has to be filepond because that is what is used in the "process" function in FilePond Controller
+            /** @var \Illuminate\Filesystem\Filesystem */
+            $storagePublicDisk = Storage::disk('public');
+
+            $newPath = 'profile_pictures/' . $user->id;
+
+            $storagePublicDisk->move(
+                'filepond/tmp/' . $request->filepond,
+                $newPath,
+            );
+            \Image::make($storagePublicDisk->path($newPath))
+                ->orientate()
+                ->save(null, 70);
+
+            $user->update([
+                'profile_picture_path' => $newPath,
+            ]);
+        }
+
+        $user->update([
+            'name' => $request->name,
+            'email' => $request->email,
+            'phone_number' => $request->phone_number,
+        ]);
+
+        return back();
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(User $user)
+    public function changePasswordForm(Request $request)
     {
-        //
+        return Inertia::render('Users/ChangePasswordForm');
+    }
+
+    public function changePassword(Request $request)
+    {
+        $this->authorize('update', $request->user());
+
+        $request->validate([
+            'current_password' => ['required', 'current_password'],
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+        ]);
+
+        $request->user()->update([
+            'password' => Hash::make($request->password),
+        ]);
+
+        return redirect()->route('users.show', ['user' => $request->user()]);
     }
 }

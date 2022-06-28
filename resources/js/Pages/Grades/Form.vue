@@ -91,7 +91,7 @@
                 <td class="p-2">
                   <Link
                     class="decoration-purple-600 hover:underline"
-                    :href="route('users.show', { userId: item.id })"
+                    :href="route('dashboard', { userId: item.id })"
                     >{{ item.name }}</Link
                   >
                 </td>

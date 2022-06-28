@@ -19,7 +19,7 @@ class UserFactory extends Factory
     {
         $gender = $this->faker->randomElement(['male', 'female']);
         $name = $this->faker->name($gender);
-        $profilePicturePath = 'https://ui-avatars.com/api/?size=50&rounded=true&name='.str_replace(' ', '', $name);
+        $profilePicturePath = 'https://ui-avatars.com/api/?size=50&rounded=true&name='.str_replace(' ', '+', $name);
         $userTypes = [
             'student', 
             'parent', 

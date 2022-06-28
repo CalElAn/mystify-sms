@@ -16,6 +16,7 @@ use App\Http\Controllers\AddAsChildRequestController;
 use App\Http\Controllers\AddAsParentRequestController;
 use App\Http\Controllers\JoinSchoolRequestController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\FilePondController;
 
 /*
 |--------------------------------------------------------------------------
@@ -72,8 +73,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/class-teacher', [ClassTeacherController::class, 'store'])->name('class_teacher.store');
     Route::delete('/class-teacher/{classTeacher}', [ClassTeacherController::class, 'destroy'])->name('class_teacher.destroy');
 
+    Route::get('/dashboard/users/{user}', [UserController::class, 'show'])->name('users.show');
+    Route::patch('/users/{user}', [UserController::class, 'update'])->name('users.update');
     Route::get('/users/{userType}', [UserController::class, 'index'])->name('users.index');
-    Route::patch('/users/change-user-type', [UserController::class, 'changeUserType']);
+    Route::patch('/change-user-type', [UserController::class, 'changeUserType'])->name('change_user_type');
+    Route::get('/change-password', [UserController::class, 'changePasswordForm'])->name('change_password_form');
+    Route::patch('/change-password', [UserController::class, 'changePassword'])->name('change_password');
 
     Route::get('/dashboard/remove-children/form', [UserController::class, 'removeChildrenForm'])->name('remove_children.form');
     Route::delete('/parent-student/{parentStudent}', [UserController::class, 'deleteChild'])->name('parent_student.destroy');
@@ -100,9 +105,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/dashboard/notifications', [NotificationController::class, 'index'])->name('notifications.index');
     Route::get('/dashboard/view-school-notifications', [NotificationController::class, 'viewSchoolNotifications'])->name('notifications.view_school_notifications');
-
-    Route::get('/profile', function() {return;})->name('users.show');
 });
 
+Route::controller(FilePondController::class)->group(function () {
+    Route::post('/filepond/process', 'process');
+    Route::delete('/filepond/revert', 'revert');
+
+    Route::middleware(['auth'])->group(function () {   
+        Route::get('/filepond/load/{model}/{id}', 'load');
+        Route::delete('/filepond/remove/{model}/{id}', 'remove');
+    });
+});
 
 require __DIR__.'/auth.php';

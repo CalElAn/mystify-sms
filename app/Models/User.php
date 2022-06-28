@@ -250,6 +250,11 @@ class User extends Authenticatable implements MustVerifyEmail
         ];
     }
 
+    public function getDefaultProfilePicture()
+    {
+        return 'https://ui-avatars.com/api/?size=50&rounded=true&name='.str_replace(' ', '+', $this->name);
+    }
+
     public function getOverallGradesDataForLineChart(
         Collection $grades = null,
         string $subjectName = null,
