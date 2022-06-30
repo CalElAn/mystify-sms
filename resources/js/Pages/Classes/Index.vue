@@ -1,10 +1,10 @@
 <template>
   <section class="flex items-center justify-center">
-    <div class="base-card w-2/5 p-2">
-      <p class="mb-1 text-center text-lg font-semibold tracking-wide">
+    <div class="base-card overflow-x-auto p-2 qxl:w-3/5">
+      <p class="mb-1 text-center font-semibold tracking-wide md:text-lg">
         Classes and class teachers ({{ term.academic_year.name }})
       </p>
-      <table class="w-full table-auto text-center">
+      <table class="mt-2 w-full table-auto text-center text-sm sm:text-base">
         <thead class="thead">
           <tr>
             <th class="p-2">Class</th>
@@ -13,7 +13,11 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(classItem, index) in classes" :key="index" class="tbody">
+          <tr
+            v-for="(classItem, index) in classes"
+            :key="index"
+            class="tbody text-sm xl:text-base"
+          >
             <td class="p-2">
               <Link
                 class="tda"

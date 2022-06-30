@@ -3,13 +3,13 @@
   <section class="flex items-center justify-center">
     <div class="base-card w-11/12 p-4">
       <p class="form-title mt-2 text-center">Classes</p>
-      <div class="mb-2 flex justify-end">
+      <div class="mb-2 mt-4 flex justify-end">
         <AddButton @click="add()" :disabled="!shouldAllowAdd" class="mr-4">
           Add
         </AddButton>
       </div>
       <div class="flex flex-col">
-        <div class="thead grid grid-cols-2 gap-12 p-2 font-bold">
+        <div class="thead grid grid-cols-2 gap-x-8 md:gap-x-4 p-2 font-bold">
           <div>Class</div>
           <div>Academic year</div>
         </div>

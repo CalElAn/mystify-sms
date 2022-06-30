@@ -3,11 +3,11 @@
   <section
     class="mt-2 flex basis-full flex-col items-center justify-center gap-4"
   >
-    <div class="flex w-11/12 items-center justify-start gap-2">
+    <div class="flex sm:w-11/12 items-center justify-start gap-2">
       <SearchIcon class="h-6 w-6 text-gray-500" />
       <input
         v-model="name"
-        class="custom-input w-1/3 shadow-sm"
+        class="custom-input lg:w-1/3 shadow-sm"
         placeholder="Search..."
         type="text"
       />
@@ -37,7 +37,7 @@
       class="flex w-full basis-full flex-col items-center justify-start gap-4"
     >
       <UserTable
-        class="base-card w-11/12"
+        class="base-card w-full sm:w-11/12"
         :title="''"
         :users="users.data"
         :userType="userType"

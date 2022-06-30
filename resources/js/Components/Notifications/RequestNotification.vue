@@ -3,8 +3,8 @@
     <div class="flex items-center gap-2">
       <ProfilePicture
         :profilePicturePath="selectedParam?.user.profile_picture_path"
-        widthClass="w-12"
-        heightClass="h-12"
+        widthClass="w-24 sm:w-12"
+        heightClass="h-24 sm:h-12"
       />
       <div>
         <span class="font-bold">

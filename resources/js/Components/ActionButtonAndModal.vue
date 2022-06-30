@@ -13,7 +13,7 @@
     :maxWidthClass="'max-w-xs'"
     @closeModal="shouldOpenModalContainingListOfActions = false"
   >
-    <div class="flex flex-col gap-3 text-purple-600">
+    <div class="flex text-sm md:text-base flex-col gap-3 text-purple-600">
       <Link
         v-for="(item, index) in actions"
         :key="index"

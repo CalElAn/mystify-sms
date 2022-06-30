@@ -7,7 +7,7 @@
       <div
         v-for="child in children"
         :key="child"
-        class="flex w-80 justify-between p-2 odd:bg-white even:bg-gray-50"
+        class="flex w-60 sm:w-80 justify-between p-2 odd:bg-white even:bg-gray-50"
       >
         <div class="flex items-center gap-2">
           <ProfilePicture

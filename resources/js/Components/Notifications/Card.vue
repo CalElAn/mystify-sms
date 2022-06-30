@@ -1,7 +1,7 @@
 <template>
   <div class="base-card flex flex-col">
     <div
-      class="relative border-b py-2 px-4 text-xl font-semibold tracking-wide text-purple-600"
+      class="relative border-b py-2 px-4 lg:text-xl text-lg font-semibold tracking-wide text-purple-600"
     >
       <Link :href="route('notifications.index')" class="underline"
         >Notifications</Link
@@ -11,7 +11,7 @@
         class="-top-1 -right-2 h-6 w-6"
       />
     </div>
-    <div class="flex flex-col overflow-y-auto">
+    <div class="flex flex-col text-sm lg:text-base overflow-y-auto">
       <TransitionGroup name="list">
         <template v-for="item in notifications" :key="item.id">
           <div

@@ -3,10 +3,10 @@
     <!-- class name and teacher -->
     <div
       v-if="classModel"
-      class="base-card flex items-center justify-center gap-4 py-2 px-4"
+      class="base-card flex flex-col items-center justify-center gap-2 py-2 px-4 sm:flex-row sm:gap-4"
     >
       <div
-        class="flex items-center justify-center gap-2 text-xl font-semibold text-purple-600"
+        class="flex items-center justify-center gap-2 text-lg font-semibold text-purple-600 sm:text-xl"
       >
         {{ classModel.name_and_suffix }}
         <button
@@ -16,7 +16,7 @@
         >
           <ViewListIcon class="h-5 w-5" />
         </button>
-         <!-- <Menu as="div" class="relative">
+        <!-- <Menu as="div" class="relative">
           <MenuButton class="flex h-full w-full items-center justify-center">
             <DotsVerticalIcon
               class="h-5 w-5 text-gray-700 hover:text-purple-600"
@@ -43,10 +43,11 @@
         </Menu> -->
       </div>
       <div
-        style="height: 36px; width: 2px; background: #ddd; display: inline"
+        class="hidden sm:inline"
+        style="height: 36px; width: 2px; background: #ddd"
       ></div>
       <div class="flex items-center gap-2">
-        <div class="inline-block">Class teacher:</div>
+        <div class="inline-block text-sm sm:text-base">Class teacher:</div>
         <div class="flex items-center justify-center gap-2">
           <ProfilePicture
             :profilePicturePath="classModel.teachers[0]?.profile_picture_path"
@@ -55,7 +56,7 @@
           />
           <button
             @click="shouldOpenTeacherCardModal = true"
-            class="inline-block text-lg font-semibold tracking-wide text-purple-600 underline underline-offset-1"
+            class="inline-block font-semibold tracking-wide text-purple-600 underline underline-offset-1 sm:text-lg"
           >
             {{ classModel.teachers[0]?.name }}
           </button>
@@ -92,7 +93,7 @@ defineProps({
   academicYearName: String,
 });
 
-defineEmits(['openModalContainingListOfClasses'])
+defineEmits(['openModalContainingListOfClasses']);
 </script>
 
 <style lang="scss" scoped></style>

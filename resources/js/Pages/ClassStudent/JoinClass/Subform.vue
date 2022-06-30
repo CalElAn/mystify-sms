@@ -1,6 +1,6 @@
 <template>
   <div
-    class="grid grid-cols-2 gap-y-4 gap-x-12 p-2 odd:bg-white even:bg-gray-100"
+    class="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-8 md:gap-x-12 p-2 odd:bg-white even:bg-gray-100"
     :class="[
       {
         'my-4 border-purple-400 ring-4 ring-purple-300 ring-opacity-50': adding,
@@ -33,7 +33,7 @@
     </select>
 
     <FormValidationErrors :errors="form.errors" />
-    <div class="col-span-3 mr-4 flex justify-end gap-3">
+    <div class="md:col-span-3 mr-4 flex justify-end gap-3">
       <template v-if="adding">
         <SubformButton @click="store()" :disabled="form.processing">
           {{ form.processing ? 'Adding...' : 'Add' }}

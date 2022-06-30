@@ -1,13 +1,17 @@
 <template>
-  <NavBar :actions="teacherActions" />
   <section class="flex basis-full items-start justify-center">
     <div class="base-card w-full p-4 px-8">
       <p class="form-title mt-2 text-center">Students</p>
-      <div class="mt-6 grid w-1/2 grid-cols-5 gap-y-4">
-        <label class="label col-span-2">Class:</label>
+      <div
+        class="mt-6 grid grid-cols-1 gap-y-2 sm:grid-cols-5 sm:gap-y-4 md:w-2/3 xl:w-1/2"
+      >
+        <label
+          class="label flex items-end justify-start sm:col-span-2 sm:inline"
+          >Class:</label
+        >
         <select
           @change="getStudents"
-          class="custom-select col-span-3"
+          class="custom-select text-sm sm:col-span-3 sm:text-base"
           v-model="classId"
         >
           <option value="" selected disabled>- select a class -</option>
@@ -15,10 +19,13 @@
             {{ item.name_and_suffix }}
           </option>
         </select>
-        <label class="label col-span-2">Academic year:</label>
+        <label
+          class="label flex items-end justify-start sm:col-span-2 sm:inline"
+          >Academic year:</label
+        >
         <select
           @change="getStudents"
-          class="custom-select col-span-3"
+          class="custom-select text-sm sm:col-span-3 sm:text-base"
           v-model="academicYearId"
         >
           <option value="" selected disabled>
@@ -74,7 +81,7 @@
         <div
           v-for="student in students"
           :key="student"
-          class="flex w-80 justify-between p-2 odd:bg-white even:bg-gray-50"
+          class="flex w-60 justify-between p-2 odd:bg-white even:bg-gray-50 sm:w-80"
         >
           <div class="flex items-center gap-2">
             <ProfilePicture
@@ -90,7 +97,10 @@
             </Link>
           </div>
           <button @click="destroy(student.pivot.id)" class="p-2">
-            <TrashIcon v-if="academicYearId === defaultAcademicYear.id" class="h-5 w-5 text-red-500" />
+            <TrashIcon
+              v-if="academicYearId === defaultAcademicYear.id"
+              class="h-5 w-5 text-red-500"
+            />
           </button>
         </div>
       </section>
@@ -102,9 +112,7 @@
 import { ref, computed } from 'vue';
 import { TrashIcon } from '@heroicons/vue/outline';
 
-import NavBar from '@/Components/ActionsNavBar.vue';
 import UserTable from '@/Components/Users/Table.vue';
-import { teacherActions } from '@/teacher_actions.js';
 import { Inertia } from '@inertiajs/inertia';
 
 const props = defineProps({
@@ -164,4 +172,13 @@ function destroy(class_student_id) {
     },
   });
 }
+</script>
+
+<script>
+import TeacherActions from '@/Layouts/TeacherActions.vue';
+import Layout from '@/Layouts/Layout.vue';
+
+export default {
+  layout: [Layout, TeacherActions],
+};
 </script>

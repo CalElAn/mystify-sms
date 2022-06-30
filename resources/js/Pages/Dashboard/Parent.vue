@@ -1,10 +1,12 @@
 <template>
   <!-- dashboard heading component -->
   <section v-if="!user.is_this_user_the_auth_user">
-    <div class="flex items-center gap-3 text-2xl font-semibold text-gray-500">
+    <div
+      class="flex flex-col gap-3 text-lg font-semibold text-gray-500 md:flex-row md:items-center md:text-2xl"
+    >
       Parent dashboard:
       <div
-        class="flex items-center gap-1 text-xl tracking-wide text-fuchsia-600"
+        class="flex items-center gap-1 text-lg tracking-wide text-fuchsia-600 md:text-xl"
       >
         <ProfilePicture
           :profilePicturePath="user.profile_picture_path"
@@ -24,10 +26,12 @@
   <section v-if="user.is_this_user_the_auth_user">
     <ActionButtonAndModal class="ml-4" :actions="parentActions" />
   </section>
-  <section class="h1-title flex items-center justify-start gap-4 text-gray-600">
+  <section
+    class="h1-title mt-4 flex items-center justify-start text-gray-600 sm:mt-6"
+  >
     Children
   </section>
-  <section class="mt-6 mb-auto grid grid-cols-3 gap-6">
+  <section class="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
     <UserCard v-for="child in children" :user="child"></UserCard>
   </section>
   <section

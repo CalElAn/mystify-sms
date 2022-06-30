@@ -1,9 +1,8 @@
 <template>
-  <NavBar :actions="headteacherActions" />
   <section class="flex items-center justify-center">
     <div class="base-card w-11/12 p-4">
       <p class="form-title mt-2 text-center">Add class</p>
-      <div class="mb-2 flex justify-end">
+      <div class="mb-2 mt-4 flex justify-end">
         <AddButton @click="add()" :disabled="!shouldAllowAdd" class="mr-4"
           >Add</AddButton
         >
@@ -32,10 +31,8 @@
 <script setup>
 import { ref } from 'vue';
 
-import NavBar from '@/Components/ActionsNavBar.vue';
 import Subform from '@/Pages/Classes/Subform.vue';
 import AddButton from '@/Components/AddButton.vue';
-import { headteacherActions } from '@/headteacher_actions.js';
 
 const props = defineProps({
   classes: Array,
@@ -57,6 +54,15 @@ function onCancelAdd() {
   classesData.shift();
   shouldAllowAdd.value = true;
 }
+</script>
+
+<script>
+import HeadteacherActions from '@/Layouts/HeadteacherActions.vue';
+import Layout from '@/Layouts/Layout.vue';
+
+export default {
+  layout: [Layout, HeadteacherActions],
+};
 </script>
 
 <style scoped>

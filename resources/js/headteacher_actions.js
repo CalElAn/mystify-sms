@@ -1,23 +1,23 @@
 export const headteacherActions = [
   {
     label: 'Academic years',
-    name: 'academic_years.form',
     href: route('academic_years.form'),
+    component: 'AcademicYears/Form',
   },
   {
     label: 'Terms',
-    name: 'terms.form',
     href: route('terms.form'),
+    component: 'Terms/Form',
   },
   {
     label: 'Classes',
-    name: 'classes.form',
     href: route('classes.form'),
+    component: 'Classes/Form',
   },
   {
     label: 'Review requests to join school',
-    name: 'notifications.view_school_notifications',
     href: route('notifications.view_school_notifications'),
+    component: 'Notifications/SchoolNotifications',
   },
   // {
   //   label: 'Add school fees',
@@ -26,7 +26,7 @@ export const headteacherActions = [
   // },
   {
     label: 'Add message to notice board',
-    name: 'notice_board.create',
     href: route('notice_board.create'),
+    component: 'NoticeBoard/Create',
   },
-]
+];

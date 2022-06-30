@@ -1,8 +1,8 @@
 <template>
-  <div class="flex h-screen bg-gray-100 text-gray-700">
+  <div class="flex h-screen bg-gray-100 text-sm text-gray-700 md:text-base">
     <!-- side-bar div -->
     <div
-      class="relative flex h-screen w-1/6 flex-col items-center gap-8 bg-white px-4 pt-20 shadow"
+      class="relative hidden h-screen w-56 flex-col items-center gap-8 bg-white px-4 pt-20 shadow lg:flex"
     >
       <!-- App name and logo -->
       <div
@@ -115,27 +115,31 @@
     </div>
     <!-- main content div -->
     <div
-      class="relative flex w-5/6 flex-col justify-between gap-6 overflow-y-auto px-6 pt-20"
+      class="relative flex w-full flex-col justify-between gap-6 overflow-y-auto px-2 pt-16 sm:px-6 md:pt-20"
     >
       <!-- Nav bar -->
       <div
-        class="absolute top-0 left-0 flex h-16 w-full items-center justify-end border-b border-gray-200 bg-white shadow-sm"
+        class="absolute top-0 left-0 flex h-14 w-full items-center justify-end gap-0.5 border-b border-gray-200 bg-white shadow-sm sm:gap-0 md:h-16"
       >
+        <!-- side bar button -->
+        <button class="p-2 inline-block lg:hidden">
+          <ChevronRightIcon class="h-6 w-6"/>
+        </button>
         <!-- Current term -->
         <button
           v-if="term"
           @click="shouldOpenModalContainingListOfAcademicYearsWithTerms = true"
-          class="group mx-auto flex items-center justify-center gap-2 rounded-md border border-gray-500 py-2 px-3 shadow-sm"
+          class="group flex items-center justify-center gap-0.5 rounded-md border border-gray-500 p-1 shadow-sm sm:mx-auto sm:gap-2 sm:py-2 sm:px-3"
         >
           <span
-            class="font-semibold text-purple-600 group-hover:text-purple-400"
+            class="text-xs text-purple-600 group-hover:text-purple-400 sm:font-semibold md:text-sm lg:text-base"
             >{{ term.formatted_name }}</span
           >
           <ViewListIcon class="h-5 w-5 group-hover:text-purple-400" />
         </button>
         <!-- User's name, profile picture and menu -->
         <div
-          class="relative mr-12 flex gap-3 rounded-3xl border border-gray-500 px-2 shadow-sm"
+          class="relative flex rounded-3xl border-gray-500 px-2 sm:shadow-sm sm:mr-4 sm:gap-3 sm:border md:mr-12"
         >
           <DotIndicator
             v-if="isThereANewNotification"
@@ -147,11 +151,11 @@
             heightClass="h-10"
           />
           <div class="flex gap-1.5">
-            <div class="flex flex-col">
-              <div class="text-lg font-semibold text-fuchsia-600">
+            <div class="hidden flex-col md:flex">
+              <div class="text-base font-semibold text-fuchsia-600 lg:text-lg">
                 {{ authUser.name }}
               </div>
-              <div class="text-sm">{{ authUser.user_type }}</div>
+              <div class="text-xs lg:text-sm">{{ authUser.user_type }}</div>
             </div>
             <Menu v-slot="{ open }" as="div" class="relative">
               <MenuButton
@@ -181,7 +185,11 @@
                     </MenuItem>
                     <MenuItem as="div" v-slot="{ active }">
                       <MenuItemButton
-                        @click="$inertia.get(route('users.show', { user: authUser.id }))"
+                        @click="
+                          $inertia.get(
+                            route('users.show', { user: authUser.id })
+                          )
+                        "
                         :active="active"
                       >
                         Profile
@@ -313,7 +321,7 @@
         shouldOpenModalContainingListOfAcademicYearsWithTerms = false
       "
     >
-      <div class="flex flex-col gap-3 text-purple-600">
+      <div class="flex flex-col gap-3 text-sm text-purple-600 sm:text-base">
         <Menu
           v-for="(
             academicYearItem, academicYearIndex
@@ -379,7 +387,7 @@
           :key="index"
           @click="
             shouldOpenModalContainingListOfUserTypes = false;
-            $inertia.put(route('change_user_type', { user_type: item }));
+            $inertia.patch(route('change_user_type', { user_type: item }));
           "
           class="list-of-buttons-in-modal relative inline-block p-2 font-semibold tracking-wide hover:text-purple-500 hover:underline"
         >
@@ -401,7 +409,7 @@ import {
   ArchiveIcon,
   ChatIcon,
 } from '@heroicons/vue/outline';
-import { ChevronDownIcon } from '@heroicons/vue/solid';
+import { ChevronDownIcon, ChevronRightIcon } from '@heroicons/vue/solid';
 import { LightningBoltIcon } from '@heroicons/vue/outline';
 import { Inertia } from '@inertiajs/inertia';
 

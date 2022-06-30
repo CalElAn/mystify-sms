@@ -3,7 +3,9 @@
     <ActionButtonAndModal class="ml-4" :actions="headteacherActions" />
   </section>
   <!-- Summary statistics -->
-  <section class="grid grid-cols-4 gap-3 font-semibold text-white">
+  <section
+    class="grid sm:grid-cols-2 gap-3 font-semibold text-white lg:grid-cols-4"
+  >
     <Link
       :href="route('users.index', 'students')"
       class="flex flex-col gap-2 rounded-lg bg-purple-400 py-4 px-6 shadow hover:cursor-pointer hover:shadow-md"
@@ -45,13 +47,15 @@
       </div>
     </Link>
   </section>
-  <section class="flex gap-6">
+  <section class="flex flex-col gap-6 lg:flex-row">
     <!-- Line chart -->
-    <div class="base-card w-4/6 p-2">
+    <div class="base-card w-full p-2 lg:w-4/6">
       <LineChart :chartData="lineChartData" :options="lineChartOptions" />
     </div>
     <!-- Doughnut chart -->
-    <div class="base-card flex w-2/6 flex-col justify-evenly p-3">
+    <div
+      class="base-card mx-auto flex w-full md:w-3/5 flex-col justify-evenly p-3 lg:mx-0 lg:w-2/6"
+    >
       <p class="p-2 text-center text-lg font-medium">
         Total school fees:
         <span class="text-2xl font-bold text-purple-600">
@@ -63,7 +67,9 @@
         :chartData="doughnutChartData"
         :options="doughnutChartOptions"
       />
-      <div class="flex items-center justify-between text-lg font-medium">
+      <div
+        class="flex items-center justify-between text-sm font-medium xl:text-lg"
+      >
         <div>
           <p class="text-center text-2xl font-bold text-[#36A2EB]">
             {{ props.totalSchoolFeesCollected.toLocaleString() }}
@@ -90,15 +96,18 @@
     </div>
   </section>
   <hr class="my-2" />
-  <section v-if="user.is_this_user_the_auth_user" class="flex gap-6">
+  <section
+    v-if="user.is_this_user_the_auth_user"
+    class="flex flex-col gap-6 md:flex-row"
+  >
+    <!-- Notifications -->
+    <NotificationsCard class="h-96 w-full md:w-1/2" />
     <!-- Notice board -->
     <TimelineCard
       :title="'Notice board'"
-      :messages="props.noticeBoardMessages"
-      class="h-96 w-1/2"
+      :messages="noticeBoardMessages"
+      class="h-96 w-full md:w-1/2"
     />
-    <!-- Notifications -->
-    <NotificationsCard class="h-96 w-1/2" />
   </section>
   <!-- MODALS -->
   <!-- Modal containing list of students who owe school fees -->

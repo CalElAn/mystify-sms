@@ -55,15 +55,18 @@
     />
   </section>
   <hr class="my-2" />
-  <section v-if="user.is_this_user_the_auth_user" class="flex gap-6">
+  <section
+    v-if="user.is_this_user_the_auth_user"
+    class="flex flex-col gap-6 md:flex-row"
+  >
+    <!-- Notifications -->
+    <NotificationsCard class="h-96 w-full md:w-1/2" />
     <!-- Notice board -->
     <TimelineCard
       :title="'Notice board'"
       :messages="noticeBoardMessages"
-      class="h-96 w-1/2"
+      class="h-96 w-full md:w-1/2"
     />
-    <!-- Notifications -->
-    <NotificationsCard class="h-96 w-1/2" />
   </section>
 
   <!-- MODALS -->

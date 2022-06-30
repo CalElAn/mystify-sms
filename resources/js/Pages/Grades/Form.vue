@@ -1,13 +1,17 @@
 <template>
-  <NavBar :actions="teacherActions" />
   <section class="flex basis-full items-start justify-center">
     <div class="base-card w-full p-4 px-8">
       <p class="form-title mt-2 text-center">Grades</p>
-      <div class="mt-6 grid w-1/2 grid-cols-5 gap-y-4">
-        <label class="label col-span-2">Subject:</label>
+      <div
+        class="grid-cols-1 mt-6 grid gap-y-2 sm:grid-cols-5 sm:gap-y-4 md:w-2/3 xl:w-1/2"
+      >
+        <label
+          class="label flex items-end justify-start sm:col-span-2 sm:inline"
+          >Subject:</label
+        >
         <select
           @change="getGrades()"
-          class="custom-select col-span-3"
+          class="custom-select text-sm sm:col-span-3 sm:text-base"
           v-model="subjectName"
         >
           <option value="" selected disabled>- select a subject -</option>
@@ -15,10 +19,13 @@
             {{ item.name }}
           </option>
         </select>
-        <label class="label col-span-2">Class:</label>
+        <label
+          class="label flex items-end justify-start sm:col-span-2 sm:inline"
+          >Class:</label
+        >
         <select
           @change="getGrades()"
-          class="custom-select col-span-3"
+          class="custom-select text-sm sm:col-span-3 sm:text-base"
           v-model="classId"
         >
           <option value="" selected disabled>- select a class -</option>
@@ -26,10 +33,13 @@
             {{ item.name_and_suffix }}
           </option>
         </select>
-        <label class="label col-span-2">Academic year:</label>
+        <label
+          class="label flex items-end justify-start sm:col-span-2 sm:inline"
+          >Academic year:</label
+        >
         <select
           @change="getTerms()"
-          class="custom-select col-span-3"
+          class="custom-select text-sm sm:col-span-3 sm:text-base"
           v-model="academicYearId"
         >
           <option value="" selected disabled>
@@ -39,10 +49,13 @@
             {{ item.name }}
           </option>
         </select>
-        <label class="label col-span-2">Terms:</label>
+        <label
+          class="label flex items-end justify-start sm:col-span-2 sm:inline"
+          >Terms:</label
+        >
         <select
           @change="getGrades()"
-          class="custom-select col-span-3"
+          class="custom-select text-sm sm:col-span-3 sm:text-base"
           v-model="termId"
         >
           <option value="" selected disabled>- select a term -</option>
@@ -52,12 +65,12 @@
         </select>
       </div>
       <section class="mt-4 flex flex-col items-center justify-center gap-4">
-        <div class="w-full py-2">
+        <div class="w-full overflow-x-auto py-2">
           <p
-            class="flex items-center justify-center gap-2 p-1 text-xl font-semibold tracking-wide text-gray-600"
+            class="flex items-center justify-center gap-2 p-1 font-semibold tracking-wide text-gray-600 md:text-xl"
           >
             Grades
-            <span class="text-base">
+            <span class="text-sm sm:text-base">
               ({{ selected_subject_class_and_academicYear }})
             </span>
           </p>
@@ -97,7 +110,7 @@
                 </td>
                 <td class="px-3">
                   <input
-                    class="custom-input w-full text-center shadow-sm"
+                    class="custom-input w-20 text-center shadow-sm sm:w-full"
                     type="number"
                     min="0"
                     :max="school.class_mark_percentage * 100"
@@ -106,7 +119,7 @@
                 </td>
                 <td class="px-3">
                   <input
-                    class="custom-input w-full text-center shadow-sm"
+                    class="custom-input w-20 text-center shadow-sm sm:w-full"
                     type="number"
                     min="0"
                     :max="school.exam_mark_percentage * 100"
@@ -114,7 +127,11 @@
                   />
                 </td>
                 <td class="p-2">
-                  <button  v-if="academicYearId === defaultAcademicYear.id" class="p-2" @click="clearMarks(item)">
+                  <button
+                    v-if="academicYearId === defaultAcademicYear.id"
+                    class="p-2"
+                    @click="clearMarks(item)"
+                  >
                     <TrashIcon class="h-5 w-5 text-red-500" />
                   </button>
                 </td>
@@ -152,9 +169,6 @@ import { ref, computed } from 'vue';
 import { TrashIcon, CheckCircleIcon } from '@heroicons/vue/outline';
 import { Inertia } from '@inertiajs/inertia';
 import { usePage } from '@inertiajs/inertia-vue3';
-
-import NavBar from '@/Components/ActionsNavBar.vue';
-import { teacherActions } from '@/teacher_actions.js';
 
 const authUser = computed(() => usePage().props.value.auth.user);
 const school = computed(() => usePage().props.value.school);
@@ -238,4 +252,13 @@ function save() {
   //TODO on start disable save button and change text to 'saving', enable on finish
   Inertia.patch(route('grades.upsert'), { grades: grades });
 }
+</script>
+
+<script>
+import TeacherActions from '@/Layouts/TeacherActions.vue';
+import Layout from '@/Layouts/Layout.vue';
+
+export default {
+  layout: [Layout, TeacherActions],
+};
 </script>

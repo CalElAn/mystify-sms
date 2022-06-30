@@ -4,10 +4,10 @@
 
 @layer components {
   .custom-select {
-    @apply rounded-md border-gray-300 disabled:bg-slate-100 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50;
+    @apply rounded-md border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 disabled:bg-slate-100;
   }
   .custom-input {
-    @apply rounded-md border-gray-300 read-only:bg-slate-100 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50;
+    @apply rounded-md border-gray-300 placeholder:text-sm read-only:bg-slate-100 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 xl:placeholder:text-base;
   }
   .base-card {
     @apply rounded-lg bg-white shadow;
@@ -25,7 +25,7 @@
     @apply text-2xl font-semibold tracking-wide;
   }
   .form-title {
-    @apply text-2xl font-semibold tracking-wide text-gray-600;
+    @apply text-xl font-semibold tracking-wide text-gray-600 md:text-2xl;
   }
   .label {
     @apply font-semibold tracking-wide text-gray-600;

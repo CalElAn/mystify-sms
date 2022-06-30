@@ -1,23 +1,21 @@
 <template>
-  <NavBar :actions="headteacherActions" />
-
   <section class="flex items-center justify-center">
-    <div class="base-card w-11/12 p-4">
+    <div class="base-card w-full p-4 text-sm md:w-11/12 md:text-base">
       <p class="form-title mt-2 text-center">Add term</p>
-      <label class="ml-4 label"
+      <label class="label ml-4 mt-4 block sm:inline md:mt-0"
         >Academic year:</label
       >
       <select
         v-model="academicYearId"
         @change="getTerms"
-        class="custom-select m-4 w-1/2 shadow-sm"
+        class="custom-select m-2 shadow-sm md:m-4 md:w-1/2"
       >
         <option selected disabled value="">- Select academic year -</option>
         <option v-for="item in academicYears" :value="item.id" :key="item">
           {{ item.formatted_name }}
         </option>
       </select>
-      <div class="mb-2 flex justify-end">
+      <div class="mb-2 mt-4 flex justify-end">
         <AddButton
           @click="add()"
           class="mr-4"
@@ -28,7 +26,9 @@
 
       <div class="flex flex-col">
         <!-- TODO title should be sticky -->
-        <div class="thead grid grid-cols-3 gap-12 p-2 font-bold">
+        <div
+          class="thead grid grid-cols-3 p-2 text-sm font-bold sm:gap-x-4 md:text-base xl:gap-x-12"
+        >
           <div>Name</div>
           <div>Start date</div>
           <div>End date</div>
@@ -54,10 +54,8 @@
 <script setup>
 import { ref, computed } from 'vue';
 
-import NavBar from '@/Components/ActionsNavBar.vue';
 import Subform from '@/Pages/Terms/Subform.vue';
 import AddButton from '@/Components/AddButton.vue';
-import { headteacherActions } from '@/headteacher_actions.js';
 
 defineProps({
   academicYears: Object,
@@ -98,6 +96,15 @@ function onCancelAdd() {
   terms.value.shift();
   shouldAllowAdd.value = true;
 }
+</script>
+
+<script>
+import HeadteacherActions from '@/Layouts/HeadteacherActions.vue';
+import Layout from '@/Layouts/Layout.vue';
+
+export default {
+  layout: [Layout, HeadteacherActions],
+};
 </script>
 
 <style scoped>

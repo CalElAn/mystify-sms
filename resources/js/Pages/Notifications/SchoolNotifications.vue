@@ -1,7 +1,6 @@
 <template>
-  <NavBar :actions="headteacherActions" />
   <section class="flex basis-full items-start justify-center">
-    <div class="base-card flex w-11/12 flex-col p-4">
+    <div class="base-card flex w-11/12 flex-col gap-2 p-4">
       <!-- <p class="form-title mt-2 text-center">Add academic year</p> -->
       <TransitionGroup name="list">
         <template v-for="item in notificationsData" :key="item.id">
@@ -19,9 +18,7 @@
 </template>
 
 <script setup>
-import NavBar from '@/Components/ActionsNavBar.vue';
 import RequestNotification from '@/Components/Notifications/RequestNotification.vue';
-import { headteacherActions } from '@/headteacher_actions.js';
 import { useNotifications } from '@/notifications.js';
 
 const props = defineProps({
@@ -31,6 +28,15 @@ const props = defineProps({
 const { notifications: notificationsData } = useNotifications();
 
 notificationsData.value = props.notifications;
+</script>
+
+<script>
+import HeadteacherActions from '@/Layouts/HeadteacherActions.vue';
+import Layout from '@/Layouts/Layout.vue';
+
+export default {
+  layout: [Layout, HeadteacherActions],
+};
 </script>
 
 <style scoped>

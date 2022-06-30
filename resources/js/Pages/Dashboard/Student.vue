@@ -2,11 +2,11 @@
   <!-- dashboard heading component -->
   <section v-if="!user.is_this_user_the_auth_user" class="flex items-center">
     <div
-      class="inline-flex items-center gap-3 text-2xl font-semibold text-gray-500"
+      class="flex flex-col gap-3 text-lg font-semibold text-gray-500 md:flex-row md:items-center md:text-2xl"
     >
       Student dashboard:
       <div
-        class="flex items-center gap-1 text-xl tracking-wide text-fuchsia-600"
+        class="flex items-center gap-1 text-lg tracking-wide text-fuchsia-600 md:text-xl"
       >
         <ProfilePicture
           :profilePicturePath="user.profile_picture_path"
@@ -30,7 +30,7 @@
     />
     <button
       @click="shouldOpenModalContainingListOfParents = true"
-      class="inline-flex items-center justify-center gap-2 rounded-lg border border-fuchsia-800 bg-fuchsia-50 p-2 font-semibold text-fuchsia-800 shadow-sm hover:bg-fuchsia-100"
+      class="inline-flex items-center justify-center gap-2 rounded-lg border border-fuchsia-800 bg-fuchsia-50 px-2 py-1.5 font-semibold text-fuchsia-800 shadow-sm hover:bg-fuchsia-100"
     >
       <ViewListIcon class="h-5 w-5" />
       Parents
@@ -38,9 +38,11 @@
   </section>
   <section class="flex items-center justify-evenly">
     <!-- class name and teacher -->
-    <div class="base-card flex w-max items-center justify-evenly py-2 px-4">
+    <div
+      class="base-card flex flex-col items-center justify-evenly gap-2 py-2 px-4 sm:w-max sm:flex-row sm:gap-0"
+    >
       <div
-        class="flex items-center justify-center gap-1.5 text-xl font-semibold tracking-tight text-purple-600"
+        class="flex items-center justify-center gap-1.5 text-lg font-semibold tracking-tight text-purple-600 sm:text-xl"
       >
         {{ classModel.name_and_suffix }}
         <button
@@ -51,11 +53,11 @@
         </button>
       </div>
       <div
-        class="mx-4"
-        style="height: 36px; width: 2px; background: #ddd; display: inline"
+        class="mx-4 hidden sm:inline"
+        style="height: 36px; width: 2px; background: #ddd"
       ></div>
       <div class="flex items-center gap-2">
-        <div class="inline-block">Class teacher:</div>
+        <div class="inline-block text-sm sm:text-base">Class teacher:</div>
         <div class="flex items-center justify-center gap-2">
           <ProfilePicture
             :profilePicturePath="classTeacher?.profile_picture_path"
@@ -64,7 +66,7 @@
           />
           <button
             @click="shouldOpenTeacherCardModal = true"
-            class="inline-block text-lg font-semibold text-purple-600 underline underline-offset-1"
+            class="inline-block font-semibold text-purple-600 underline underline-offset-1 sm:text-lg"
           >
             {{ classTeacher?.name }}
           </button>
@@ -72,15 +74,17 @@
       </div>
     </div>
   </section>
-  <section class="flex justify-evenly">
+  <section
+    class="flex flex-col items-center gap-3 text-sm md:flex-row md:justify-evenly md:gap-4 lg:text-base xl:gap-0"
+  >
     <!-- Position -->
-    <div class="base-card flex w-80 flex-col p-2">
+    <div class="base-card flex w-64 flex-col p-2 lg:w-80">
       <div class="flex w-full gap-2">
         <div class="flex w-3/4 items-center justify-end">
           Position in class:
         </div>
         <div
-          class="flex w-1/4 items-center justify-start gap-1 text-xl font-semibold text-purple-600"
+          class="flex w-1/4 items-center justify-start gap-1 text-lg font-semibold text-purple-600 lg:text-xl"
         >
           {{ positionInClass }}
           <button
@@ -101,7 +105,7 @@
       </div>
     </div>
     <!-- Average mark -->
-    <div class="base-card flex w-56 gap-2 p-2">
+    <div class="base-card flex w-64 gap-2 p-2 md:w-56">
       <div class="flex w-3/4 items-center justify-end">Average mark:</div>
       <div
         class="flex items-center justify-start p-2 text-xl font-semibold text-purple-600"
@@ -110,7 +114,7 @@
       </div>
     </div>
     <!-- Average grade -->
-    <div class="base-card flex w-56 gap-2 p-2">
+    <div class="base-card flex w-64 gap-2 p-2 md:w-56">
       <div class="flex w-3/4 items-center justify-end">Average grade:</div>
       <div
         class="flex items-center justify-start p-2 text-xl font-semibold text-purple-600"
@@ -119,17 +123,19 @@
       </div>
     </div>
   </section>
-  <section class="flex gap-6">
+  <section class="sitems-center flex flex-col gap-6 lg:flex-row">
     <!-- Line chart -->
-    <div class="base-card w-4/6 p-2">
+    <div class="base-card w-full p-2 lg:w-4/6">
       <LineChart
         :chartData="lineChartDataForGrades"
         :options="lineChartOptions"
       />
     </div>
     <!-- Doughnut chart -->
-    <div class="base-card flex w-2/6 flex-col justify-evenly p-3">
-      <p class="p-2 text-center text-lg font-medium">
+    <div
+      class="base-card mx-auto flex flex-col justify-evenly p-3 md:w-3/5 lg:w-2/6"
+    >
+      <p class="p-2 text-center font-medium md:text-lg">
         Total school fees:
         <span class="text-2xl font-bold text-purple-600">
           {{ totalSchoolFees.toLocaleString() }}
@@ -140,14 +146,14 @@
         :chartData="doughnutChartData"
         :options="doughnutChartOptions"
       />
-      <div class="flex items-center justify-between text-lg font-medium">
-        <div>
+      <div class="flex items-center justify-between font-medium md:text-lg">
+        <div class="text-center">
           <p class="text-center text-2xl font-bold text-[#36A2EB]">
             {{ totalSchoolFeesPaid.toLocaleString() }}
           </p>
           Total fees paid
         </div>
-        <div>
+        <div class="text-center">
           <p class="text-center text-2xl font-bold text-[#FF6384]">
             {{ (totalSchoolFees - totalSchoolFeesPaid).toLocaleString() }}
           </p>
@@ -158,11 +164,11 @@
   </section>
   <section class="flex">
     <!-- Subjects and grades -->
-    <div class="base-card w-full p-2">
+    <div class="base-card w-full overflow-x-auto p-2">
       <table class="w-full table-auto text-center">
         <thead class="bg-purple-100 text-gray-500">
-          <tr>
-            <th class="p-2 pl-6 text-left">Subject</th>
+          <tr class="text-sm md:text-base">
+            <th class="p-2 text-left md:pl-6">Subject</th>
             <th class="p-2">
               Class marks ({{ school.class_mark_percentage * 100 }}%)
             </th>
@@ -178,9 +184,9 @@
           <tr
             v-for="(item, index) in subjectsAndGrades"
             :key="index"
-            class="odd:bg-white even:bg-gray-50"
+            class="text-sm odd:bg-white even:bg-gray-50 md:text-base"
           >
-            <td class="p-2 pl-6 text-left">
+            <td class="p-2 text-left md:pl-6">
               {{ item.subject_name }}
               <button
                 @click="
@@ -204,18 +210,18 @@
     </div>
   </section>
   <hr class="my-2" />
-  <section class="flex gap-6">
+  <section class="flex flex-col gap-6 md:flex-row">
+    <!-- Notifications -->
+    <NotificationsCard
+      v-if="user.is_this_user_the_auth_user"
+      class="h-96 w-full md:w-1/2"
+    />
     <!-- Notice board -->
     <TimelineCard
       :title="'Notice board'"
       :messages="noticeBoardMessages"
       class="h-96"
-      :class="[user.is_this_user_the_auth_user ? 'w-1/2' : 'w-full']"
-    />
-    <!-- Notifications -->
-    <NotificationsCard
-      v-if="user.is_this_user_the_auth_user"
-      class="h-96 w-1/2"
+      :class="[user.is_this_user_the_auth_user ? 'md:w-1/2' : 'w-full']"
     />
   </section>
   <!-- MODALS -->
@@ -318,7 +324,7 @@
   <!-- line chart modal for grades per subject -->
   <Modal
     :show="shouldOpenModalContainingGradesPerSubjectLineChart"
-    :maxWidthClass="'max-w-3xl'"
+    :maxWidthClass="'md:max-w-3xl'"
     @closeModal="shouldOpenModalContainingGradesPerSubjectLineChart = false"
   >
     <LineChart
