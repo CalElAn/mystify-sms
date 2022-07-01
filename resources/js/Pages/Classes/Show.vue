@@ -1,4 +1,5 @@
 <template>
+  <Head :title="classModel.name_and_suffix"></Head>
   <ClassPanel
     :classModel="classModel"
     :studentsInClass="classModel.students"

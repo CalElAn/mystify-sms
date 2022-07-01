@@ -1,6 +1,6 @@
 <template>
+  <Head title="Add parent"></Head>
   <NavBar :actions="studentActions" />
-
   <section class="flex basis-full items-start justify-center">
     <div class="base-card flex flex-col items-center justify-center gap-6 p-4">
       <p class="form-title mt-2 text-center">Add parent</p>

@@ -1,8 +1,9 @@
 <template>
+  <Head title="Dashboard"></Head>
   <!-- dashboard heading component -->
   <section v-if="!user.is_this_user_the_auth_user" class="flex items-center">
     <div
-      class="flex flex-col gap-3 text-lg font-semibold text-gray-500 md:flex-row md:items-center md:text-2xl"
+      class="flex flex-col gap-2 text-lg font-semibold text-gray-500 md:flex-row md:items-center md:text-2xl"
     >
       Student dashboard:
       <div

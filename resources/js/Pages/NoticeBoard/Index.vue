@@ -1,4 +1,5 @@
 <template>
+  <Head title="Notice board"></Head>
   <TimelineCard
     :title="'Notice board'"
     :messages="noticeBoardMessages"

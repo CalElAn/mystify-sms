@@ -1,6 +1,6 @@
 <template>
+  <Head title="Remove child"></Head>
   <NavBar :actions="parentActions" />
-
   <section class="flex basis-full items-start justify-center">
     <div class="base-card flex flex-col p-4">
       <p class="form-title my-2 text-center">Children</p>

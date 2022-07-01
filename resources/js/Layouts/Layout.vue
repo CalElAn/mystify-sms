@@ -1,12 +1,15 @@
 <template>
-  <div class="flex h-screen bg-gray-100 text-sm text-gray-700 md:text-base">
+  <div
+    class="relative flex h-screen bg-gray-100 text-sm text-gray-700 md:text-base"
+  >
     <!-- side-bar div -->
     <div
-      class="relative hidden h-screen w-56 flex-col items-center gap-8 bg-white px-4 pt-20 shadow lg:flex"
+      class="h-screen flex-col items-center gap-4 bg-white px-4 pt-20 shadow transition-all lg:gap-8"
+      :class="[isLgBreakpoint ? 'relative flex w-60' : sideBarClasses]"
     >
-      <!-- App name and logo -->
+      <!-- App name and logo... changes shoud also be applied to the one in the nav bar  -->
       <div
-        class="absolute top-0 flex h-16 w-full items-center justify-center gap-0.5 bg-fuchsia-600 text-lg font-medium tracking-wide text-white"
+        class="flex items-center justify-center gap-0.5 text-lg font-bold tracking-wider text-purple-600 md:ml-8 lg:hidden"
       >
         <LightningBoltIcon class="h-6 w-6" />
         mystify-sms
@@ -119,12 +122,25 @@
     >
       <!-- Nav bar -->
       <div
-        class="absolute top-0 left-0 flex h-14 w-full items-center justify-end gap-0.5 border-b border-gray-200 bg-white shadow-sm sm:gap-0 md:h-16"
+        class="fixed top-0 left-0 z-10 flex h-14 w-full items-center justify-between gap-0.5 border-b border-gray-200 bg-white shadow-sm sm:gap-0 md:h-16"
       >
-        <!-- side bar button -->
-        <button class="p-2 inline-block lg:hidden">
-          <ChevronRightIcon class="h-6 w-6"/>
+        <!-- button that opens side bar on <lg  -->
+        <button
+          @click="shouldOpenSideBarOnMobile ? closeSideBar() : openSideBar()"
+          class="inline-block p-2 lg:hidden"
+        >
+          <ChevronRightIcon
+            :class="{ 'rotate-180': shouldOpenSideBarOnMobile }"
+            class="h-8 w-8 transition-transform"
+          />
         </button>
+        <!-- App name and logo... changes shoud also be applied to the one in side bar  -->
+        <div
+          class="hidden items-center justify-center gap-0.5 text-lg font-bold tracking-wider text-purple-600 md:ml-8 lg:flex"
+        >
+          <LightningBoltIcon class="h-6 w-6" />
+          mystify-sms
+        </div>
         <!-- Current term -->
         <button
           v-if="term"
@@ -132,14 +148,14 @@
           class="group flex items-center justify-center gap-0.5 rounded-md border border-gray-500 p-1 shadow-sm sm:mx-auto sm:gap-2 sm:py-2 sm:px-3"
         >
           <span
-            class="text-xs text-purple-600 group-hover:text-purple-400 sm:font-semibold md:text-sm lg:text-base"
+            class="text-xs font-light text-purple-600 group-hover:text-purple-400 sm:font-semibold md:text-sm lg:text-base"
             >{{ term.formatted_name }}</span
           >
           <ViewListIcon class="h-5 w-5 group-hover:text-purple-400" />
         </button>
         <!-- User's name, profile picture and menu -->
         <div
-          class="relative flex rounded-3xl border-gray-500 px-2 sm:shadow-sm sm:mr-4 sm:gap-3 sm:border md:mr-12"
+          class="relative flex rounded-3xl border-gray-500 px-2 sm:mr-4 sm:gap-3 sm:border sm:shadow-sm md:mr-12"
         >
           <DotIndicator
             v-if="isThereANewNotification"
@@ -412,11 +428,30 @@ import {
 import { ChevronDownIcon, ChevronRightIcon } from '@heroicons/vue/solid';
 import { LightningBoltIcon } from '@heroicons/vue/outline';
 import { Inertia } from '@inertiajs/inertia';
+import { breakpointsTailwind, useBreakpoints } from '@vueuse/core';
 
 import DotIndicator from '@/Components/DotIndicator.vue';
 import { changeTerm } from '@/helpers';
 import { defaultDashboardProps } from '@/default_dashboard_props.js';
 import { useNotifications } from '@/notifications.js';
+
+const breakpoints = useBreakpoints(breakpointsTailwind);
+
+const isLgBreakpoint = computed(() => breakpoints.lg.value);
+
+const sideBarClasses = ref('opacity-0 absolute invisible w-0');
+
+const shouldOpenSideBarOnMobile = ref(false);
+
+function openSideBar() {
+  shouldOpenSideBarOnMobile.value = true;
+  sideBarClasses.value = 'flex absolute top-0 left-0 z-10 w-60 opacity-100';
+}
+
+function closeSideBar() {
+  shouldOpenSideBarOnMobile.value = false;
+  sideBarClasses.value = 'opacity-0 absolute invisible w-0 z-10';
+}
 
 const { isThereANewNotification, notifications } = useNotifications();
 

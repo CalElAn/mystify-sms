@@ -1,4 +1,5 @@
 <template>
+  <Head title="Dashboard"></Head>
   <!-- dashboard heading component -->
   <section v-if="!user.is_this_user_the_auth_user">
     <div

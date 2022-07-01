@@ -1,4 +1,5 @@
 <template>
+  <Head title="Join class"></Head>
   <NavBar :actions="studentActions" />
   <section class="flex items-center justify-center">
     <div class="base-card w-11/12 p-4">

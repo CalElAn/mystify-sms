@@ -1,4 +1,5 @@
 <template>
+  <Head :title="capitalize(userType)"></Head>
   <h1 class="h1-title">All {{ userType }}</h1>
   <section
     class="mt-2 flex basis-full flex-col items-center justify-center gap-4"
@@ -51,6 +52,7 @@
 import { ref, watch } from 'vue';
 import { SearchIcon } from '@heroicons/vue/solid';
 import { Inertia } from '@inertiajs/inertia';
+import { capitalize } from 'lodash';
 
 import UserTable from '@/Components/Users/Table.vue';
 import Pagination from '@/Components/Pagination.vue';

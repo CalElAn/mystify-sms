@@ -1,4 +1,5 @@
 <template>
+  <Head title="Notifications"></Head>
   <NotificationsCard class="h-full w-full" />
 </template>
 

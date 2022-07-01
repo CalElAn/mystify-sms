@@ -1,4 +1,5 @@
 <template>
+  <Head title="Dashboard"></Head>
   <!-- action button -->
   <section>
     <ActionButtonAndModal class="ml-14" :actions="teacherActions" />

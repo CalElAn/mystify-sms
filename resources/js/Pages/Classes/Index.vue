@@ -1,4 +1,5 @@
 <template>
+  <Head title="Classes"></Head>
   <section class="flex items-center justify-center">
     <div class="base-card overflow-x-auto p-2 qxl:w-3/5">
       <p class="mb-1 text-center font-semibold tracking-wide md:text-lg">

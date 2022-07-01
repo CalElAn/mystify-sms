@@ -1,7 +1,7 @@
 require('./bootstrap');
 
 import { createApp, h } from 'vue';
-import { createInertiaApp, Link, usePage } from '@inertiajs/inertia-vue3';
+import { createInertiaApp, Link, Head } from '@inertiajs/inertia-vue3';
 import { InertiaProgress } from '@inertiajs/progress';
 import {
   DotsVerticalIcon,
@@ -29,6 +29,7 @@ const baseComponents = {
   MenuItem: MenuItem,
 
   Link: Link,
+  Head: Head,
 
   DotsVerticalIcon: DotsVerticalIcon,
   ViewListIcon: ViewListIcon,

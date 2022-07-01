@@ -49,7 +49,7 @@ export default {
 
 <script setup>
 import { onMounted, computed } from 'vue';
-import { Head, usePage } from '@inertiajs/inertia-vue3';
+import { usePage } from '@inertiajs/inertia-vue3';
 import { CheckCircleIcon } from '@heroicons/vue/outline';
 import { useForm } from '@inertiajs/inertia-vue3';
 import { Inertia } from '@inertiajs/inertia';

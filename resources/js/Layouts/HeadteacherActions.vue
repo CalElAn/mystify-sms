@@ -1,4 +1,5 @@
 <template>
+  <Head :title="headteacherActions.find((item) => item.component === $page.component)?.label"></Head>
   <NavBar :actions="headteacherActions" />
   <slot/>
 </template>
