@@ -111,9 +111,10 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { TrashIcon } from '@heroicons/vue/outline';
+import { Inertia } from '@inertiajs/inertia';
 
 import UserTable from '@/Components/Users/Table.vue';
-import { Inertia } from '@inertiajs/inertia';
+import { toast, deleteConfirmationDialog } from '@/Components/swal.js';
 
 const props = defineProps({
   classStudentData: Array,
@@ -162,15 +163,17 @@ function getStudents() {
 }
 
 function destroy(class_student_id) {
-  //TODO notify should delete
-  Inertia.delete(route('class_student.destroy', class_student_id), {
-    onSuccess: () => {
-      //TODO notify deleted
-      _.remove(students.value, function (item) {
-        return item.pivot.id === class_student_id;
-      });
-    },
-  });
+  deleteConfirmationDialog(() =>
+    Inertia.delete(route('class_student.destroy', class_student_id), {
+      onSuccess: () => {
+        _.remove(students.value, function (item) {
+          return item.pivot.id === class_student_id;
+        });
+        toast.fire({ title: `Deleted!` });
+      },
+    }),
+    'Remove this student from the class?'
+  );
 }
 </script>
 

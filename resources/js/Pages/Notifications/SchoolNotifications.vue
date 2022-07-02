@@ -8,7 +8,6 @@
             v-if="item.type === 'App\\Notifications\\JoinSchoolRequest'"
             class="odd:bg-white even:bg-gray-50"
           >
-            <!-- //TODO rmr to check fot type so only school notifs show -->
             <RequestNotification :notification="item" />
           </div>
         </template>

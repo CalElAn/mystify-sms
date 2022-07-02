@@ -84,11 +84,11 @@ class User extends Authenticatable implements MustVerifyEmail
     public function userTypes(): Attribute
     {
         return Attribute::make(
-            get: fn() => array_unique([
-                $this->default_user_type,
-                'teacher',
-                'parent',
-            ]),
+            get: fn() => array_filter(
+                [$this->default_user_type, 'teacher', 'parent'],
+                // array_unique([$this->default_user_type, 'teacher', 'parent']),
+                fn($item) => $item !== $this->user_type,
+            ),
         );
     }
 
@@ -252,7 +252,8 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function getDefaultProfilePicture()
     {
-        return 'https://ui-avatars.com/api/?size=50&rounded=true&name='.str_replace(' ', '+', $this->name);
+        return 'https://ui-avatars.com/api/?size=50&rounded=true&name=' .
+            str_replace(' ', '+', $this->name);
     }
 
     public function getOverallGradesDataForLineChart(

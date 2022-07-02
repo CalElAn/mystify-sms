@@ -35,6 +35,7 @@
 <script setup>
 import { useForm } from '@inertiajs/inertia-vue3';
 import { PlusCircleIcon } from '@heroicons/vue/outline';
+import Swal from 'sweetalert2';
 
 import NavBar from '@/Components/ActionsNavBar.vue';
 import FormValidationErrors from '@/Components/FormValidationErrors.vue';
@@ -48,9 +49,10 @@ function addChild() {
   form.post(route('add_as_parent_request.send_request', form.email), {
     onSuccess: () => {
       form.email = '';
-      //TODO notify with:
-      //request sent successfully. When your child verifies from that you are the parent,
-      //you will have access to his/her account from your dashboard
+      Swal.fire({
+        icon: 'success',
+        title: 'Request sent successfully.',
+      });
     },
   });
 }

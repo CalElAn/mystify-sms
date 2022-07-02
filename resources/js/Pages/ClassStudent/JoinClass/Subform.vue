@@ -1,6 +1,6 @@
 <template>
   <div
-    class="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-8 md:gap-x-12 p-2 odd:bg-white even:bg-gray-100"
+    class="grid grid-cols-1 gap-y-4 gap-x-8 p-2 odd:bg-white even:bg-gray-100 md:grid-cols-2 md:gap-x-12"
     :class="[
       {
         'my-4 border-purple-400 ring-4 ring-purple-300 ring-opacity-50': adding,
@@ -33,10 +33,10 @@
     </select>
 
     <FormValidationErrors :errors="form.errors" />
-    <div class="md:col-span-3 mr-4 flex justify-end gap-3">
+    <div class="mr-4 flex justify-end gap-3 md:col-span-3">
       <template v-if="adding">
         <SubformButton @click="store()" :disabled="form.processing">
-          {{ form.processing ? 'Adding...' : 'Add' }}
+          {{ form.processing ? 'Joining...' : 'Join class' }}
         </SubformButton>
         <SubformButton @click="$emit('cancelAdd')"> Cancel </SubformButton>
       </template>
@@ -47,10 +47,10 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { useForm, usePage } from '@inertiajs/inertia-vue3';
-import { Inertia } from '@inertiajs/inertia';
 
 import FormValidationErrors from '@/Components/FormValidationErrors.vue';
 import SubformButton from '@/Components/SubformButton.vue';
+import { toast } from '@/Components/swal.js';
 
 const user = computed(() => usePage().props.value.auth.user);
 
@@ -72,7 +72,7 @@ function store() {
     onSuccess: () => {
       adding.value = false;
       emit('stored');
-      //TODO notify added
+      toast.fire({ title: `Joined class!` });
     },
   });
 }

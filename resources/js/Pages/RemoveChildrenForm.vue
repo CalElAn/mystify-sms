@@ -7,7 +7,7 @@
       <div
         v-for="child in children"
         :key="child"
-        class="flex w-60 sm:w-80 justify-between p-2 odd:bg-white even:bg-gray-50"
+        class="flex w-60 justify-between p-2 odd:bg-white even:bg-gray-50 sm:w-80"
       >
         <div class="flex items-center gap-2">
           <ProfilePicture
@@ -33,16 +33,21 @@ import { TrashIcon } from '@heroicons/vue/outline';
 
 import NavBar from '@/Components/ActionsNavBar.vue';
 import { parentActions } from '@/parent_actions.js';
+import { toast, deleteConfirmationDialog } from '@/Components/swal.js';
 
 defineProps({
   children: Array,
 });
 
 function removeChild(id) {
-  //TODO confirm delete
-  Inertia.visit(route('parent_student.destroy', id), {
-    method: 'delete',
-    preserveState: false,
-  });
+  deleteConfirmationDialog(
+    () =>
+      Inertia.visit(route('parent_student.destroy', id), {
+        method: 'delete',
+        preserveState: false,
+      }),
+    'Remove child from account?',
+    "You will no longer be able to access the child's account from your dashboard"
+  );
 }
 </script>

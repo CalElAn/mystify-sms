@@ -9,7 +9,6 @@
       </div>
 
       <div class="flex flex-col">
-        <!-- TODO title should be sticky -->
         <div class="thead grid grid-cols-2 gap-12 p-2 font-bold">
           <div>Name</div>
           <div>Group</div>

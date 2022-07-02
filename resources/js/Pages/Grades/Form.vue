@@ -3,7 +3,7 @@
     <div class="base-card w-full p-4 px-8">
       <p class="form-title mt-2 text-center">Grades</p>
       <div
-        class="grid-cols-1 mt-6 grid gap-y-2 sm:grid-cols-5 sm:gap-y-4 md:w-2/3 xl:w-1/2"
+        class="mt-6 grid grid-cols-1 gap-y-2 sm:grid-cols-5 sm:gap-y-4 md:w-2/3 xl:w-1/2"
       >
         <label
           class="label flex items-end justify-start sm:col-span-2 sm:inline"
@@ -64,101 +64,108 @@
           </option>
         </select>
       </div>
-      <section class="mt-4 flex flex-col items-center justify-center gap-4">
-        <div class="w-full overflow-x-auto py-2">
-          <p
-            class="flex items-center justify-center gap-2 p-1 font-semibold tracking-wide text-gray-600 md:text-xl"
+      <section xclass="mt-4 flex flex-col items-center justify-center gap-4">
+        <form class="mt-4 flex flex-col items-center justify-center gap-4" @submit.prevent="save()">
+          <div class="w-full overflow-x-auto py-2">
+            <p
+              class="flex items-center justify-center gap-2 p-1 font-semibold tracking-wide text-gray-600 md:text-xl"
+            >
+              Grades
+              <span class="text-sm sm:text-base">
+                ({{ selected_subject_class_and_academicYear }})
+              </span>
+            </p>
+            <table class="w-full table-auto text-left">
+              <thead class="thead">
+                <tr>
+                  <th class="p-2"></th>
+                  <th class="p-2">Name</th>
+                  <th class="p-2">
+                    Class mark ({{ school.class_mark_percentage * 100 }}%)
+                  </th>
+                  <th class="p-2">
+                    Exam mark ({{ school.exam_mark_percentage * 100 }}%)
+                  </th>
+                  <th class="p-2"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  v-for="(item, index) in studentsWithGrades"
+                  :key="item"
+                  class="tbody"
+                >
+                  <td class="flex justify-center p-2">
+                    <ProfilePicture
+                      :profilePicturePath="item.profile_picture_path"
+                      widthClass="w-10"
+                      heightClass="h-10"
+                    />
+                  </td>
+                  <td class="p-2">
+                    <Link
+                      class="decoration-purple-600 hover:underline"
+                      :href="route('dashboard', { userId: item.id })"
+                      >{{ item.name }}</Link
+                    >
+                  </td>
+                  <td class="px-3">
+                    <input
+                      class="custom-input w-20 text-center shadow-sm sm:w-full"
+                      type="number"
+                      min="0"
+                      :max="school.class_mark_percentage * 100"
+                      v-model="item.nonEmptyGrades.class_mark"
+                    />
+                  </td>
+                  <td class="px-3">
+                    <input
+                      class="custom-input w-20 text-center shadow-sm sm:w-full"
+                      type="number"
+                      min="0"
+                      :max="school.exam_mark_percentage * 100"
+                      v-model="item.nonEmptyGrades.exam_mark"
+                    />
+                  </td>
+                  <td class="p-2">
+                    <button
+                      v-if="academicYearId === defaultAcademicYear.id"
+                      class="p-2"
+                      @click="clearMarks(item)"
+                      type="button"
+                    >
+                      <TrashIcon class="h-5 w-5 text-red-500" />
+                    </button>
+                  </td>
+                </tr>
+                <tr
+                  v-if="!studentsWithGrades || studentsWithGrades.length === 0"
+                >
+                  <td class="border-t px-6 py-4" colspan="4">
+                    No students found in
+                    {{
+                      classes.find((item) => item.id === classId)
+                        ?.name_and_suffix
+                    }}
+                    ({{
+                      terms.find((item) => item.id === termId)
+                        ?.formatted_short_name
+                    }}).
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <button
+            v-if="academicYearId === defaultAcademicYear.id"
+            aclick="save()"
+            type="submit"
+            class="flex w-full items-center justify-center gap-2 rounded-lg bg-purple-400 p-2 text-lg font-semibold tracking-wide text-white shadow-sm hover:bg-purple-500 sm:w-5/6"
           >
-            Grades
-            <span class="text-sm sm:text-base">
-              ({{ selected_subject_class_and_academicYear }})
-            </span>
-          </p>
-          <table class="w-full table-auto text-left">
-            <thead class="thead">
-              <tr>
-                <th class="p-2"></th>
-                <th class="p-2">Name</th>
-                <th class="p-2">
-                  Class mark ({{ school.class_mark_percentage * 100 }}%)
-                </th>
-                <th class="p-2">
-                  Exam mark ({{ school.exam_mark_percentage * 100 }}%)
-                </th>
-                <th class="p-2"></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                v-for="(item, index) in studentsWithGrades"
-                :key="item"
-                class="tbody"
-              >
-                <td class="flex justify-center p-2">
-                  <ProfilePicture
-                    :profilePicturePath="item.profile_picture_path"
-                    widthClass="w-10"
-                    heightClass="h-10"
-                  />
-                </td>
-                <td class="p-2">
-                  <Link
-                    class="decoration-purple-600 hover:underline"
-                    :href="route('dashboard', { userId: item.id })"
-                    >{{ item.name }}</Link
-                  >
-                </td>
-                <td class="px-3">
-                  <input
-                    class="custom-input w-20 text-center shadow-sm sm:w-full"
-                    type="number"
-                    min="0"
-                    :max="school.class_mark_percentage * 100"
-                    v-model="item.nonEmptyGrades.class_mark"
-                  />
-                </td>
-                <td class="px-3">
-                  <input
-                    class="custom-input w-20 text-center shadow-sm sm:w-full"
-                    type="number"
-                    min="0"
-                    :max="school.exam_mark_percentage * 100"
-                    v-model="item.nonEmptyGrades.exam_mark"
-                  />
-                </td>
-                <td class="p-2">
-                  <button
-                    v-if="academicYearId === defaultAcademicYear.id"
-                    class="p-2"
-                    @click="clearMarks(item)"
-                  >
-                    <TrashIcon class="h-5 w-5 text-red-500" />
-                  </button>
-                </td>
-              </tr>
-              <tr v-if="!studentsWithGrades || studentsWithGrades.length === 0">
-                <td class="border-t px-6 py-4" colspan="4">
-                  No students found in
-                  {{
-                    classes.find((item) => item.id === classId)?.name_and_suffix
-                  }}
-                  ({{
-                    terms.find((item) => item.id === termId)
-                      ?.formatted_short_name
-                  }}).
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <button
-          v-if="academicYearId === defaultAcademicYear.id"
-          @click="save()"
-          class="flex w-5/6 items-center justify-center gap-2 rounded-lg bg-purple-400 p-2 text-lg font-semibold tracking-wide text-white shadow-sm hover:bg-purple-500"
-        >
-          <CheckCircleIcon class="h-6 w-6" />
-          Save
-        </button>
+            <CheckCircleIcon class="h-6 w-6" />
+            {{ form.processing ? 'Saving...' : 'Save' }}
+          </button>
+        </form>
       </section>
     </div>
   </section>
@@ -167,8 +174,13 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { TrashIcon, CheckCircleIcon } from '@heroicons/vue/outline';
-import { Inertia } from '@inertiajs/inertia';
-import { usePage } from '@inertiajs/inertia-vue3';
+import { usePage, useForm } from '@inertiajs/inertia-vue3';
+
+import { toast, deleteConfirmationDialog } from '@/Components/swal.js';
+
+const form = useForm({
+  grades: null,
+});
 
 const authUser = computed(() => usePage().props.value.auth.user);
 const school = computed(() => usePage().props.value.school);
@@ -231,14 +243,18 @@ function getGrades() {
 }
 
 function clearMarks(item) {
-  //TODO notify
-  item.nonEmptyGrades.class_mark = null;
-  item.nonEmptyGrades.exam_mark = null;
+  deleteConfirmationDialog(
+    () => {
+      item.nonEmptyGrades.class_mark = null;
+      item.nonEmptyGrades.exam_mark = null;
+    },
+    "Delete this student's grades?",
+    '(If you select "Yes", remember to save the form before exiting this page)'
+  );
 }
 
 function save() {
-  //TODO notify
-  const grades = studentsWithGrades.value.map((item) => ({
+  form.grades = studentsWithGrades.value.map((item) => ({
     teacher_id: authUser.value.id,
     class_mark: item.nonEmptyGrades.class_mark,
     exam_mark: item.nonEmptyGrades.exam_mark,
@@ -249,8 +265,12 @@ function save() {
     class_suffix: item.nonEmptyGrades.class_suffix,
     term_id: item.nonEmptyGrades.term_id,
   }));
-  //TODO on start disable save button and change text to 'saving', enable on finish
-  Inertia.patch(route('grades.upsert'), { grades: grades });
+
+  form.patch(route('grades.upsert'), {
+    onSuccess: () => {
+      toast.fire({ title: `Saved!` });
+    },
+  });
 }
 </script>
 

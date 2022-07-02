@@ -52,6 +52,7 @@ import { useForm } from '@inertiajs/inertia-vue3';
 
 import FormValidationErrors from '@/Components/FormValidationErrors.vue';
 import SubformButton from '@/Components/SubformButton.vue';
+import { toast, deleteConfirmationDialog } from '@/Components/swal.js';
 
 const props = defineProps({
   term: Object,
@@ -71,7 +72,7 @@ function store() {
     onSuccess: () => {
       adding.value = false;
       emit('stored');
-      //TODO notify added
+      toast.fire({ title: `Added!` });
     },
   });
 }
@@ -79,18 +80,19 @@ function store() {
 function update() {
   form.patch(route('terms.update', props.term.id), {
     onSuccess: () => {
-      //TODO notify saved
+      toast.fire({ title: `Saved!` });
     },
   });
 }
 
 function destroy() {
-  //TODO notify confirmation
-  form.delete(route('terms.destroy', props.term.id), {
-    onSuccess: () => {
-      emit('destroyed');
-      //TODO notify deleted
-    },
-  });
+  deleteConfirmationDialog(() =>
+    form.delete(route('terms.destroy', props.term.id), {
+      onSuccess: () => {
+        emit('destroyed');
+        toast.fire({ title: `Deleted!` });
+      },
+    })
+  );
 }
 </script>

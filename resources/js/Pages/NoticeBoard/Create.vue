@@ -1,22 +1,23 @@
 <template>
   <section class="flex items-center justify-center">
-    <div class="base-card w-full sm:w-11/12 py-4 px-2 sm:px-6">
+    <div class="base-card w-full py-4 px-2 sm:w-11/12 sm:px-6">
       <p
         class="mt-2 text-center text-xl font-semibold tracking-wide text-gray-600"
       >
         Add message to notice board
       </p>
       <div class="mt-4 md:mt-12">
-        <label
-          class="ml-4 block font-semibold tracking-wide text-gray-600"
+        <label class="ml-4 block font-semibold tracking-wide text-gray-600"
           >Current term:</label
         >
         <p
           readonly
-          class="custom-input mt-1 ml-4 sm:w-max break-words bg-slate-100 text-sm esm:w-2/3 md:text-base exl:w-1/3"
+          class="custom-input esm:w-2/3 exl:w-1/3 mt-1 ml-4 break-words bg-slate-100 text-sm sm:w-max md:text-base"
           value=""
           type="text"
-        >{{currentTerm.formatted_name}}</p>
+        >
+          {{ currentTerm.formatted_name }}
+        </p>
       </div>
       <div class="mt-6 px-4">
         <label class="block font-semibold tracking-wide text-gray-600">
@@ -45,11 +46,12 @@
 
 <script setup>
 import { useForm } from '@inertiajs/inertia-vue3';
-
 import { PlusCircleIcon } from '@heroicons/vue/outline';
+import Swal from 'sweetalert2';
 
 import { autoGrowTextarea } from '@/helpers';
 import FormValidationErrors from '@/Components/FormValidationErrors.vue';
+import { toast } from '@/Components/swal.js';
 
 const props = defineProps({
   currentTerm: Object,
@@ -63,7 +65,12 @@ const form = useForm({
 function store() {
   form.post(route('notice_board.store'), {
     onSuccess: () => {
-      //TODO notify added
+      form.message = '';
+      Swal.fire({
+        icon: 'success',
+        title: '',
+        text: 'Message successfully added to notice board',
+      });
     },
   });
 }

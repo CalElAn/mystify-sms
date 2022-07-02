@@ -130,6 +130,8 @@ import { useForm } from '@inertiajs/inertia-vue3';
 import { CheckCircleIcon, PencilAltIcon } from '@heroicons/vue/outline';
 import { Inertia } from '@inertiajs/inertia';
 
+import { toast } from '@/Components/swal.js';
+
 import FormValidationErrors from '@/Components/FormValidationErrors.vue';
 
 import vueFilePond from 'vue-filepond';
@@ -198,7 +200,7 @@ function submit() {
           {},
           { preserveState: false }
         );
-        //TODO notify added
+        toast.fire({ title: `Saved!` });
       },
     });
 }

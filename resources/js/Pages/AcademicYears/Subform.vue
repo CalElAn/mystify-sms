@@ -50,6 +50,7 @@
 import { ref } from 'vue';
 import { useForm } from '@inertiajs/inertia-vue3';
 import { Inertia } from '@inertiajs/inertia';
+import { toast, deleteConfirmationDialog } from '@/Components/swal.js';
 
 import FormValidationErrors from '@/Components/FormValidationErrors.vue';
 import SubformButton from '@/Components/SubformButton.vue';
@@ -77,7 +78,7 @@ function store() {
       //reloading the page with false preserve state will update the data with fresh data from the server
       Inertia.get(route('academic_years.form'), {}, { preserveState: false });
       emit('stored');
-      //TODO notify added
+      toast.fire({ title: `Added!` });
     },
   });
 }
@@ -85,19 +86,19 @@ function store() {
 function update() {
   form.patch(route('academic_years.update', props.academicYear.id), {
     onSuccess: () => {
-      //TODO notify saved
+      toast.fire({ title: `Saved!` });
     },
   });
 }
 
 function destroy() {
-  //TODO notify confirmation
-  form.delete(route('academic_years.destroy', props.academicYear.id), {
-    preserveState: false,
-    onSuccess: () => {
-      // emit('destroyed')
-      //TODO notify deleted
-    },
-  });
+  deleteConfirmationDialog(() =>
+    form.delete(route('academic_years.destroy', props.academicYear.id), {
+      preserveState: false,
+      onSuccess: () => {
+        toast.fire({ title: `Deleted!` });
+      },
+    })
+  );
 }
 </script>

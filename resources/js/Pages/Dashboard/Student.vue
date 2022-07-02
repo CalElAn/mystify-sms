@@ -31,7 +31,7 @@
     />
     <button
       @click="shouldOpenModalContainingListOfParents = true"
-      class="inline-flex items-center justify-center gap-2 rounded-lg border border-fuchsia-800 bg-fuchsia-50 px-2 py-1.5 font-semibold text-fuchsia-800 shadow-sm hover:bg-fuchsia-100"
+      class="inline-flex items-center justify-center gap-2 rounded-lg border border-fuchsia-800 bg-fuchsia-50 px-2 py-1.5 font-semibold tracking-wide text-fuchsia-800 shadow-sm hover:bg-fuchsia-100"
     >
       <ViewListIcon class="h-5 w-5" />
       Parents

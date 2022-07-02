@@ -51,13 +51,13 @@ class DatabaseSeeder extends Seeder
             'user_type' => 'student',
             'school_id' => $school->id,
         ]);
-        User::factory(100)->create(['school_id' => $school->id]);
+        User::factory(150)->create(['school_id' => $school->id]);
         $allUsers = User::all();
         $allStudents = $allUsers->where('default_user_type', 'student');
         $allTeachers = $allUsers
             ->where('default_user_type', 'teacher')
             ->values();
-        $allParents = $allUsers->where('default_user_type', 'parent')->values();
+        $allParents = $allUsers->whereIn('default_user_type', ['parent', 'headteacher'])->values();
 
         //*select two random parents for each student
         $parentRecordsToInsert = [];

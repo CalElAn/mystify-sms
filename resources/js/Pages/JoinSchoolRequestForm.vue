@@ -53,6 +53,7 @@ import { usePage } from '@inertiajs/inertia-vue3';
 import { CheckCircleIcon } from '@heroicons/vue/outline';
 import { useForm } from '@inertiajs/inertia-vue3';
 import { Inertia } from '@inertiajs/inertia';
+import Swal from 'sweetalert2';
 
 import FormValidationErrors from '@/Components/FormValidationErrors.vue';
 
@@ -64,9 +65,11 @@ function sendRequest() {
   form.post(route('join_school_request.send_request', form.name), {
     onSuccess: () => {
       form.name = '';
-      //TODO notify with:
-      //request sent successfully. When your child verifies from that you are the parent,
-      //you will have access to his/her account from your dashboard
+      Swal.fire({
+        icon: 'success',
+        title: '',
+        text: 'Request sent successfully.',
+      });
     },
   });
 }
@@ -77,7 +80,9 @@ onMounted(() => {
   window.Echo.private(`App.Models.User.${authUser.value.id}`).notification(
     (notification) => {
       // console.log(notification);
-      if (notification.type === 'App\\Notifications\\AcceptedJoinSchoolRequest') {
+      if (
+        notification.type === 'App\\Notifications\\AcceptedJoinSchoolRequest'
+      ) {
         Inertia.reload();
       }
     }

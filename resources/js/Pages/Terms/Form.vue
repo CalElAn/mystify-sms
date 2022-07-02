@@ -25,7 +25,6 @@
       </div>
 
       <div class="flex flex-col">
-        <!-- TODO title should be sticky -->
         <div
           class="thead grid grid-cols-3 p-2 text-sm font-bold sm:gap-x-4 md:text-base xl:gap-x-12"
         >

@@ -57,9 +57,11 @@
 import { ref, computed } from 'vue';
 import { useForm, usePage } from '@inertiajs/inertia-vue3';
 import { Inertia } from '@inertiajs/inertia';
+import Swal from 'sweetalert2';
 
 import FormValidationErrors from '@/Components/FormValidationErrors.vue';
 import SubformButton from '@/Components/SubformButton.vue';
+import { deleteConfirmationDialog } from '@/Components/swal.js';
 
 const user = computed(() => usePage().props.value.auth.user);
 
@@ -80,25 +82,36 @@ function store() {
   form.post(route('class_teacher.store'), {
     onSuccess: () => {
       adding.value = false;
-      //this is because when an academic year is created, the data of this form is not updated with the id from the server.
+      //this is because when a record is created, the data of this form is not updated with the id from the server.
       //therefore calls to delete throw an error since id is still empty
       //this is because preserveState is set to true (necessary to properly handle validation errors).
       //reloading the page with false preserve state will update the data with fresh data from the server
       Inertia.get(route('class_teacher.form'), {}, { preserveState: false });
       emit('stored');
-      //TODO notify added
+      Swal.fire({
+        icon: 'success',
+        title: '',
+        text: 'You have been added as a class teacher for this class',
+      });
     },
   });
 }
 
 function destroy() {
-  //TODO notify confirmation
-  form.delete(route('class_teacher.destroy', props.classTeacherData.id), {
-    preserveState: false,
-    onSuccess: () => {
-      // emit('destroyed')
-      //TODO notify deleted
-    },
-  });
+  deleteConfirmationDialog(
+    () =>
+      form.delete(route('class_teacher.destroy', props.classTeacherData.id), {
+        preserveState: false,
+        onSuccess: () => {
+          Swal.fire({
+            icon: 'success',
+            title: '',
+            text: 'You are no longer a class teacher for this class',
+          });
+        },
+      }),
+    'Delete?',
+    'You will no longer be a class teacher for this class'
+  );
 }
 </script>
