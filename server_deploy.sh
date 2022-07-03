@@ -11,7 +11,7 @@ git fetch origin deploy
 git reset --hard origin/deploy
 
 # update PHP dependencies
-composer install --no-interaction --no-dev --prefer-dist
+composer install --no-interaction --optimize-autoloader --no-dev --prefer-dist
 
 #optimize loading
 php artisan config:cache
