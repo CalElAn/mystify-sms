@@ -43,6 +43,7 @@ class DashboardControllerTest extends TestCase
         $user1 = User::factory()->create([
             'school_id' => 1,
             'default_user_type' => 'headteacher',
+            'user_type' => 'headteacher',
         ]);
 
         //No one apart from the particluar headmaster can view his dashboard

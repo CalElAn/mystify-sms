@@ -61,6 +61,7 @@ class AddAsChildRequestControllerTest extends TestCase
         //creating a new user so there is no chance that it might already be a child of selected parent
         $studentToSendNotifTo = User::factory()->create([
             'default_user_type' => 'student',
+            'user_type' => 'student',
         ]);
 
         $this->actingAs($parent)

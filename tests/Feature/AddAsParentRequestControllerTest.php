@@ -46,7 +46,10 @@ class AddAsParentRequestControllerTest extends TestCase
 
         Notification::fake();
 
-        $userToSendNotifTo = User::factory()->create(['default_user_type' => 'parent']);
+        $userToSendNotifTo = User::factory()->create([
+            'default_user_type' => 'parent',
+            'user_type' => 'parent',
+        ]);
 
         $this->actingAs($student)
             ->post(
