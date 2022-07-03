@@ -34,7 +34,7 @@ class AddAsChildRequestControllerTest extends TestCase
     /** @test */
     public function the_request_can_be_sent()
     {
-        $parent = User::where('user_type', 'parent')->first();
+        $parent = User::where('user_type', 'parent')->has('children')->first();
 
         $this->actingAs($parent)
             ->post(
