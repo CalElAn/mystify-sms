@@ -80,6 +80,8 @@ createInertiaApp({
         tracesSampleRate: 0.0,
         logErrors: true,
       });
+      //TODO delete later
+      console.log('sentry set up');
     }
 
     app.mount(el);
