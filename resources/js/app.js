@@ -70,8 +70,7 @@ createInertiaApp({
         dsn: 'https://83fb401919714ebd96c98f079b778b7d@o1135206.ingest.sentry.io/6546328',
         integrations: [
           new BrowserTracing({
-            routingInstrumentation: Sentry.vueRouterInstrumentation(router),
-            tracingOrigins: ['localhost', 'my-site-url.com', /^\//],
+            tracingOrigins: ['localhost', 'mystify-sms.com', /^\//],
           }),
         ],
         // Set tracesSampleRate to 1.0 to capture 100%
