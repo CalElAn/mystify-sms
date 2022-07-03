@@ -1,14 +1,14 @@
 <template>
-  <Modal :show="show" @closeModal="$emit('closeModal')">
+  <Modal maxWidthClass="max-w-md" :show="show" @closeModal="$emit('closeModal')">
     <div class="flex gap-4">
       <ProfilePicture
         :profilePicturePath="teacher.profile_picture_path"
         widthClass="w-1/3"
-        heightClass="h-44"
-        maxWidthClass="max-w-xl"
+        heightClass="h-20"
+        maxWidthClass="max-w-lg"
       />
       <div class="flex flex-col gap-2">
-        <div class="flex flex-col gap-2 text-left">
+        <!-- <div class="flex flex-col gap-2 text-left"> -->
           <div class="text-2xl font-semibold tracking-wide text-fuchsia-600">
             {{ teacher.name }}
           </div>
@@ -29,8 +29,8 @@
               {{ teacher.email }}
             </a>
           </div>
-        </div>
-        <div>
+        <!-- </div> -->
+        <!-- <div>
           <p class="text-gray-600 font-semibold">Subjects:</p>
           <ul
             class="grid h-24 list-inside list-disc grid-cols-2 overflow-y-auto rounded-md border p-2 text-sm"
@@ -43,7 +43,7 @@
               <span class="text-gray-800">{{ subjectItem }}</span>
             </li>
           </ul>
-        </div>
+        </div> -->
       </div>
     </div>
   </Modal>

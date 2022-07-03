@@ -23,6 +23,7 @@ class ClassTeacherController extends Controller
         return Inertia::render('ClassTeacher/Form', [
             'classTeacherPivotData' => $user
                 ->classTeacherPivot()
+                ->whereRelation('classModel', 'school_id', $user->school->id)
                 ->with(['classModel', 'academicYear'])
                 ->get()
                 ->sortBy([

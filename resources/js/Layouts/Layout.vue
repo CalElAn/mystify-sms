@@ -48,7 +48,7 @@
               ? 'bg-purple-600 text-white'
               : 'hover:text-purple-600 hover:underline',
           ]"
-          class="flex w-full items-center justify-start gap-2 rounded-full py-2 pl-5 text-lg font-medium tracking-wide"
+          class="flex w-full items-center justify-start gap-2 rounded-full py-2 pl-5 font-medium tracking-wide"
         >
           <AcademicCapIcon class="h-5 w-5" />
           Students
@@ -61,7 +61,7 @@
               ? 'bg-purple-600 text-white'
               : 'hover:text-purple-600 hover:underline',
           ]"
-          class="flex w-full items-center justify-start gap-2 rounded-full py-2 pl-5 text-lg font-medium tracking-wide"
+          class="flex w-full items-center justify-start gap-2 rounded-full py-2 pl-5 font-medium tracking-wide"
         >
           <svg
             class="h-5 w-5"
@@ -83,7 +83,7 @@
               ? 'bg-purple-600 text-white'
               : 'hover:text-purple-600 hover:underline',
           ]"
-          class="flex w-full items-center justify-start gap-2 rounded-full py-2 pl-5 text-lg font-medium tracking-wide"
+          class="flex w-full items-center justify-start gap-2 rounded-full py-2 pl-5 font-medium tracking-wide"
         >
           <UserGroupIcon class="h-5 w-5" />
           Parents
@@ -96,7 +96,7 @@
               ? 'bg-purple-600 text-white'
               : 'hover:text-purple-600 hover:underline',
           ]"
-          class="flex w-full items-center justify-start gap-2 rounded-full py-2 pl-5 text-lg font-medium tracking-wide"
+          class="flex w-full items-center justify-start gap-2 rounded-full py-2 pl-5 font-medium tracking-wide"
         >
           <UsersIcon class="h-5 w-5" />
           Teachers
@@ -109,7 +109,7 @@
               ? 'bg-purple-600 text-white'
               : 'hover:text-purple-600 hover:underline',
           ]"
-          class="flex w-full items-center justify-start gap-2 rounded-full py-2 pl-5 text-lg font-medium tracking-wide"
+          class="flex w-full items-center justify-start gap-2 rounded-full py-2 pl-5 font-medium tracking-wide"
         >
           <ArchiveIcon class="h-5 w-5" />
           Administrators
@@ -415,7 +415,7 @@
 </template>
 
 <script setup>
-import { computed, ref, onMounted } from 'vue';
+import { computed, ref, onMounted, watch, toRaw } from 'vue';
 import { usePage } from '@inertiajs/inertia-vue3';
 import {
   DesktopComputerIcon,
@@ -429,6 +429,7 @@ import { ChevronDownIcon, ChevronRightIcon } from '@heroicons/vue/solid';
 import { LightningBoltIcon } from '@heroicons/vue/outline';
 import { Inertia } from '@inertiajs/inertia';
 import { breakpointsTailwind, useBreakpoints } from '@vueuse/core';
+import Swal from 'sweetalert2';
 
 import DotIndicator from '@/Components/DotIndicator.vue';
 import { changeTerm } from '@/helpers';
@@ -472,9 +473,17 @@ function handleNewNotifications(notification) {
   // console.log(notification);
 }
 
-// notifications.value = computed(
-//   () => usePage().props.value.notifications
-// ).value;
+watch(
+  () => usePage().props.value.flash.warning,
+  (newFlashMsg) => {
+    if (!toRaw(newFlashMsg)) return;
+    Swal.fire({
+      icon: 'warning',
+      title: "Cannot view student's dashboard",
+      text: toRaw(newFlashMsg),
+    });
+  }
+);
 
 onMounted(() => {
   // if (['student', 'parent'].includes(authUser.value.user_type)) {

@@ -3,7 +3,7 @@
   <NavBar :actions="studentActions" />
   <section class="flex items-center justify-center">
     <div class="base-card w-11/12 p-4">
-      <p class="form-title mt-2 text-center">Classes</p>
+      <p class="form-title mt-2 text-center">Join class</p>
       <div class="mb-2 mt-4 flex justify-end">
         <AddButton @click="add()" :disabled="!shouldAllowAdd" class="mr-4">
           Add

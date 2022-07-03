@@ -32,7 +32,7 @@ return new class extends Migration {
                 ->references('id')
                 ->on('schools')
                 ->onUpdate('cascade')
-                ->onDelete('no action');
+                ->onDelete('set null');
         });
     }
 

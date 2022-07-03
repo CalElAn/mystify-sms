@@ -18,19 +18,42 @@ class DashboardController extends Controller
     public function index(Request $request)
     {
         /** @var \App\Models\User */
-        $user = Auth::user();
+        $authUser = Auth::user();
+
+        if ($authUser->user_type !== 'parent' && is_null($authUser->school)) {
+            return redirect()->route('join_school_request.form');
+        }
+
+        if (
+            $authUser->user_type === 'student' &&
+            $authUser->classes
+                ->where('school_id', $authUser->school->id)
+                ->isEmpty()
+        ) {
+            return redirect()->route('class_student.join_class.form');
+        }
+
+        $user = $authUser;
 
         if ($request->userId) {
             /** @var \App\Models\User */
             $user = User::find($request->userId);
         }
 
+        if (
+            $user->user_type === 'student' &&
+            $user->classes->where('school_id', $user->school->id)->isEmpty()
+        ) {
+            return redirect()
+                ->back()
+                ->with(
+                    'warning',
+                    'Selected student has to join a class before his/her dashboard can be viewed',
+                );
+        }
+
         /** @var \App\Models\School */
         $school = $user->school;
-
-        if ($request->user()->user_type !== 'parent' && is_null($school)) {
-            return redirect()->route('join_school_request.form');
-        }
 
         $academicYearsWithTerms = $school?->getAcademicYearsWithTerms();
 
@@ -40,8 +63,10 @@ class DashboardController extends Controller
             'user' => $user,
             'academicYearsWithTerms' => $academicYearsWithTerms,
             'term' => $term,
-            'noticeBoardMessages' => $school?->getNoticeBoardMessages($term->id),
-            'notifications' => $request->user()->getNotifications(),
+            'noticeBoardMessages' => $school?->getNoticeBoardMessages(
+                $term->id,
+            ),
+            'notifications' => $authUser->getNotifications(),
         ];
 
         switch ($user->user_type) {

@@ -53,6 +53,7 @@ class ClassStudentController extends Controller
         return Inertia::render('ClassStudent/JoinClass/Form', [
             'classStudentPivotData' => $user
                 ->classStudentPivot()
+                ->whereRelation('classModel', 'school_id', $user->school->id)
                 ->with(['classModel', 'academicYear'])
                 ->get()
                 ->sortBy([
@@ -95,7 +96,8 @@ class ClassStudentController extends Controller
             ],
             [
                 'class_id.required' => 'A class is required',
-                'class_id.unique' => 'You cannot be in the same class twice for the same academic year',
+                'class_id.unique' =>
+                    'You cannot be in the same class twice for the same academic year',
                 'academic_year_id.required' => 'An academic year is required',
             ],
         );

@@ -1,13 +1,15 @@
 <template>
   <div class="base-card flex flex-col">
     <div
-      class="flex items-center justify-between border-b py-2 px-4 text-lg lg:text-xl font-semibold tracking-wide text-purple-600"
+      class="flex items-center justify-between border-b py-2 px-4 text-lg font-semibold tracking-wide text-purple-600 lg:text-xl"
     >
-      <Link :href="route('notice_board.index')" class="underline">{{ props.title }}</Link>
+      <Link :href="route('notice_board.index')" class="underline">{{
+        props.title
+      }}</Link>
     </div>
-    <div class="flex flex-col gap-8 text-sm lg:text-base overflow-y-auto p-4">
+    <div class="flex flex-col gap-8 overflow-y-auto p-4 text-sm lg:text-base">
       <div
-        v-for="(firstItem, firstIndex) in props.messages"
+        v-for="(firstItem, firstIndex) in messages"
         :key="firstIndex"
         class="flex flex-col gap-2"
       >
@@ -37,6 +39,9 @@
           </li>
         </ol>
       </div>
+      <p class="p-4" v-if="!messages || messages.length === 0">
+        No notice board messages found...
+      </p>
     </div>
     <!-- Timeline message modal -->
     <Modal

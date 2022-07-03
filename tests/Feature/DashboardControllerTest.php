@@ -40,7 +40,10 @@ class DashboardControllerTest extends TestCase
     public function headteacher_dashboard_can_be_viewed()
     {
         /** @var \Illuminate\Contracts\Auth\Authenticatable */
-        $user1 = User::factory()->create(['school_id' => 1, 'default_user_type' => 'headteacher']);
+        $user1 = User::factory()->create([
+            'school_id' => 1,
+            'default_user_type' => 'headteacher',
+        ]);
 
         //No one apart from the particluar headmaster can view his dashboard
         $this->actingAs($user1)
@@ -74,10 +77,11 @@ class DashboardControllerTest extends TestCase
         $student = User::where('user_type', 'student')->first();
 
         /** @var \Illuminate\Contracts\Auth\Authenticatable */
-        $unauthorizedStudentUser = User::factory()->create([
-            'user_type' => 'student',
-            'school_id' => 1,
-        ]);
+        $unauthorizedStudentUser = User::where([
+            ['user_type', 'student'],
+            ['id', '<>', $student->id],
+        ])->first();
+
         //a student cannot view another student's dashboard
         $this->actingAs($unauthorizedStudentUser)
             ->get('dashboard?userId=' . $student->id)
@@ -133,12 +137,68 @@ class DashboardControllerTest extends TestCase
     }
 
     /** @test */
+    public function a_student_who_is_in_no_class_is_redirected_to_the_join_class_page()
+    {
+        $this->actingAs(
+            User::factory()->create([
+                'user_type' => 'student',
+                'default_user_type' => 'student',
+                'school_id' => 1,
+            ]),
+        )
+            ->get('dashboard')
+            ->assertRedirect(route('class_student.join_class.form'));
+    }
+
+    /** @test */
+    public function you_cannot_view_the_dashboard_of_a_student_who_has_no_class()
+    {
+        $studentWithNoClass = User::factory()->create([
+            'user_type' => 'student',
+            'default_user_type' => 'student',
+            'school_id' => 1,
+        ]);
+
+        $response = $this->actingAs(
+            User::where('user_type', 'headteacher')->first(),
+        )->get('dashboard?userId=' . $studentWithNoClass->id);
+
+        $response->assertRedirect();
+        $response->assertSessionHas(
+            'warning',
+            'Selected student has to join a class before his/her dashboard can be viewed',
+        );
+    }
+
+    /** @test */
+    public function a_non_parent_user_without_a_school_is_redirected_to_the_join_school_page()
+    {
+        $faker = \Faker\Factory::create();
+
+        $this->actingAs(
+            User::factory()->create([
+                'user_type' => $faker->randomElement([
+                    'teacher',
+                    'student',
+                    'headteacher',
+                ]),
+                'school_id' => null,
+            ]),
+        )
+            ->get('dashboard')
+            ->assertRedirect(route('join_school_request.form'));
+    }
+
+    /** @test */
     public function teacher_dashboard_can_be_viewed()
     {
         $teacher = User::where('user_type', 'teacher')->first();
 
         /** @var \Illuminate\Contracts\Auth\Authenticatable */
-        $unauthorizedTeacherUser = User::factory()->create(['school_id' => 1]);
+        $unauthorizedTeacherUser = User::factory()->create([
+            'user_type' => 'teacher',
+            'school_id' => 1,
+        ]);
 
         //No one apart from the particluar teacher can view the dashboard
         $this->actingAs($unauthorizedTeacherUser)
@@ -150,11 +210,7 @@ class DashboardControllerTest extends TestCase
             ->assertInertia(
                 fn(Assert $page) => $page
                     ->component('Dashboard/Teacher')
-                    ->hasAll(
-                        'classes',
-                        'classModel',
-                        'studentsInClass',
-                    ),
+                    ->hasAll('classes', 'classModel', 'studentsInClass'),
             );
 
         $this->assertDefaultProps($teacher);
@@ -172,7 +228,10 @@ class DashboardControllerTest extends TestCase
             ->assertOk();
 
         /** @var \Illuminate\Contracts\Auth\Authenticatable */
-        $unauthorizedUser = User::factory()->create(['school_id' => 1, 'user_type' => 'parent']);
+        $unauthorizedUser = User::factory()->create([
+            'school_id' => 1,
+            'user_type' => 'parent',
+        ]);
 
         //No parent apart from the particluar parent can view his dashboard
         $this->actingAs($unauthorizedUser)

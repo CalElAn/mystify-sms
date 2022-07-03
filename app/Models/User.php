@@ -138,7 +138,7 @@ class User extends Authenticatable implements MustVerifyEmail
         $studentsWhoOweSchoolFees = $studentsAndSchoolFeesData
             ->filter(function ($item) {
                 $amountOwed =
-                    $item->schoolFees->first()->amount -
+                    $item->schoolFees->first()?->amount -
                     $item->schoolFeesPaid->sum('amount');
                 $item->amountOwed = $amountOwed;
                 return $amountOwed > 0;
@@ -176,6 +176,7 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         $academicYearId = $term->academic_year_id;
         $classesWithTerms = ClassStudent::where('student_id', $this->id)
+            ->whereRelation('classModel', 'school_id', $this->school_id)
             ->with(['academicYear.terms', 'classModel'])
             ->get();
         $classModel = $classesWithTerms
@@ -220,6 +221,7 @@ class User extends Authenticatable implements MustVerifyEmail
         $academicYearId = $term->academic_year_id;
 
         $classes = $this->classes()
+            ->where('school_id', $this->school_id)
             ->with('teachers')
             ->get();
         $classModel = $classes
@@ -261,7 +263,9 @@ class User extends Authenticatable implements MustVerifyEmail
         string $subjectName = null,
     ): array {
         if (!$grades) {
-            $grades = $this->grades()->get();
+            $grades = $this->grades()
+                ->where('school_id', $this->school_id)
+                ->get();
         }
 
         $chartData = [];
@@ -320,7 +324,9 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function getOverallGradesDataPerSubjectForLineChart(): array
     {
-        $grades = $this->grades()->get();
+        $grades = $this->grades()
+            ->where('school_id', $this->school_id)
+            ->get();
         $subjectNames = $grades
             ->pluck('subject_name')
             ->unique()
@@ -416,7 +422,6 @@ class User extends Authenticatable implements MustVerifyEmail
         $allGrades = $this->school
             ->grades()
             ->where([
-                ['school_id', $this->school_id],
                 ['term_id', $this->termId],
                 ['class_name', $this->classModel->name],
                 ['class_suffix', $this->classModel->suffix],

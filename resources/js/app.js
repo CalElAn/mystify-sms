@@ -11,6 +11,8 @@ import {
 } from '@heroicons/vue/solid';
 // import { CogIcon } from '@heroicons/vue/outline';
 import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue';
+import * as Sentry from '@sentry/vue';
+import { BrowserTracing } from '@sentry/tracing';
 
 import Layout from './Layouts/Layout.vue';
 import Modal from '@/Components/Modal.vue';
@@ -53,18 +55,36 @@ createInertiaApp({
     }
     return page;
   },
-  setup({ el, app, props, plugin }) {
-    const vueApp = createApp({ render: () => h(app, props) })
+  setup({ el, App, props, plugin }) {
+    const app = createApp({ render: () => h(App, props) })
       .use(plugin)
       .mixin({ methods: { route } });
 
     _.forIn(baseComponents, function (value, key) {
-      vueApp.component(key, value);
+      app.component(key, value);
     });
 
-    vueApp.mount(el);
+    if (process.env.MIX_APP_ENV === 'production') {
+      Sentry.init({
+        app,
+        dsn: 'https://83fb401919714ebd96c98f079b778b7d@o1135206.ingest.sentry.io/6546328',
+        integrations: [
+          new BrowserTracing({
+            routingInstrumentation: Sentry.vueRouterInstrumentation(router),
+            tracingOrigins: ['localhost', 'my-site-url.com', /^\//],
+          }),
+        ],
+        // Set tracesSampleRate to 1.0 to capture 100%
+        // of transactions for performance monitoring.
+        // We recommend adjusting this value in production
+        tracesSampleRate: 0.0,
+        logErrors: true,
+      });
+    }
 
-    return vueApp;
+    app.mount(el);
+
+    return app;
   },
 });
 

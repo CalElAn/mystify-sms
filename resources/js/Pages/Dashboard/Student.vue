@@ -206,6 +206,11 @@
             <td class="p-2">{{ item.overall_grade }}</td>
             <td class="p-2">{{ item.position }}</td>
           </tr>
+          <tr v-if="!subjectsAndGrades || subjectsAndGrades.length === 0">
+            <td class="border-t px-6 py-4" colspan="6">
+              No grades found.
+            </td>
+          </tr>
         </tbody>
       </table>
     </div>
@@ -394,7 +399,7 @@ const lineChartDataForGrades = {
     },
     {
       label: "Average class' performance over time ",
-      data: props.gradesDataForLineChart.gradesDataForOtherStudents,
+      data: props.gradesDataForLineChart?.gradesDataForOtherStudents,
       borderColor: 'rgb(54, 162, 235)',
       backgroundColor: 'rgb(54, 162, 235, 0.5)',
       pointStyle: 'circle',
@@ -416,7 +421,7 @@ const lineChartDataForGradesPerSubject = {
       //select the first subject in the "gradesDataPerSubjectForLineChart" object
       data: props.gradesDataPerSubjectForLineChart[
         Object.keys(props.gradesDataPerSubjectForLineChart)[0]
-      ].gradesDataForStudent,
+      ]?.gradesDataForStudent,
       borderColor: 'rgb(255, 99, 132)',
       backgroundColor: 'rgb(255, 99, 132, 0.5)',
       pointStyle: 'circle',
@@ -428,7 +433,7 @@ const lineChartDataForGradesPerSubject = {
       //select the first subject in the "gradesDataPerSubjectForLineChart" object
       data: props.gradesDataPerSubjectForLineChart[
         Object.keys(props.gradesDataPerSubjectForLineChart)[0]
-      ].gradesDataForOtherStudents,
+      ]?.gradesDataForOtherStudents,
       borderColor: 'rgb(54, 162, 235)',
       backgroundColor: 'rgb(54, 162, 235, 0.5)',
       pointStyle: 'circle',
@@ -440,11 +445,11 @@ const lineChartDataForGradesPerSubject = {
 
 function setlineChartDataAndOptionsForGradesPerSubject(subjectName) {
   lineChartDataForGradesPerSubject.datasets[0].data =
-    props.gradesDataPerSubjectForLineChart[subjectName].gradesDataForStudent;
+    props.gradesDataPerSubjectForLineChart[subjectName]?.gradesDataForStudent;
   lineChartDataForGradesPerSubject.datasets[1].data =
     props.gradesDataPerSubjectForLineChart[
       subjectName
-    ].gradesDataForOtherStudents;
+    ]?.gradesDataForOtherStudents;
   lineChartOptionsForGradesPerSuject.plugins.title.text = subjectName;
 }
 

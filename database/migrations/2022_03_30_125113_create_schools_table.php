@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('city');
             $table->string('town');
             $table->string('street_address');
-            $table->unsignedBigInteger('grading_scale_id');
+            $table->unsignedBigInteger('grading_scale_id')->nullable();
             $table->decimal('class_mark_percentage')->default(0.30);
             $table->decimal('exam_mark_percentage')->default(0.70);
             $table->timestamps();
@@ -28,7 +28,7 @@ return new class extends Migration
                 ->references('id')
                 ->on('grading_scales')
                 ->onUpdate('cascade')
-                ->onDelete('no action');
+                ->onDelete('set null');
         });
     }
 

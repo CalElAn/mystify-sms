@@ -85,7 +85,7 @@ const submit = () => {
           v-model="form.default_user_type"
           required
         >
-          <option value="administrator">administrator</option>
+          <!-- <option value="administrator">school administrator (eg. accountant, assistant headteacher, etc)</option> -->
           <option value="teacher">teacher</option>
           <option value="student">student</option>
           <option value="parent">none of the above</option>

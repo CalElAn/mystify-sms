@@ -23,7 +23,7 @@
           </td>
           <td class="p-2">
             <button
-              v-if="user.default_user_type === 'teacher'"
+              v-if="user.default_user_type === 'teacher' || user.default_user_type === 'headteacher'"
               class="tda"
               @click="showTeacherCardModal(user)"
             >

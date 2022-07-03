@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('school_fees', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('student_id');
+            $table->unsignedBigInteger('student_id')->nullable();
             $table->unsignedBigInteger('school_id');
             $table->unsignedBigInteger('academic_year_id');
             $table->decimal('amount', 8, 4);
@@ -25,7 +25,7 @@ return new class extends Migration
                 ->references('id')
                 ->on('users')
                 ->onUpdate('cascade')
-                ->onDelete('no action');
+                ->onDelete('set null');
 
             $table->foreign('school_id')
                 ->references('id')

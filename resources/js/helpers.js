@@ -2,6 +2,7 @@ import { Inertia } from '@inertiajs/inertia';
 
 export function getProfilePictureUrl(profilePicturePath) {
   if (profilePicturePath) {
+    return 'https://i.pravatar.cc/300?u=' + Math.random()
     if (profilePicturePath.includes('https://')) return profilePicturePath;
 
     return '/storage/' + profilePicturePath;
