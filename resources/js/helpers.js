@@ -1,8 +1,14 @@
 import { Inertia } from '@inertiajs/inertia';
 
 export function getProfilePictureUrl(profilePicturePath) {
+  if (
+    window.location.hostname === 'demo.mystify-sms.com' ||
+    window.location.hostname === 'localhost'
+  ) {
+    return 'https://i.pravatar.cc/300?u=' + Math.random();
+  }
+
   if (profilePicturePath) {
-    return 'https://i.pravatar.cc/300?u=' + Math.random()
     if (profilePicturePath.includes('https://')) return profilePicturePath;
 
     return '/storage/' + profilePicturePath;

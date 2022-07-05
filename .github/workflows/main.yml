@@ -48,4 +48,6 @@ jobs:
           host: ${{ secrets.HOST }}
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
-          script: 'cd /var/www/mystify-sms && ./server_deploy.sh'
+          script: |
+            cd /var/www/mystify-sms && ./server_deploy.sh
+            cd /var/www/demo-mystify-sms && ./server_deploy.sh

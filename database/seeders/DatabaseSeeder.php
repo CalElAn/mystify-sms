@@ -34,19 +34,25 @@ class DatabaseSeeder extends Seeder
 
         //*create users
         User::factory()->create([
-            'email' => 'ce@example.com',
+            'email' => 'headteacher@example.com',
             'default_user_type' => 'headteacher',
             'user_type' => 'headteacher',
             'school_id' => $school->id,
         ]);
         $teacher = User::factory()->create([
-            'email' => 'te@example.com',
+            'email' => 'teacher@example.com',
             'default_user_type' => 'teacher',
             'user_type' => 'teacher',
             'school_id' => $school->id,
         ]);
         User::factory()->create([
-            'email' => 'se@example.com',
+            'email' => 'parent@example.com',
+            'default_user_type' => 'parent',
+            'user_type' => 'parent',
+            'school_id' => $school->id,
+        ]);
+        User::factory()->create([
+            'email' => 'student@example.com',
             'default_user_type' => 'student',
             'user_type' => 'student',
             'school_id' => $school->id,
