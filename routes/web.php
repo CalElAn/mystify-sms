@@ -105,6 +105,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/dashboard/notifications', [NotificationController::class, 'index'])->name('notifications.index');
     Route::get('/dashboard/view-school-notifications', [NotificationController::class, 'viewSchoolNotifications'])->name('notifications.view_school_notifications');
+
+    Route::get('/phpinfo', function(Request $request) {
+        if (Auth::user()->email === 'calvinelikem@gmail.com') phpinfo();
+    });
 });
 
 Route::controller(FilePondController::class)->group(function () {
