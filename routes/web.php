@@ -38,10 +38,9 @@ Route::get('/', function () {
     // ]);
 });
 
-Route::get('/join-school-request/form', [JoinSchoolRequestController::class, 'form'])->name('join_school_request.form');
-Route::post('/join-school-request/send-request', [JoinSchoolRequestController::class, 'sendRequest'])->name('join_school_request.send_request');
-
 Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/join-school-request/form', [JoinSchoolRequestController::class, 'form'])->name('join_school_request.form');
+    Route::post('/join-school-request/send-request', [JoinSchoolRequestController::class, 'sendRequest'])->name('join_school_request.send_request');
     Route::post('/join-school-request/accept-request', [JoinSchoolRequestController::class, 'acceptRequest'])->name('join_school_request.accept_request');
     Route::post('/join-school-request/decline-request', [JoinSchoolRequestController::class, 'declineRequest'])->name('join_school_request.decline_request');
 
