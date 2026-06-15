@@ -1,5 +1,5 @@
 <template>
-  <div class="mx-auto flex w-2/5 items-center justify-end">
+  <div class="mx-auto flex lg:w-2/5 items-center justify-end">
     <button
       v-if="user.is_this_user_the_auth_user"
       @click="editing = !editing"
@@ -10,7 +10,7 @@
     </button>
   </div>
   <section class="flex basis-full items-start justify-center">
-    <div class="base-card w-2/5 py-4 px-6">
+    <div class="base-card lg:w-2/5 py-4 px-6">
       <p class="form-title text-center">Profile</p>
       <form @submit.prevent="submit" class="mt-6 flex flex-col gap-4">
         <file-pond

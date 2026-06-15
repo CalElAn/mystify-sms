@@ -211,6 +211,7 @@ const lineChartData = {
       pointStyle: 'circle',
       pointRadius: 8,
       pointHoverRadius: 13,
+      tension: 0.1
     },
   ],
 };
