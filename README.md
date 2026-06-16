@@ -8,6 +8,7 @@ Each registered school operates as an isolated tenant: its users, classes, acade
 
 - [Tech Stack](#tech-stack)
 - [Features](#features)
+- [Screenshots](#screenshots)
 - [Architecture Overview](#architecture-overview)
 - [Requirements](#requirements)
 - [Getting Started](#getting-started)
@@ -122,6 +123,33 @@ Users with multiple roles (e.g. a teacher who is also a parent) can switch their
 - All significant model changes are logged via Spatie Activity Log (with batch UUIDs and event names).
 - Laravel Telescope is available in local for inspecting requests, queries, jobs, and notifications.
 - Sentry integration captures exceptions in both Laravel and the Vue frontend.
+
+## Screenshots
+
+### Headteacher / Administrator
+| Dashboard (counts + fees) | Students Owing Fees |
+| --- | --- |
+| ![Headteacher dashboard](docs/screenshots/dashboard-headteacher.png) | ![Students owing fees](docs/screenshots/dashboard-students-owing.png) |
+
+
+| Classes                                              | Class Detail                                       | Academic Years & Terms                                                 |
+|------------------------------------------------------|----------------------------------------------------|------------------------------------------------------------------------|
+| ![Classes index](docs/screenshots/classes-index.png) | ![Class detail](docs/screenshots/class-detail.png) | ![Academic years and terms](docs/screenshots/academic-years-terms.png) |
+
+### Teacher
+| Teacher Dashboard | Grade Entry |
+| --- | --- |
+| ![Teacher dashboard](docs/screenshots/dashboard-teacher.png) | ![Grade entry](docs/screenshots/grades-form.png) |
+
+### Student
+| Student Dashboard | Performance vs. Class |
+| --- | --- |
+| ![Student dashboard](docs/screenshots/dashboard-student.png) | ![Performance line chart](docs/screenshots/student-performance-chart.png) |
+
+### Parent
+| Parent Dashboard |
+| --- |
+| ![Parent dashboard](docs/screenshots/dashboard-parent.png) |
 
 ## Architecture Overview
 
